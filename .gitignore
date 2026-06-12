@@ -1,0 +1,8 @@
+# JANGAN pernah unggah API key ke repo publik!
+key.txt
+
+# File bantu lokal (tidak perlu di situs)
+data/raw-sample.json
+node_modules/
+.DS_Store
+lainnya/

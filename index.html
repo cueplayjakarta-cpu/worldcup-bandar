@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="theme-color" content="#070b16" />
+<link rel="manifest" href="manifest.json" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Lensa Bandar" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<title>Lensa Bandar — Terminal Piala Dunia 2026</title>
+<style>
+  :root{
+    --bg:#070b16; --bg2:#0d1426; --card:#111a30; --card2:#0e1628; --line:#22304f;
+    --txt:#eaf0ff; --muted:#93a0c2; --dim:#6b779b; --accent:#6f9bff;
+    --green:#27c281; --green-d:#0f3a2a; --yellow:#ecb13a; --yellow-d:#3a2f0e; --red:#ef5d6d; --red-d:#3a1620;
+    --mono:'SF Mono',ui-monospace,'Roboto Mono',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:radial-gradient(1200px 600px at 50% -10%,#11203f 0%,#070b16 55%);
+    color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;padding-bottom:54px}
+  .wrap{max-width:600px;margin:0 auto;padding:14px}
+  /* header */
+  .hd{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .hd .logo{font-size:22px}
+  .hd h1{font-size:18px;margin:0;letter-spacing:.3px;font-weight:800}
+  .hd .live-ind{margin-left:auto;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .hd .live-ind .pip{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+  .sub{color:var(--muted);font-size:11.5px;line-height:1.5;margin-bottom:10px}
+  .demo{background:var(--yellow-d);border:1px solid #b8902f;color:#ffe6a6;padding:8px 11px;border-radius:10px;font-size:12px;margin-bottom:10px;line-height:1.5}
+  /* summary chips */
+  .sum{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}
+  .sum .s{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:9px 5px;text-align:center}
+  .sum .s b{display:block;font-size:18px;line-height:1.1;font-family:var(--mono)}
+  .sum .s span{font-size:9.5px;color:var(--dim);letter-spacing:.3px}
+  .sum .s.live b{color:var(--red)} .sum .s.red b{color:var(--red)} .sum .s.green b{color:var(--green)} .sum .s.yel b{color:var(--yellow)}
+  /* filter */
+  .filter{display:flex;gap:7px;margin-bottom:12px}
+  .filter button{flex:1;background:var(--bg2);color:var(--muted);border:1px solid var(--line);padding:9px;border-radius:10px;font-size:12.5px;cursor:pointer;font-weight:600}
+  .filter button.active{background:var(--accent);color:#06122e;border-color:var(--accent)}
+  /* card */
+  .card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:16px;margin:0 0 14px;overflow:hidden}
+  .card.islive{border-color:#7a2438;box-shadow:0 0 0 1px #ef5d6d22, 0 8px 30px #ef5d6d11}
+  .ctop{display:flex;align-items:center;gap:11px;padding:13px 14px 11px}
+  .ctop .teams{flex:1;min-width:0}
+  .ctop .vs{font-size:16px;font-weight:700;line-height:1.3}
+  .ctop .vs .sep{color:var(--dim);font-weight:500;margin:0 4px}
+  .ctop .vs .score{display:inline-flex;align-items:center;gap:5px;margin:0 7px;font-family:var(--mono);font-weight:800;font-size:18px;color:#fff;background:#e0143c;padding:1px 9px;border-radius:7px;vertical-align:middle}
+  .ctop .vs .score .dash{opacity:.7}
+  .ctop .meta{color:var(--dim);font-size:11px;margin-top:3px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .bigdot{width:14px;height:14px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 0 4px #ffffff0d}
+  .bigdot.green{background:var(--green)} .bigdot.yellow{background:var(--yellow)} .bigdot.red{background:var(--red)}
+  .livebadge{display:inline-flex;align-items:center;gap:4px;background:#e0143c;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.5px;animation:pulse 1.3s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  /* ARAH BANDAR hero */
+  .arah{margin:0 14px 11px;border-radius:13px;padding:11px 13px;border:1px solid #2b3c63;background:linear-gradient(180deg,#13213f,#0f1a33)}
+  .arah .ah-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .arah .ah-lab{font-size:11px;font-weight:800;letter-spacing:1px;color:#9db4ee}
+  .arah .conf{margin-left:auto;font-size:10px;font-weight:800;padding:3px 9px;border-radius:999px;letter-spacing:.4px}
+  .conf.Kuat{background:#10311f;color:#5be29b;border:1px solid #1f6b43}
+  .conf.Sedang{background:#352b0c;color:#f0c860;border:1px solid #7a6320}
+  .conf.Lemah{background:#222c45;color:#9db4ee;border:1px solid #33486f}
+  .conf.idle{background:#1a2238;color:var(--dim);border:1px solid #2a3756}
+  .arah .ah-primary{font-size:21px;font-weight:800;color:#eaf3ff;display:flex;align-items:center;gap:9px;margin:2px 0 6px}
+  .arah .ah-primary .ah-ar{color:var(--green);font-size:22px}
+  .arah .ah-narr{font-size:12.5px;color:#bcd0f5;line-height:1.55}
+  .arah .idle{color:var(--dim);font-size:12.5px;line-height:1.5}
+  /* win probability (1X2) */
+  .winwrap{margin:0 14px 11px}
+  .winlab{font-size:10.5px;color:var(--dim);letter-spacing:.4px;margin-bottom:4px;text-transform:uppercase}
+  .winbar{display:flex;height:34px;border-radius:9px;overflow:hidden;border:1px solid #243257;font-family:var(--mono)}
+  .winbar > div{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:700;line-height:1.15;padding:0 4px;white-space:nowrap;overflow:hidden;min-width:0}
+  .winbar .wh{background:linear-gradient(180deg,#3f7bff,#2f64e0);color:#fff}
+  .winbar .wd{background:linear-gradient(180deg,#3a455f,#2c3650);color:#dfe7fb}
+  .winbar .wa{background:linear-gradient(180deg,#e0556a,#c63f55);color:#fff}
+  .winbar small{font-size:9px;font-weight:600;opacity:.85}
+  /* conclusion = HERO */
+  .concl{margin:0 14px 10px;padding:13px 14px;border-radius:13px;background:linear-gradient(180deg,#2a1020,#1c0d18);border:1px solid #8a2f48;box-shadow:0 6px 22px #e0143c14}
+  .concl.clean{background:linear-gradient(180deg,#102219,#0e1a15);border-color:#1d5b43;box-shadow:none}
+  .concl .ch{font-size:15px;font-weight:800;color:#ffd9b0;line-height:1.4}
+  .concl .ch u{text-decoration-color:#ef5d6d;text-underline-offset:3px}
+  .concl.clean .ch{color:#bdf0d6;font-size:14px}
+  .concl .cd{font-size:12px;color:#d3c0cb;line-height:1.6;margin-top:6px}
+  .concl.clean .cd{color:#a6c8bb}
+  /* pergerakan (bukti, ringkas) */
+  .arahmini{margin:0 14px 11px;padding:8px 12px;border-radius:10px;background:#0e1830;border:1px solid #233152;font-size:12.5px;color:#cbd8f5}
+  .arahmini.idle{color:var(--dim)}
+  .arahmini .aml{font-size:10px;font-weight:800;letter-spacing:.8px;color:#7f8dba;margin-right:4px}
+  .arahmini .amar{color:var(--green);font-weight:800}
+  .arahmini b{color:#eaf3ff}
+  .arahmini .amconf{font-size:9.5px;font-weight:800;padding:1px 7px;border-radius:999px;margin-left:6px;background:#222c45;color:#9db4ee}
+  .arahmini .amconf.Kuat{background:#10311f;color:#5be29b}
+  .arahmini .amconf.Sedang{background:#352b0c;color:#f0c860}
+  .arahmini .amn{font-size:11px;color:#93a3c8;margin-top:3px;line-height:1.5}
+  .arahmini.hot{border-color:#3a6bd0;background:#0f1c3b}
+  .arahmini .insight{margin-top:7px;padding:8px 10px;border-radius:8px;background:#10224a;border:1px solid #2f5bb0;color:#dbe7ff;font-size:12px;line-height:1.55}
+  /* markets */
+  .mkts{padding:2px 14px 12px}
+  .mk{border-top:1px solid #1a2542;padding:11px 0}
+  .mk:first-child{border-top:none}
+  .mk-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+  .mk-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .mk-dot.green{background:var(--green)} .mk-dot.yellow{background:var(--yellow)} .mk-dot.red{background:var(--red)} .mk-dot.off{background:#414e6e}
+  .mk-name{font-size:12.5px;font-weight:700;letter-spacing:.2px}
+  .mk-line{font-family:var(--mono);font-size:12px;color:#cfe0ff;background:#0c1630;border:1px solid #25345a;border-radius:6px;padding:1px 7px}
+  .mk-dir{margin-left:auto;font-size:11px;color:var(--muted);display:inline-flex;align-items:center;gap:5px;max-width:55%;text-align:right}
+  .mk-dir .ar{color:var(--green);font-weight:800;font-size:13px}
+  .mk-dir.flat .ar{color:var(--dim)}
+  /* percentage bar */
+  .bar{display:flex;height:30px;border-radius:8px;overflow:hidden;border:1px solid #243257;font-family:var(--mono)}
+  .bar > div{display:flex;align-items:center;font-size:11.5px;font-weight:700;color:#04122a;padding:0 9px;white-space:nowrap;overflow:hidden}
+  .bar .L{background:linear-gradient(90deg,#3f7bff,#5e93ff);justify-content:flex-start}
+  .bar .R{background:linear-gradient(90deg,#23304f,#2b3a5e);color:#cfe0ff;justify-content:flex-end}
+  .barcap{font-size:10px;color:var(--dim);margin-top:4px;line-height:1.4}
+  .barlab{display:flex;justify-content:space-between;font-size:10.5px;color:var(--dim);margin-top:4px}
+  .mk-read{font-size:12px;color:var(--txt);line-height:1.5;margin-top:8px}
+  .mk-read b{color:#cfe0ff}
+  .mk-sig{font-size:11.5px;line-height:1.5;margin-top:4px;color:var(--muted)}
+  .mk-sig.warn{color:#ffd27a} .mk-sig.bad{color:#ff9aa6}
+  .mk-off{font-size:12px;color:var(--dim);font-style:italic}
+  .numtog{font-size:10.5px;color:var(--accent);background:none;border:none;padding:6px 0 0;cursor:pointer}
+  .nums{display:none;margin-top:6px;font-size:11px;color:var(--muted);font-family:var(--mono);line-height:1.7}
+  .nums.open{display:block}
+  .arrow-up{color:var(--red)} .arrow-down{color:var(--green)} .arrow-flat{color:var(--dim)}
+  /* edu / footer */
+  .edu{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-top:6px}
+  .edu h2{font-size:13px;margin:0 0 8px}
+  .edu p{color:var(--muted);font-size:11.5px;line-height:1.6;margin:0 0 8px}
+  .edu .warn{color:#ffd9a6}
+  footer{color:#586389;font-size:10.5px;text-align:center;margin-top:16px;line-height:1.7}
+  .empty{color:var(--muted);text-align:center;padding:46px 12px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd">
+    <span class="logo">⚽</span>
+    <h1>Lensa Bandar</h1>
+    <div class="live-ind" id="liveInd"><span class="pip"></span><span id="freshness">memuat…</span></div>
+  </div>
+  <div class="sub">Terminal pembaca pergerakan odds <b>SBOBET</b> (vs Bet365) — Piala Dunia 2026.<br>Baca <b>arah bandar</b> &amp; di mana publik digiring. Alat informasi, <b>bukan ajakan bertaruh, bukan jaminan untung.</b></div>
+
+  <div id="demo" class="demo" style="display:none"></div>
+  <div id="summary" class="sum"></div>
+
+  <div class="filter">
+    <button id="f-all" class="active" onclick="setFilter('all')">Semua</button>
+    <button id="f-live" onclick="setFilter('live')">🔴 Live</button>
+    <button id="f-watch" onclick="setFilter('watch')">Perlu hati-hati</button>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="edu">
+    <h2>Cara baca (bahasa gampang)</h2>
+    <p><b>Peluang menang (1X2)</b> = kemungkinan tim menang / seri, dihitung dari odds. Ini yang menjawab "siapa lebih jago".</p>
+    <p><b>➜ ARAH BANDAR</b> = ke mana taruhan & harga sedang bergeser. Panah menunjuk sisi yang lagi diramaikan. <b>Keyakinan Kuat/Sedang/Lemah</b> = seberapa banyak tanda yang sepakat.</p>
+    <p><b>⚖️ Kesimpulan</b> = sisi yang pemasang lagi <b>dipancing</b> ke sana. Di sisi rame itu harganya jelek &amp; bandar paling untung — jadi hati-hati ikut arus.</p>
+    <p><b>Istilah:</b> <i>"bayaran dikecilkan"</i> = bandar mengurangi hadiah di satu sisi karena uang menumpuk ke sana. <i>"garis/handicap"</i> = voor; makin besar voor, makin dijagokan. <i>"potongan bandar"</i> = jatah bandar dari tiap taruhan.</p>
+    <p class="warn">⚠️ Alat ini bantu kalian <b>tidak terjebak</b>, bukan menjamin menang. Bandar selalu punya keunggulan. Main lebih sedikit, lebih sadar.</p>
+  </div>
+
+  <footer>
+    Acuan SBOBET via odds-api.io · <span id="src"></span> · Tidak melacak taruhan siapa pun.<br>
+    Auto-refresh tiap 30 detik mengikuti laga berjalan.
+  </footer>
+</div>
+
+<script src="data/matches.js"></script>
+<script>
+  var DATA = window.__BANDAR_DATA__ || null;
+  var FILTER = 'all';
+  var MKT_ORDER = ['ah','ou','corner','cornerHT','card'];
+
+  function rel(iso){ try{var s=Math.max(0,(Date.now()-new Date(iso).getTime())/1000);
+    if(s<60)return Math.round(s)+' dtk lalu'; if(s<3600)return Math.round(s/60)+' mnt lalu'; return Math.round(s/3600)+' jam lalu';}catch(e){return '';} }
+  function fmtKick(iso){ try{return new Date(iso).toLocaleString('id-ID',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}catch(e){return iso;} }
+  function arrow(mv){ if(!mv||mv.dir==='flat')return '<span class="arrow-flat">→</span>'; return mv.dir==='down'?'<span class="arrow-down">▼</span>':'<span class="arrow-up">▲</span>'; }
+  function fmtO(v){ return v==null?'—':(typeof v==='number'?v.toFixed(2):v); }
+  function emph(s){ return (s||'').replace(/Bandar pegang:/g,'<b>Bandar pegang:</b>'); }
+  function sideNames(k,m){
+    if(k==='ah')return [m.home,m.away];
+    if(k==='ou')return ['Over','Under'];
+    if(k==='corner')return ['Over','Under'];
+    if(k==='cornerHT')return ['Over','Under'];
+    return ['Ya','Tidak'];
+  }
+
+  function pctBar(k,x,m){
+    if(x.probHome==null||x.probAway==null) return '';
+    var n=sideNames(k,m); var ph=Math.round(x.probHome*100), pa=100-ph;
+    var lw=Math.max(16,Math.min(84,ph));
+    var cap = k==='ah' ? 'peluang menutup handicap (Asian, sengaja dibikin ~imbang — lihat 1X2 di atas untuk siapa menang)'
+      : (k==='ou' ? 'peluang Over vs Under' : 'peluang Over vs Under corner');
+    return '<div class="bar">'+
+      '<div class="L" style="width:'+lw+'%">'+n[0]+' '+ph+'%</div>'+
+      '<div class="R" style="width:'+(100-lw)+'%">'+pa+'% '+n[1]+'</div>'+
+    '</div><div class="barcap">'+cap+'</div>';
+  }
+  function numsHtml(x){
+    var t=(x.tech&&x.tech.length)?('<br>catatan: '+x.tech.join('; ')):'';
+    return 'garis '+(x.lineDisplay!=null?x.lineDisplay:'—')+
+      (x.lineMove&&x.lineMove.dir!=='flat'?' ('+arrow(x.lineMove)+Math.abs(x.lineMove.delta)+')':'')+'<br>'+
+      'bayaran: '+fmtO(x.openHome)+' '+arrow(x.waterMoveHome)+' '+fmtO(x.nowHome)+
+      '  ·  '+fmtO(x.openAway)+' '+arrow(x.waterMoveAway)+' '+fmtO(x.nowAway)+'<br>'+
+      'potongan bandar: '+(x.margin!=null?x.margin.toFixed(2)+'%':'—')+t;
+  }
+
+  function mkBlock(k,x,m){
+    if(!x) return '';
+    if(x.lineDisplay==null){
+      return '<div class="mk"><div class="mk-top"><span class="mk-dot off"></span><span class="mk-name">'+x.label+'</span></div>'+
+        '<div class="mk-off">Belum tersambung — perlu sumber data (tidak dikarang).</div></div>';
+    }
+    var d=x.direction||{}; var dirHtml = (d.side)
+      ? '<span class="mk-dir"><span class="ar">'+(d.arrow||'➜')+'</span> '+(d.label||'')+'</span>'
+      : '<span class="mk-dir flat"><span class="ar">→</span> belum bergerak</span>';
+    var sig=(x.read&&x.read.signal)?x.read.signal:'';
+    var sigC=x.light==='red'?'bad':(x.light==='yellow'?'warn':'');
+    return '<div class="mk">'+
+      '<div class="mk-top">'+
+        '<span class="mk-dot '+x.light+'"></span>'+
+        '<span class="mk-name">'+x.label+'</span>'+
+        '<span class="mk-line">'+x.lineDisplay+'</span>'+
+        dirHtml+
+      '</div>'+
+      pctBar(k,x,m)+
+      '<div class="mk-read">'+emph(x.read&&x.read.holds)+'</div>'+
+      (sig?'<div class="mk-sig '+sigC+'">'+sig+'</div>':'')+
+      '<button class="numtog" onclick="tog(this)">angka mentah ▾</button>'+
+      '<div class="nums">'+numsHtml(x)+'</div>'+
+    '</div>';
+  }
+
+  function winBar(m){
+    var w=m.win; if(!w||w.home==null) return '';
+    var h=Math.round(w.home*100), d=Math.round(w.draw*100), a=100-h-d;
+    return '<div class="winwrap"><div class="winlab">Peluang menang (1X2)</div>'+
+      '<div class="winbar">'+
+        '<div class="wh" style="width:'+Math.max(12,h)+'%"><span>'+h+'%</span><small>'+m.home+'</small></div>'+
+        '<div class="wd" style="width:'+Math.max(12,d)+'%"><span>'+d+'%</span><small>Seri</small></div>'+
+        '<div class="wa" style="width:'+Math.max(12,a)+'%"><span>'+a+'%</span><small>'+m.away+'</small></div>'+
+      '</div></div>';
+  }
+  // HERO: pesan utama — JEBAKAN (apa yang harus dihindari) atau AMAN.
+  function conclBlock(c){
+    if(!c) return '';
+    if(!c.trapped){
+      return '<div class="concl clean">'+
+        '<div class="ch">✅ AMAN — belum ada jebakan</div>'+
+        '<div class="cd">'+c.detail+'</div></div>';
+    }
+    var sisi = c.headline.replace('Pemasang lagi dipancing ke: ','');
+    return '<div class="concl">'+
+      '<div class="ch">🎯 HATI-HATI — jangan ikut ramai ke <u>'+sisi+'</u></div>'+
+      '<div class="cd">'+c.detail+'</div></div>';
+  }
+
+  // BUKTI pendukung: arah pergerakan garis (ringkas, di bawah hero).
+  function arahBlock(m){
+    var g=m.guidance||{};
+    if(g.moved){
+      var ins=g.insight?('<div class="insight">💡 '+g.insight+'</div>'):'';
+      return '<div class="arahmini'+(g.insight?' hot':'')+'"><span class="aml">PERGERAKAN</span> <span class="amar">➜</span> <b>'+g.primary+'</b> '+
+        '<span class="amconf '+g.confidence+'">'+g.confidence+'</span><div class="amn">'+g.narrative+'</div>'+ins+'</div>';
+    }
+    return '<div class="arahmini idle"><span class="aml">PERGERAKAN</span> belum ada — muncul saat garis mulai bergeser (terutama saat laga berjalan).</div>';
+  }
+
+  function render(){
+    var list=document.getElementById('list');
+    if(!DATA){ list.innerHTML='<div class="empty">Data belum termuat. Jalankan <b>start.command</b> lalu buka ulang.</div>'; return; }
+    document.getElementById('src').textContent='Sumber: '+DATA.source;
+    if(DATA.isDemo){ var dm=document.getElementById('demo'); dm.style.display='block';
+      dm.innerHTML='⚠️ <b>MODE DEMO</b> — angka di bawah hanya CONTOH untuk menguji tampilan, bukan odds asli.'; }
+    else { document.getElementById('demo').style.display='none'; }
+    var sm=DATA.summary||{};
+    document.getElementById('summary').innerHTML=
+      '<div class="s"><b>'+(sm.total||DATA.matches.length)+'</b><span>LAGA</span></div>'+
+      '<div class="s live"><b>'+(sm.live||0)+'</b><span>LIVE</span></div>'+
+      '<div class="s red"><b>'+(sm.trapped||0)+'</b><span>JEBAKAN</span></div>'+
+      '<div class="s yel"><b>'+(sm.favoriteTraps||0)+'</b><span>FAVORIT</span></div>'+
+      '<div class="s green"><b>'+(sm.clean||0)+'</b><span>TENANG</span></div>';
+
+    var ms=DATA.matches.filter(function(m){
+      if(FILTER==='live')return m.live; if(FILTER==='watch')return (m.verdict&&m.verdict.light!=='green');return true;});
+    if(!ms.length){ list.innerHTML='<div class="empty">Tidak ada laga di filter ini.</div>'; return; }
+
+    list.innerHTML=ms.map(function(m){
+      var v=m.verdict||{light:m.overallLight||'green',text:''};
+      var liveB=m.live?'<span class="livebadge">● LIVE</span>':'';
+      var mid=(m.live&&m.score)?('<span class="score">'+m.score.home+'<span class="dash">–</span>'+m.score.away+'</span>'):'<span class="sep">vs</span>';
+      var when=m.live?'sedang berlangsung':fmtKick(m.kickoff);
+      var minute=(m.live&&m.minute)?(' · '+m.minute):'';
+      var moves=m.history?(' · garis bergerak '+m.history.moves+'×'):'';
+      return '<div class="card'+(m.live?' islive':'')+'">'+
+        '<div class="ctop">'+
+          '<div class="teams">'+
+            '<div class="vs">'+liveB+m.home+mid+m.away+'</div>'+
+            '<div class="meta">'+(m.group?m.group+' · ':'')+when+minute+moves+'</div>'+
+          '</div>'+
+          '<span class="bigdot '+v.light+'"></span>'+
+        '</div>'+
+        winBar(m)+
+        conclBlock(m.conclusion)+
+        arahBlock(m)+
+        '<div class="mkts">'+MKT_ORDER.map(function(k){return mkBlock(k,m.markets[k],m);}).join('')+'</div>'+
+      '</div>';
+    }).join('');
+  }
+
+  function tog(b){ var n=b.nextElementSibling; var o=n.classList.toggle('open'); b.textContent=o?'angka mentah ▴':'angka mentah ▾'; }
+  function setFilter(f){ FILTER=f;
+    ['all','live','watch'].forEach(function(x){document.getElementById('f-'+x).classList.toggle('active',x===f);});
+    render(); }
+
+  function tickFresh(){ if(DATA&&DATA.generatedAt) document.getElementById('freshness').textContent='diperbarui '+rel(DATA.generatedAt); }
+
+  // Auto-refresh: muat ulang data/matches.js (cache-bust) lalu render — mengikuti laga berjalan.
+  function reload(){
+    var s=document.createElement('script'); s.src='data/matches.js?t='+Date.now();
+    s.onload=function(){ if(window.__BANDAR_DATA__){DATA=window.__BANDAR_DATA__; render(); tickFresh();} s.remove(); };
+    s.onerror=function(){ s.remove(); };
+    document.body.appendChild(s);
+  }
+
+  render(); tickFresh();
+  setInterval(tickFresh,1000);
+  setInterval(reload,30000);
+</script>
+</body>
+</html>

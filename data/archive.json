@@ -1,0 +1,1232 @@
+{
+  "66456908": {
+    "id": "66456908",
+    "home": "Mexico",
+    "away": "Korea Republic",
+    "kickoff": "2026-06-19T01:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.4511,
+        "draw": 0.2983,
+        "away": 0.2506
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "away",
+        "line": -0.5
+      },
+      "arah": "Korea Republic",
+      "ahLine": -0.5,
+      "ouLine": 2,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456910": {
+    "id": "66456910",
+    "home": "Czechia",
+    "away": "South Africa",
+    "kickoff": "2026-06-18T16:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.5312,
+        "draw": 0.2679,
+        "away": 0.2009
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "home",
+        "line": 2.25
+      },
+      "arah": "Czechia",
+      "ahLine": -0.75,
+      "ouLine": 2.25,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456916": {
+    "id": "66456916",
+    "home": "Canada",
+    "away": "Bosnia and Herzegovina",
+    "kickoff": "2026-06-12T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.5051,
+        "draw": 0.2843,
+        "away": 0.2106
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": "Bosnia and Herzegovina",
+      "ahLine": -0.5,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456918": {
+    "id": "66456918",
+    "home": "Qatar",
+    "away": "Switzerland",
+    "kickoff": "2026-06-13T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.0818,
+        "draw": 0.1595,
+        "away": 0.7587
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "home",
+        "line": 2.75
+      },
+      "arah": "Over 2.75 gol",
+      "ahLine": 1.75,
+      "ouLine": 2.75,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456920": {
+    "id": "66456920",
+    "home": "Canada",
+    "away": "Qatar",
+    "kickoff": "2026-06-18T22:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.7116,
+        "draw": 0.19,
+        "away": 0.0984
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": -1.25,
+      "ouLine": 2.5,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456922": {
+    "id": "66456922",
+    "home": "Switzerland",
+    "away": "Bosnia and Herzegovina",
+    "kickoff": "2026-06-18T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.5838,
+        "draw": 0.2453,
+        "away": 0.1708
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": -0.75,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456928": {
+    "id": "66456928",
+    "home": "Brazil",
+    "away": "Morocco",
+    "kickoff": "2026-06-13T22:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.563,
+        "draw": 0.2562,
+        "away": 0.1808
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": "Morocco",
+      "ahLine": -0.75,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456930": {
+    "id": "66456930",
+    "home": "Haiti",
+    "away": "Scotland",
+    "kickoff": "2026-06-14T01:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.1596,
+        "draw": 0.233,
+        "away": 0.6074
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": 1,
+      "ouLine": 2.5,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456932": {
+    "id": "66456932",
+    "home": "Brazil",
+    "away": "Haiti",
+    "kickoff": "2026-06-20T00:30:00Z",
+    "read": {
+      "win": {
+        "home": 0.8605,
+        "draw": 0.0881,
+        "away": 0.0514
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": -3,
+      "ouLine": 4,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456934": {
+    "id": "66456934",
+    "home": "Scotland",
+    "away": "Morocco",
+    "kickoff": "2026-06-19T22:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.2366,
+        "draw": 0.2864,
+        "away": 0.4769
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "away",
+        "line": 0.5
+      },
+      "arah": null,
+      "ahLine": 0.5,
+      "ouLine": 2.25,
+      "overallLight": "red"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456940": {
+    "id": "66456940",
+    "home": "USA",
+    "away": "Paraguay",
+    "kickoff": "2026-06-13T01:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.4401,
+        "draw": 0.3019,
+        "away": 0.258
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": -0.25
+      },
+      "arah": "Over 2 gol",
+      "ahLine": -0.25,
+      "ouLine": 2,
+      "overallLight": "red"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456942": {
+    "id": "66456942",
+    "home": "Australia",
+    "away": "Turkiye",
+    "kickoff": "2026-06-14T04:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.1886,
+        "draw": 0.2535,
+        "away": 0.5579
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": 0.75
+      },
+      "arah": "Australia",
+      "ahLine": 0.75,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456944": {
+    "id": "66456944",
+    "home": "USA",
+    "away": "Australia",
+    "kickoff": "2026-06-19T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.5382,
+        "draw": 0.2615,
+        "away": 0.2004
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": "Australia",
+      "ahLine": -0.5,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456946": {
+    "id": "66456946",
+    "home": "Turkiye",
+    "away": "Paraguay",
+    "kickoff": "2026-06-20T03:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.4239,
+        "draw": 0.2952,
+        "away": 0.2809
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": -0.25,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456968": {
+    "id": "66456968",
+    "home": "Netherlands",
+    "away": "Japan",
+    "kickoff": "2026-06-14T20:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.462,
+        "draw": 0.2755,
+        "away": 0.2625
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "away",
+        "line": -0.5
+      },
+      "arah": "Japan",
+      "ahLine": -0.5,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456970": {
+    "id": "66456970",
+    "home": "Sweden",
+    "away": "Tunisia",
+    "kickoff": "2026-06-15T02:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.4936,
+        "draw": 0.2798,
+        "away": 0.2266
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": -0.5
+      },
+      "arah": "Over 2.25 gol",
+      "ahLine": -0.5,
+      "ouLine": 2.25,
+      "overallLight": "red"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456972": {
+    "id": "66456972",
+    "home": "Netherlands",
+    "away": "Sweden",
+    "kickoff": "2026-06-20T17:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.5764,
+        "draw": 0.2427,
+        "away": 0.1808
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "home",
+        "line": 2.5
+      },
+      "arah": null,
+      "ahLine": -0.75,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456974": {
+    "id": "66456974",
+    "home": "Tunisia",
+    "away": "Japan",
+    "kickoff": "2026-06-21T04:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.1883,
+        "draw": 0.2679,
+        "away": 0.5438
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": 0.5,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456982": {
+    "id": "66456982",
+    "home": "Belgium",
+    "away": "Egypt",
+    "kickoff": "2026-06-15T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.5748,
+        "draw": 0.2507,
+        "away": 0.1746
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": "Egypt",
+      "ahLine": -0.75,
+      "ouLine": 2.5,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456984": {
+    "id": "66456984",
+    "home": "Iran",
+    "away": "New Zealand",
+    "kickoff": "2026-06-16T01:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.5093,
+        "draw": 0.2813,
+        "away": 0.2094
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": -0.5
+      },
+      "arah": null,
+      "ahLine": -0.5,
+      "ouLine": 2.25,
+      "overallLight": "red"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456986": {
+    "id": "66456986",
+    "home": "Belgium",
+    "away": "Iran",
+    "kickoff": "2026-06-21T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.6685,
+        "draw": 0.2101,
+        "away": 0.1214
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": -1.25,
+      "ouLine": 2.5,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456988": {
+    "id": "66456988",
+    "home": "New Zealand",
+    "away": "Egypt",
+    "kickoff": "2026-06-22T01:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.1994,
+        "draw": 0.27,
+        "away": 0.5306
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": 0.75,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456994": {
+    "id": "66456994",
+    "home": "Spain",
+    "away": "Cape Verde",
+    "kickoff": "2026-06-15T16:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.855,
+        "draw": 0.098,
+        "away": 0.047
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": "Cape Verde",
+      "ahLine": -2.5,
+      "ouLine": 3.5,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456996": {
+    "id": "66456996",
+    "home": "Saudi Arabia",
+    "away": "Uruguay",
+    "kickoff": "2026-06-15T22:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.1255,
+        "draw": 0.2209,
+        "away": 0.6536
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": "Saudi Arabia",
+      "ahLine": 1.25,
+      "ouLine": 2.5,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66456998": {
+    "id": "66456998",
+    "home": "Spain",
+    "away": "Saudi Arabia",
+    "kickoff": "2026-06-21T16:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.8389,
+        "draw": 0.1099,
+        "away": 0.0513
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": -2.25,
+      "ouLine": 3,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457000": {
+    "id": "66457000",
+    "home": "Uruguay",
+    "away": "Cape Verde",
+    "kickoff": "2026-06-21T22:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.6508,
+        "draw": 0.219,
+        "away": 0.1302
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "away",
+        "line": 2.5
+      },
+      "arah": null,
+      "ahLine": -1,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457006": {
+    "id": "66457006",
+    "home": "France",
+    "away": "Senegal",
+    "kickoff": "2026-06-16T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.6452,
+        "draw": 0.2222,
+        "away": 0.1327
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "away",
+        "line": -1.25
+      },
+      "arah": "Senegal",
+      "ahLine": -1.25,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457008": {
+    "id": "66457008",
+    "home": "Iraq",
+    "away": "Norway",
+    "kickoff": "2026-06-16T22:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.0753,
+        "draw": 0.147,
+        "away": 0.7777
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": 2,
+      "ouLine": 3,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457010": {
+    "id": "66457010",
+    "home": "France",
+    "away": "Iraq",
+    "kickoff": "2026-06-22T21:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.8342,
+        "draw": 0.1129,
+        "away": 0.0529
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "home",
+        "line": 3
+      },
+      "arah": null,
+      "ahLine": -2.25,
+      "ouLine": 3,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273169827
+  },
+  "66457018": {
+    "id": "66457018",
+    "home": "Argentina",
+    "away": "Algeria",
+    "kickoff": "2026-06-17T01:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.6822,
+        "draw": 0.2083,
+        "away": 0.1095
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": -1.25
+      },
+      "arah": "Over 2.5 gol",
+      "ahLine": -1.25,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457020": {
+    "id": "66457020",
+    "home": "Austria",
+    "away": "Jordan",
+    "kickoff": "2026-06-17T04:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.7052,
+        "draw": 0.1804,
+        "away": 0.1144
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "home",
+        "line": 2.75
+      },
+      "arah": "Jordan",
+      "ahLine": -1.5,
+      "ouLine": 2.75,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457022": {
+    "id": "66457022",
+    "home": "Argentina",
+    "away": "Austria",
+    "kickoff": "2026-06-22T17:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.5837,
+        "draw": 0.2486,
+        "away": 0.1677
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": -0.75
+      },
+      "arah": null,
+      "ahLine": -0.75,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457030": {
+    "id": "66457030",
+    "home": "Portugal",
+    "away": "Congo DR",
+    "kickoff": "2026-06-17T17:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.7349,
+        "draw": 0.171,
+        "away": 0.0941
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": -1.5
+      },
+      "arah": "Over 2.75 gol",
+      "ahLine": -1.5,
+      "ouLine": 2.75,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457032": {
+    "id": "66457032",
+    "home": "Uzbekistan",
+    "away": "Colombia",
+    "kickoff": "2026-06-18T02:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.1072,
+        "draw": 0.2092,
+        "away": 0.6836
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "away",
+        "line": 1.25
+      },
+      "arah": null,
+      "ahLine": 1.25,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457042": {
+    "id": "66457042",
+    "home": "England",
+    "away": "Croatia",
+    "kickoff": "2026-06-17T20:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.5386,
+        "draw": 0.2663,
+        "away": 0.1951
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": "Croatia",
+      "ahLine": -0.75,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457044": {
+    "id": "66457044",
+    "home": "Ghana",
+    "away": "Panama",
+    "kickoff": "2026-06-17T23:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.4396,
+        "draw": 0.2931,
+        "away": 0.2673
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": -0.25
+      },
+      "arah": "Over 2.25 gol",
+      "ahLine": -0.25,
+      "ouLine": 2.25,
+      "overallLight": "red"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457070": {
+    "id": "66457070",
+    "home": "Germany",
+    "away": "Curacao",
+    "kickoff": "2026-06-14T17:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.9012,
+        "draw": 0.0673,
+        "away": 0.0314
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "home",
+        "line": 4.25
+      },
+      "arah": "Over 4.25 gol",
+      "ahLine": -3.25,
+      "ouLine": 4.25,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457072": {
+    "id": "66457072",
+    "home": "Ivory Coast",
+    "away": "Ecuador",
+    "kickoff": "2026-06-14T23:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.3889,
+        "draw": 0.3398,
+        "away": 0.2713
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "away",
+        "line": -0.25
+      },
+      "arah": null,
+      "ahLine": -0.25,
+      "ouLine": 1.75,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457074": {
+    "id": "66457074",
+    "home": "Germany",
+    "away": "Ivory Coast",
+    "kickoff": "2026-06-20T20:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.6022,
+        "draw": 0.2303,
+        "away": 0.1675
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "home",
+        "line": 2.5
+      },
+      "arah": null,
+      "ahLine": -1,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "66457076": {
+    "id": "66457076",
+    "home": "Ecuador",
+    "away": "Curacao",
+    "kickoff": "2026-06-21T00:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.7726,
+        "draw": 0.1507,
+        "away": 0.0766
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": -1.75,
+      "ouLine": 2.75,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "score": {
+      "home": 0,
+      "away": 0
+    },
+    "updatedAt": 1781273409629
+  },
+  "D1": {
+    "id": "D1",
+    "home": "Portugal",
+    "away": "Belanda",
+    "kickoff": "2026-06-12T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.46,
+        "draw": 0.28,
+        "away": 0.26
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": -0.25
+      },
+      "arah": "Portugal",
+      "ahLine": -0.25,
+      "ouLine": 4,
+      "overallLight": "red"
+    },
+    "status": "live",
+    "score": {
+      "home": 1,
+      "away": 1
+    },
+    "updatedAt": 1781274307087
+  },
+  "D2": {
+    "id": "D2",
+    "home": "Amerika Serikat",
+    "away": "Wales",
+    "kickoff": "2026-06-12T22:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.46,
+        "draw": 0.28,
+        "away": 0.26
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": -0.5,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "updatedAt": 1781274307087
+  },
+  "D3": {
+    "id": "D3",
+    "home": "Brasil",
+    "away": "Serbia",
+    "kickoff": "2026-06-13T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.55,
+        "draw": 0.26,
+        "away": 0.19
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "home",
+        "line": -1.25
+      },
+      "arah": "Brasil",
+      "ahLine": -1.25,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "updatedAt": 1781274307087
+  },
+  "D4": {
+    "id": "D4",
+    "home": "Jepang",
+    "away": "Meksiko",
+    "kickoff": "2026-06-13T22:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.38,
+        "draw": 0.3,
+        "away": 0.32
+      },
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "home",
+        "line": 2.5
+      },
+      "arah": "Over 2.5 gol",
+      "ahLine": 0.25,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
+    },
+    "status": "pending",
+    "updatedAt": 1781274307087
+  },
+  "D5": {
+    "id": "D5",
+    "home": "Inggris",
+    "away": "Iran",
+    "kickoff": "2026-06-14T19:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.55,
+        "draw": 0.26,
+        "away": 0.19
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": "Iran",
+      "ahLine": -1.25,
+      "ouLine": 2.75,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "updatedAt": 1781274307087
+  },
+  "D6": {
+    "id": "D6",
+    "home": "Kanada",
+    "away": "Maroko",
+    "kickoff": "2026-06-14T22:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.27,
+        "draw": 0.28,
+        "away": 0.45
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": 0.5,
+      "ouLine": 2.25,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "updatedAt": 1781274307087
+  }
+}

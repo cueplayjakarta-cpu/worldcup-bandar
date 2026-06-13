@@ -49,8 +49,10 @@ function updateArchive(arch, matches) {
       };
       e.status = m.status;
     }
-    if (m.score && m.score.home != null) e.score = m.score; // skor terbaru
-    if (fin) { e.final = true; e.settledAt = e.settledAt || now; }
+    // Hanya simpan skor untuk laga yang BENAR-BENAR sudah main (hindari 0-0 pra-laga mencemari backtest).
+    const started = /live|settled|finished|ended|^ft$|inplay|playing|1h|2h|ht/i.test(String(m.status || ''));
+    if (m.score && m.score.home != null && started) e.score = m.score;
+    if (fin) { e.final = true; e.settledAt = e.settledAt || now; e.finalScore = e.score || null; }
     e.updatedAt = now;
   }
   return arch;
@@ -688,6 +690,29 @@ function demoMatches() {
 // =====================================================================
 //  MAIN
 // =====================================================================
+// Kejar HASIL AKHIR lewat ID event (laga yang sudah lewat ~2 jam, belum final).
+// Feed utama membuang laga selesai, tapi /events/{id} biasanya masih melayani per-ID.
+async function checkResults(arch, apiKey) {
+  const k = encodeURIComponent(apiKey), now = Date.now(), H = 3600 * 1000;
+  const due = Object.values(arch).filter(e => !e.final && e.kickoff &&
+    (now - new Date(e.kickoff).getTime()) > 2 * H && (now - new Date(e.kickoff).getTime()) < 48 * H);
+  let n = 0;
+  for (const e of due.slice(0, 12)) {
+    try {
+      const ev = await httpGet(`${ODDS_BASE}/events/${e.id}?apiKey=${k}`);
+      const obj = Array.isArray(ev) ? ev[0] : (ev.event || ev.data || ev);
+      if (!obj) continue;
+      const sc = parseScore(obj.scores || obj.score || obj.result || obj.ss);
+      const st = String(obj.status || '').toLowerCase();
+      if (sc) e.score = sc;
+      const done = /settled|finished|ended|ft/.test(st) || ((now - new Date(e.kickoff).getTime()) > 3 * H && sc);
+      if (done) { e.final = true; e.settledAt = e.settledAt || now; e.finalScore = sc || e.score || null; e.status = st || 'finished'; }
+      n++;
+    } catch (err) {}
+  }
+  return n;
+}
+
 async function runOnce() {
   const args = process.argv.slice(2);
   const DEMO = args.includes('--demo');
@@ -731,7 +756,9 @@ async function runOnce() {
   fs.writeFileSync(path.join(OUT_DIR, 'matches.js'), 'window.__BANDAR_DATA__ = ' + JSON.stringify(out) + ';\n');
   fs.writeFileSync(HIST_FILE, JSON.stringify(hist));
   // Arsip backtest (analisa + skor akhir) — bukti untuk uji akurasi tesis.
-  const arch = loadArchive(); updateArchive(arch, matches); fs.writeFileSync(ARCH_FILE, JSON.stringify(arch, null, 2));
+  const arch = loadArchive();
+  if (isLive && process.env.ODDS_API_IO_KEY) { try { const n = await checkResults(arch, process.env.ODDS_API_IO_KEY); if (n) console.log(`  · cek hasil: ${n} laga lewat diperiksa`); } catch (e) {} }
+  updateArchive(arch, matches); fs.writeFileSync(ARCH_FILE, JSON.stringify(arch, null, 2));
   console.log(`✓ ${matches.length} laga · sumber: ${source} · ${new Date().toLocaleTimeString('id-ID')}`);
 }
 

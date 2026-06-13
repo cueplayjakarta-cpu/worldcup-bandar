@@ -6,9 +6,9 @@
     "kickoff": "2026-06-19T01:00:00Z",
     "read": {
       "win": {
-        "home": 0.4641,
-        "draw": 0.2941,
-        "away": 0.2418
+        "home": 0.4626,
+        "draw": 0.2946,
+        "away": 0.2428
       },
       "trapped": true,
       "topPick": {
@@ -26,7 +26,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456910": {
     "id": "66456910",
@@ -55,7 +55,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456916": {
     "id": "66456916",
@@ -110,12 +110,18 @@
       "ouLine": 2.5,
       "overallLight": "yellow"
     },
-    "status": "live",
+    "status": "settled",
     "score": {
-      "home": 0,
+      "home": 1,
       "away": 1
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781381337446,
+    "final": true,
+    "settledAt": 1781394788050,
+    "finalScore": {
+      "home": 1,
+      "away": 1
+    }
   },
   "66456920": {
     "id": "66456920",
@@ -124,19 +130,19 @@
     "kickoff": "2026-06-18T22:00:00Z",
     "read": {
       "win": {
-        "home": 0.7136,
-        "draw": 0.1841,
-        "away": 0.1023
+        "home": 0.7295,
+        "draw": 0.1768,
+        "away": 0.0938
       },
       "trapped": true,
       "topPick": {
-        "market": "ah",
+        "market": "ou",
         "side": "away",
-        "line": -1.5
+        "line": 2.75
       },
-      "arah": "Over 2.5 gol",
+      "arah": null,
       "ahLine": -1.5,
-      "ouLine": 2.5,
+      "ouLine": 2.75,
       "overallLight": "yellow"
     },
     "status": "pending",
@@ -144,7 +150,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456922": {
     "id": "66456922",
@@ -153,17 +159,17 @@
     "kickoff": "2026-06-18T19:00:00Z",
     "read": {
       "win": {
-        "home": 0.5909,
-        "draw": 0.2445,
-        "away": 0.1646
+        "home": 0.5982,
+        "draw": 0.2457,
+        "away": 0.1561
       },
       "trapped": true,
       "topPick": {
-        "market": "ah",
+        "market": "ou",
         "side": "away",
-        "line": -1
+        "line": 2.25
       },
-      "arah": null,
+      "arah": "Under 2.25 gol",
       "ahLine": -1,
       "ouLine": 2.25,
       "overallLight": "yellow"
@@ -173,7 +179,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456928": {
     "id": "66456928",
@@ -182,23 +188,27 @@
     "kickoff": "2026-06-13T22:00:00Z",
     "read": {
       "win": {
-        "home": 0.5673,
-        "draw": 0.254,
-        "away": 0.1787
+        "home": 0.2031,
+        "draw": 0.6937,
+        "away": 0.1033
       },
-      "trapped": false,
-      "topPick": null,
-      "arah": "Morocco",
-      "ahLine": -0.75,
-      "ouLine": 2.25,
-      "overallLight": "green"
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "away",
+        "line": 2.5
+      },
+      "arah": "Under 2.5 gol",
+      "ahLine": 0,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
     },
-    "status": "pending",
+    "status": "live",
     "score": {
-      "home": 0,
-      "away": 0
+      "home": 1,
+      "away": 1
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456930": {
     "id": "66456930",
@@ -207,9 +217,9 @@
     "kickoff": "2026-06-14T01:00:00Z",
     "read": {
       "win": {
-        "home": 0.1581,
-        "draw": 0.2176,
-        "away": 0.6242
+        "home": 0.1584,
+        "draw": 0.2165,
+        "away": 0.6252
       },
       "trapped": true,
       "topPick": {
@@ -227,7 +237,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456932": {
     "id": "66456932",
@@ -256,7 +266,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456934": {
     "id": "66456934",
@@ -265,23 +275,27 @@
     "kickoff": "2026-06-19T22:00:00Z",
     "read": {
       "win": {
-        "home": 0.2366,
-        "draw": 0.2864,
-        "away": 0.4769
+        "home": 0.2092,
+        "draw": 0.2743,
+        "away": 0.5165
       },
-      "trapped": false,
-      "topPick": null,
-      "arah": null,
+      "trapped": true,
+      "topPick": {
+        "market": "ah",
+        "side": "away",
+        "line": 0.5
+      },
+      "arah": "Morocco",
       "ahLine": 0.5,
       "ouLine": 2.25,
-      "overallLight": "green"
+      "overallLight": "red"
     },
     "status": "pending",
     "score": {
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456940": {
     "id": "66456940",
@@ -325,9 +339,9 @@
     "kickoff": "2026-06-14T04:00:00Z",
     "read": {
       "win": {
-        "home": 0.1896,
-        "draw": 0.2591,
-        "away": 0.5513
+        "home": 0.1861,
+        "draw": 0.2558,
+        "away": 0.5582
       },
       "trapped": false,
       "topPick": null,
@@ -341,7 +355,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456944": {
     "id": "66456944",
@@ -350,17 +364,17 @@
     "kickoff": "2026-06-19T19:00:00Z",
     "read": {
       "win": {
-        "home": 0.591,
-        "draw": 0.2414,
-        "away": 0.1676
+        "home": 0.6027,
+        "draw": 0.2383,
+        "away": 0.159
       },
       "trapped": true,
       "topPick": {
-        "market": "ah",
+        "market": "ou",
         "side": "away",
-        "line": -0.75
+        "line": 2.5
       },
-      "arah": "Under 2.5 gol",
+      "arah": "USA",
       "ahLine": -0.75,
       "ouLine": 2.5,
       "overallLight": "yellow"
@@ -370,7 +384,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456946": {
     "id": "66456946",
@@ -399,7 +413,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456968": {
     "id": "66456968",
@@ -408,9 +422,9 @@
     "kickoff": "2026-06-14T20:00:00Z",
     "read": {
       "win": {
-        "home": 0.4661,
-        "draw": 0.2753,
-        "away": 0.2586
+        "home": 0.4634,
+        "draw": 0.2767,
+        "away": 0.2599
       },
       "trapped": true,
       "topPick": {
@@ -428,7 +442,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456970": {
     "id": "66456970",
@@ -457,7 +471,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456972": {
     "id": "66456972",
@@ -486,7 +500,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456974": {
     "id": "66456974",
@@ -495,13 +509,13 @@
     "kickoff": "2026-06-21T04:00:00Z",
     "read": {
       "win": {
-        "home": 0.188,
-        "draw": 0.2681,
-        "away": 0.544
+        "home": 0.1809,
+        "draw": 0.2635,
+        "away": 0.5556
       },
       "trapped": false,
       "topPick": null,
-      "arah": null,
+      "arah": "Japan",
       "ahLine": 0.5,
       "ouLine": 2.25,
       "overallLight": "green"
@@ -511,7 +525,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456982": {
     "id": "66456982",
@@ -520,9 +534,9 @@
     "kickoff": "2026-06-15T19:00:00Z",
     "read": {
       "win": {
-        "home": 0.5845,
-        "draw": 0.2444,
-        "away": 0.1711
+        "home": 0.5774,
+        "draw": 0.2483,
+        "away": 0.1743
       },
       "trapped": false,
       "topPick": null,
@@ -536,7 +550,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456984": {
     "id": "66456984",
@@ -545,9 +559,9 @@
     "kickoff": "2026-06-16T01:00:00Z",
     "read": {
       "win": {
-        "home": 0.5096,
-        "draw": 0.2814,
-        "away": 0.209
+        "home": 0.504,
+        "draw": 0.2847,
+        "away": 0.2113
       },
       "trapped": true,
       "topPick": {
@@ -565,7 +579,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456986": {
     "id": "66456986",
@@ -590,7 +604,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456988": {
     "id": "66456988",
@@ -619,7 +633,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456994": {
     "id": "66456994",
@@ -628,9 +642,9 @@
     "kickoff": "2026-06-15T16:00:00Z",
     "read": {
       "win": {
-        "home": 0.855,
-        "draw": 0.098,
-        "away": 0.047
+        "home": 0.8443,
+        "draw": 0.1028,
+        "away": 0.0529
       },
       "trapped": false,
       "topPick": null,
@@ -644,7 +658,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456996": {
     "id": "66456996",
@@ -653,9 +667,9 @@
     "kickoff": "2026-06-15T22:00:00Z",
     "read": {
       "win": {
-        "home": 0.1234,
-        "draw": 0.2207,
-        "away": 0.6559
+        "home": 0.1238,
+        "draw": 0.2225,
+        "away": 0.6536
       },
       "trapped": false,
       "topPick": null,
@@ -669,7 +683,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66456998": {
     "id": "66456998",
@@ -694,7 +708,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457000": {
     "id": "66457000",
@@ -723,7 +737,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457006": {
     "id": "66457006",
@@ -732,18 +746,18 @@
     "kickoff": "2026-06-16T19:00:00Z",
     "read": {
       "win": {
-        "home": 0.6457,
-        "draw": 0.2234,
-        "away": 0.1309
+        "home": 0.6445,
+        "draw": 0.223,
+        "away": 0.1325
       },
       "trapped": true,
       "topPick": {
-        "market": "ah",
-        "side": "away",
-        "line": -1.25
+        "market": "ou",
+        "side": "home",
+        "line": 2.5
       },
       "arah": "Senegal",
-      "ahLine": -1.25,
+      "ahLine": -1,
       "ouLine": 2.5,
       "overallLight": "yellow"
     },
@@ -752,7 +766,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457008": {
     "id": "66457008",
@@ -777,7 +791,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457010": {
     "id": "66457010",
@@ -806,7 +820,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457012": {
     "id": "66457012",
@@ -835,7 +849,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457018": {
     "id": "66457018",
@@ -844,9 +858,9 @@
     "kickoff": "2026-06-17T01:00:00Z",
     "read": {
       "win": {
-        "home": 0.6822,
-        "draw": 0.2083,
-        "away": 0.1095
+        "home": 0.6801,
+        "draw": 0.2081,
+        "away": 0.1117
       },
       "trapped": true,
       "topPick": {
@@ -864,7 +878,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457020": {
     "id": "66457020",
@@ -893,7 +907,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457022": {
     "id": "66457022",
@@ -906,23 +920,19 @@
         "draw": 0.2486,
         "away": 0.1677
       },
-      "trapped": true,
-      "topPick": {
-        "market": "ah",
-        "side": "home",
-        "line": -0.75
-      },
+      "trapped": false,
+      "topPick": null,
       "arah": null,
       "ahLine": -0.75,
       "ouLine": 2.5,
-      "overallLight": "yellow"
+      "overallLight": "green"
     },
     "status": "pending",
     "score": {
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457024": {
     "id": "66457024",
@@ -951,7 +961,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781355611973
+    "updatedAt": 1781394789421
   },
   "66457030": {
     "id": "66457030",
@@ -980,7 +990,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457032": {
     "id": "66457032",
@@ -1009,7 +1019,28 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
+  },
+  "66457034": {
+    "id": "66457034",
+    "home": "Portugal",
+    "away": "Uzbekistan",
+    "kickoff": "2026-06-23T17:00:00Z",
+    "read": {
+      "win": {
+        "home": 0.744,
+        "draw": 0.1619,
+        "away": 0.0941
+      },
+      "trapped": false,
+      "topPick": null,
+      "arah": null,
+      "ahLine": -1.75,
+      "ouLine": 3,
+      "overallLight": "green"
+    },
+    "status": "pending",
+    "updatedAt": 1781394789421
   },
   "66457042": {
     "id": "66457042",
@@ -1034,7 +1065,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457044": {
     "id": "66457044",
@@ -1063,7 +1094,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457070": {
     "id": "66457070",
@@ -1072,9 +1103,9 @@
     "kickoff": "2026-06-14T17:00:00Z",
     "read": {
       "win": {
-        "home": 0.9002,
-        "draw": 0.0673,
-        "away": 0.0325
+        "home": 0.8867,
+        "draw": 0.0803,
+        "away": 0.033
       },
       "trapped": true,
       "topPick": {
@@ -1092,7 +1123,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457072": {
     "id": "66457072",
@@ -1101,9 +1132,9 @@
     "kickoff": "2026-06-14T23:00:00Z",
     "read": {
       "win": {
-        "home": 0.3922,
-        "draw": 0.3326,
-        "away": 0.2752
+        "home": 0.3919,
+        "draw": 0.3323,
+        "away": 0.2758
       },
       "trapped": true,
       "topPick": {
@@ -1121,7 +1152,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457074": {
     "id": "66457074",
@@ -1150,7 +1181,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "66457076": {
     "id": "66457076",
@@ -1179,7 +1210,7 @@
       "home": 0,
       "away": 0
     },
-    "updatedAt": 1781381337446
+    "updatedAt": 1781394789421
   },
   "D1": {
     "id": "D1",

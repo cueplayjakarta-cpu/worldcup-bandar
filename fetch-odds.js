@@ -188,7 +188,7 @@ function computeDirection(m, type, home, away) {
   const mag = (type === 'ah' && lm) ? Math.abs(lm.delta) : 0;
   const magBonus = mag >= 0.5 ? 2 : mag >= 0.25 ? 1 : 0;
   const strength = Math.min(3, Math.abs(net) + magBonus);
-  return { side, strength, arrow: '➜', bigMove: mag >= 0.5, mag,
+  return { side, strength, arrow: '➜', bigMove: mag >= 0.5 && mag <= 1.75, mag,
     label: sideLabel(type, side, home, away, m), reasons, text: 'Bandar geser ke ' + sideLabel(type, side, home, away, m) };
 }
 
@@ -430,17 +430,26 @@ function updateHistory(hist, match) {
 function analyzeMatch(raw, hist, isLive) {
   // Data LIVE memberi open==now per tarikan. Pakai snapshot pertama di history sebagai
   // "pembukaan" agar pergerakan garis & water nyata terbaca antar-run. (Demo tidak disentuh.)
-  if (isLive && hist && hist[raw.id] && hist[raw.id][0]) {
-    const h0 = hist[raw.id][0];
+  if (isLive && hist && hist[raw.id] && hist[raw.id].length) {
+    const snaps = hist[raw.id];
+    // "Open" HARUS dari snapshot yang waras. Snapshot awal kadang hasil salah-parse:
+    //   - garis besar (|L|>=1.5) tak mungkin berharga ~imbang (mis. -6 @ 1.88/1.92), DAN
+    //   - garis tak boleh meloncat tak masuk akal (>1.5 bola) dari garis sekarang.
+    // Tanpa cek ini, satu snapshot busuk bikin "pergerakan tajam" & "jebakan" palsu.
+    const saneAh = (s, nowL) =>
+      s && s.ahLine != null && s.ahH != null && s.ahA != null &&
+      !(Math.abs(s.ahLine) >= 1.5 && Math.abs(s.ahH - s.ahA) < 0.2) &&
+      (nowL == null || Math.abs(s.ahLine - nowL) <= 1.5);
+    const saneOu = (s, nowL) =>
+      s && s.ouLine != null && s.ouO != null && s.ouU != null &&
+      (nowL == null || Math.abs(s.ouLine - nowL) <= 1.0);
     if (raw.ah && raw.ah.line.open === raw.ah.line.now) {
-      if (h0.ahLine != null) raw.ah.line.open = h0.ahLine;
-      if (h0.ahH != null) raw.ah.openHome = h0.ahH;
-      if (h0.ahA != null) raw.ah.openAway = h0.ahA;
+      const h = snaps.find(s => saneAh(s, raw.ah.line.now));
+      if (h) { raw.ah.line.open = h.ahLine; raw.ah.openHome = h.ahH; raw.ah.openAway = h.ahA; }
     }
     if (raw.ou && raw.ou.line.open === raw.ou.line.now) {
-      if (h0.ouLine != null) raw.ou.line.open = h0.ouLine;
-      if (h0.ouO != null) raw.ou.openHome = h0.ouO;
-      if (h0.ouU != null) raw.ou.openAway = h0.ouU;
+      const h = snaps.find(s => saneOu(s, raw.ou.line.now));
+      if (h) { raw.ou.line.open = h.ouLine; raw.ou.openHome = h.ouO; raw.ou.openAway = h.ouU; }
     }
   }
   const mk = (label, key, normalMargin) => buildMarket(Object.assign({ label, normalMargin, homeName: raw.home, awayName: raw.away }, raw[key]));

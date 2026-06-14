@@ -95,19 +95,19 @@
     "kickoff": "2026-06-13T19:00:00Z",
     "read": {
       "win": {
-        "home": 0.0729,
-        "draw": 0.1436,
-        "away": 0.7834
+        "home": 0.0198,
+        "draw": 0.0732,
+        "away": 0.907
       },
       "trapped": true,
       "topPick": {
         "market": "ou",
         "side": "home",
-        "line": 3
+        "line": 2.5
       },
       "arah": "Qatar",
-      "ahLine": 2,
-      "ouLine": 3,
+      "ahLine": 1.25,
+      "ouLine": 2.5,
       "overallLight": "yellow"
     },
     "status": "settled",
@@ -188,16 +188,20 @@
     "kickoff": "2026-06-13T22:00:00Z",
     "read": {
       "win": {
-        "home": 0.5521,
-        "draw": 0.2653,
-        "away": 0.1826
+        "home": 0.2031,
+        "draw": 0.6937,
+        "away": 0.1033
       },
-      "trapped": false,
-      "topPick": null,
-      "arah": "Morocco",
-      "ahLine": -0.75,
-      "ouLine": 2.25,
-      "overallLight": "green"
+      "trapped": true,
+      "topPick": {
+        "market": "ou",
+        "side": "away",
+        "line": 2.5
+      },
+      "arah": "Under 2.5 gol",
+      "ahLine": 0,
+      "ouLine": 2.5,
+      "overallLight": "yellow"
     },
     "status": "settled",
     "score": {
@@ -219,9 +223,9 @@
     "kickoff": "2026-06-14T01:00:00Z",
     "read": {
       "win": {
-        "home": 0.165,
-        "draw": 0.2203,
-        "away": 0.6147
+        "home": 0.1584,
+        "draw": 0.2165,
+        "away": 0.6252
       },
       "trapped": true,
       "topPick": {
@@ -229,7 +233,7 @@
         "side": "away",
         "line": 1
       },
-      "arah": "Over 2.75 gol",
+      "arah": null,
       "ahLine": 1,
       "ouLine": 2.75,
       "overallLight": "yellow"
@@ -347,20 +351,16 @@
     "kickoff": "2026-06-14T04:00:00Z",
     "read": {
       "win": {
-        "home": 0.1903,
-        "draw": 0.2598,
-        "away": 0.5499
+        "home": 0.1861,
+        "draw": 0.2558,
+        "away": 0.5582
       },
-      "trapped": true,
-      "topPick": {
-        "market": "ou",
-        "side": "away",
-        "line": 2.5
-      },
+      "trapped": false,
+      "topPick": null,
       "arah": "Australia",
       "ahLine": 0.75,
-      "ouLine": 2.5,
-      "overallLight": "yellow"
+      "ouLine": 2.25,
+      "overallLight": "green"
     },
     "status": "settled",
     "score": {
@@ -395,7 +395,7 @@
       "arah": "Under 2.5 gol",
       "ahLine": -1,
       "ouLine": 2.5,
-      "overallLight": "yellow"
+      "overallLight": "red"
     },
     "status": "pending",
     "score": {

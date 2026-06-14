@@ -64,6 +64,8 @@ function updateArchive(arch, matches) {
 function hkToDecimal(hk) { if (hk == null) return null; return hk >= 1.6 ? hk : hk + 1; }
 function num(v) { const n = parseFloat(v); return isNaN(n) ? null : n; }
 function pct(x) { return Math.round(x * 100); }
+// Pemilih variasi deterministik (stabil per-laga, beda antar-laga) — biar bahasa tak seragam.
+function pick(arr, seed) { let h = 0; const s = String(seed || ''); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return arr[h % arr.length]; }
 // Baca skor dari berbagai kemungkinan bentuk: {home,away}, {current}, "1-0", {ft},...
 function parseScore(s) {
   if (s == null) return null;
@@ -322,9 +324,10 @@ function matchVerdict(markets, home, away) {
   const order = { green: 0, yellow: 1, red: 2 };
   let worst = 'green';
   for (const k of Object.keys(markets)) if (order[markets[k].light] > order[worst]) worst = markets[k].light;
-  if (worst === 'red') return { light: 'red', text: 'Ada sisi yang ditarik ramai-ramai. Jangan langsung percaya harga yang kelihatan manis.' };
-  if (worst === 'yellow') return { light: 'yellow', text: 'Sebagian taruhan mulai diramaikan ke satu sisi. Cermati dulu.' };
-  return { light: 'green', text: 'Aman & tenang. Belum ada sisi yang dipancing mencolok.' };
+  const seed = home + away;
+  if (worst === 'red') return { light: 'red', text: pick(['Ada sisi yang ditarik ramai-ramai — jangan langsung percaya harga yang kelihatan manis.', 'Tarikan kuat ke satu sisi. Pelajari dulu sebelum ikut.', 'Satu sisi diramaikan keras. Hati-hati harga yang kelihatan enak.'], seed) };
+  if (worst === 'yellow') return { light: 'yellow', text: pick(['Sebagian taruhan mulai diramaikan ke satu sisi. Cermati dulu.', 'Mulai ada gerakan ke satu sisi — perhatikan.', 'Ada tarikan tipis ke satu sisi. Jangan buru-buru ikut.'], seed) };
+  return { light: 'green', text: pick(['Aman & tenang. Belum ada sisi yang dipancing mencolok.', 'Adem — tidak ada tarikan mencolok ke satu sisi.', 'Pasar wajar, belum ada yang diramaikan.'], seed) };
 }
 
 // =====================================================================
@@ -377,17 +380,23 @@ function deriveConclusion(match) {
   });
 
   if (!cands.length) {
-    return { trapped: false, topPick: null, headline: 'Belum ada sisi yang dipancing.', detail: 'Bandar cuma mengambil potongan wajar di kedua sisi. Tidak terlihat satu sisi pun yang sedang diramaikan untuk menjebak pemasang.', targets: [] };
+    const calm = [
+      'Bandar cuma ambil potongan wajar di dua sisi — belum ada yang diramaikan.',
+      'Dua sisi seimbang, tidak ada sisi yang dipancing. Pasar adem.',
+      'Belum ada tarikan ke satu sisi. Di sini bandar main wajar.',
+    ];
+    return { trapped: false, topPick: null, headline: 'Belum ada sisi yang dipancing.', detail: pick(calm, match.id), targets: [] };
   }
   const by = {};
   for (const c of cands) { const e = by[c.label] || (by[c.label] = { label: c.label, weight: 0, whys: [], pick: c.pick, maxw: 0 }); e.weight += c.weight; if (c.weight > e.maxw) { e.maxw = c.weight; e.pick = c.pick; } if (e.whys.indexOf(c.why) < 0) e.whys.push(c.why); }
   const ranked = Object.values(by).sort((a, b) => b.weight - a.weight);
   const top = ranked[0];
+  const openers = ['Uang publik lagi ngumpul ke', 'Banyak yang ditarik ke', 'Arus taruhan condong ke', 'Orang ramai-ramai dipancing ke'];
   return {
     trapped: true,
     topPick: top.pick || null,
     headline: `Pemasang lagi dipancing ke: ${top.label}`,
-    detail: `Banyak orang sedang diarahkan untuk bertaruh ke ${top.label} — tandanya: ${top.whys.slice(0, 2).join('; ')}. Di sisi yang ramai inilah harga sudah merugikan, dan di situ bandar paling untung. Jadi hati-hati ikut arus: ramai belum tentu benar. (Bukan berarti sisi lawan pasti menang.)`,
+    detail: `${pick(openers, match.id + top.label)} ${top.label}. Tandanya: ${top.whys.slice(0, 2).join('; ')}.`,
     targets: ranked.map(r => r.label),
   };
 }

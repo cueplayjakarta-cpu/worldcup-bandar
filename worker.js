@@ -23,6 +23,7 @@ const HIST_KEY = 'https://lensa-bandar.cache/history';
 function hkToDecimal(hk){ if(hk==null) return null; return hk>=1.6?hk:hk+1; }
 function num(v){ const n=parseFloat(v); return isNaN(n)?null:n; }
 function pct(x){ return Math.round(x*100); }
+function pick(arr,seed){ let h=0; const s=String(seed||''); for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; return arr[h%arr.length]; }
 function parseScore(s){ if(s==null) return null; if(typeof s==='object'){ if(s.home!=null&&s.away!=null) return {home:+s.home,away:+s.away}; if(s.current) return parseScore(s.current); if(s.ft&&s.ft.home!=null) return {home:+s.ft.home,away:+s.ft.away}; return null;} if(typeof s==='string'){ const m=s.match(/(\d+)\s*[-:]\s*(\d+)/); if(m) return {home:+m[1],away:+m[2]};} return null; }
 function twoWayMargin(a,b){ const x=hkToDecimal(a),y=hkToDecimal(b); if(!x||!y) return null; return (1/x+1/y-1)*100; }
 function noVigProb(home,away){ const dH=hkToDecimal(home),dA=hkToDecimal(away); if(!dH||!dA) return null; const a=1/dH,b=1/dA,s=a+b; return {home:a/s,away:b/s}; }
@@ -111,9 +112,10 @@ function matchVerdict(markets,home,away){
   const waterHardFav=(favSide==='home'?ah.waterMoveHome:ah.waterMoveAway),hardening=waterHardFav&&waterHardFav.dir==='down'&&Math.abs(waterHardFav.delta)>=0.07,divBaitFav=ah.divergence&&ah.divergence.side===favSide;
   if(absL>0&&absL<0.6&&(hardening||divBaitFav)) return {light:'red',text:`Jebakan favorit: banyak orang taruh ke ${favName} karena kelihatan jagoan, padahal garisnya cuma ${indoHandicap(L)} — sebenarnya laganya jauh lebih ketat. Hati-hati ikut ramai.`};
   const order={green:0,yellow:1,red:2}; let worst='green'; for(const k of Object.keys(markets)) if(order[markets[k].light]>order[worst]) worst=markets[k].light;
-  if(worst==='red') return {light:'red',text:'Ada sisi yang ditarik ramai-ramai. Jangan langsung percaya harga yang kelihatan manis.'};
-  if(worst==='yellow') return {light:'yellow',text:'Sebagian taruhan mulai diramaikan ke satu sisi. Cermati dulu.'};
-  return {light:'green',text:'Aman & tenang. Belum ada sisi yang dipancing mencolok.'};
+  const seed=home+away;
+  if(worst==='red') return {light:'red',text:pick(['Ada sisi yang ditarik ramai-ramai — jangan langsung percaya harga yang kelihatan manis.','Tarikan kuat ke satu sisi. Pelajari dulu sebelum ikut.','Satu sisi diramaikan keras. Hati-hati harga yang kelihatan enak.'],seed)};
+  if(worst==='yellow') return {light:'yellow',text:pick(['Sebagian taruhan mulai diramaikan ke satu sisi. Cermati dulu.','Mulai ada gerakan ke satu sisi — perhatikan.','Ada tarikan tipis ke satu sisi. Jangan buru-buru ikut.'],seed)};
+  return {light:'green',text:pick(['Aman & tenang. Belum ada sisi yang dipancing mencolok.','Adem — tidak ada tarikan mencolok ke satu sisi.','Pasar wajar, belum ada yang diramaikan.'],seed)};
 }
 function sideLabel(type,side,home,away,mk){ const L=mk.line&&mk.line.now; if(type==='ah') return side==='home'?home:away; if(type==='ou') return side==='home'?`Over ${L} gol`:`Under ${L} gol`; if(type==='corner') return side==='home'?`Over ${L} corner`:`Under ${L} corner`; if(type==='cornerHT') return side==='home'?`Over ${L} corner B1`:`Under ${L} corner B1`; if(type==='card') return side==='home'?`Over ${L} kartu`:`Under ${L} kartu`; return side; }
 function hardenSide(mk){ if(mk.waterMoveHome&&mk.waterMoveHome.dir==='down'&&Math.abs(mk.waterMoveHome.delta)>=0.07) return 'home'; if(mk.waterMoveAway&&mk.waterMoveAway.dir==='down'&&Math.abs(mk.waterMoveAway.delta)>=0.07) return 'away'; return null; }
@@ -125,10 +127,11 @@ function deriveConclusion(match){
   if(match.verdict&&/Jebakan favorit/i.test(match.verdict.text)&&favName) cands.push({label:annotateAh(favSide),weight:5,pick:{market:'ah',side:favSide,line:L},why:`${favName} kelihatan favorit jelas tapi garisnya cuma ${indoHandicap(L)}, jadi orang gampang nekat taruh besar ke situ`});
   ['ah','ou'].forEach(k=>{ const mk=m[k]; if(mk.divergence) cands.push({label:lab(k,mk.divergence.side,mk),weight:4,pick:{market:k,side:mk.divergence.side,line:mk.line.now},why:`${labShort(k,mk.divergence.side,mk)} dikasih bayaran lebih besar di Bet365 untuk memancing pemasang`}); });
   ['ah','ou','corner','cornerHT','card'].forEach(k=>{ const mk=m[k]; if(!mk) return; const hs=hardenSide(mk); if(hs) cands.push({label:lab(k,hs,mk),weight:3,pick:{market:k,side:hs,line:mk.line&&mk.line.now},why:`bayaran ${labShort(k,hs,mk)} dikecilkan karena uang menumpuk ke sana`}); });
-  if(!cands.length) return {trapped:false,topPick:null,headline:'Belum ada sisi yang dipancing.',detail:'Bandar cuma mengambil potongan wajar di kedua sisi. Tidak terlihat satu sisi pun yang sedang diramaikan untuk menjebak pemasang.',targets:[]};
+  if(!cands.length){ const calm=['Bandar cuma ambil potongan wajar di dua sisi — belum ada yang diramaikan.','Dua sisi seimbang, tidak ada sisi yang dipancing. Pasar adem.','Belum ada tarikan ke satu sisi. Di sini bandar main wajar.']; return {trapped:false,topPick:null,headline:'Belum ada sisi yang dipancing.',detail:pick(calm,match.id),targets:[]}; }
   const by={}; for(const c of cands){ const e=by[c.label]||(by[c.label]={label:c.label,weight:0,whys:[],pick:c.pick,maxw:0}); e.weight+=c.weight; if(c.weight>e.maxw){e.maxw=c.weight;e.pick=c.pick;} if(e.whys.indexOf(c.why)<0) e.whys.push(c.why); }
   const ranked=Object.values(by).sort((a,b)=>b.weight-a.weight),top=ranked[0];
-  return {trapped:true,topPick:top.pick||null,headline:`Pemasang lagi dipancing ke: ${top.label}`,detail:`Banyak orang sedang diarahkan untuk bertaruh ke ${top.label} — tandanya: ${top.whys.slice(0,2).join('; ')}. Di sisi yang ramai inilah harga sudah merugikan, dan di situ bandar paling untung. Jadi hati-hati ikut arus: ramai belum tentu benar. (Bukan berarti sisi lawan pasti menang.)`,targets:ranked.map(r=>r.label)};
+  const openers=['Uang publik lagi ngumpul ke','Banyak yang ditarik ke','Arus taruhan condong ke','Orang ramai-ramai dipancing ke'];
+  return {trapped:true,topPick:top.pick||null,headline:`Pemasang lagi dipancing ke: ${top.label}`,detail:`${pick(openers,match.id+top.label)} ${top.label}. Tandanya: ${top.whys.slice(0,2).join('; ')}.`,targets:ranked.map(r=>r.label)};
 }
 function analyzeMatch(raw,hist,isLive){
   if(isLive&&hist&&hist[raw.id]&&hist[raw.id][0]){ const h0=hist[raw.id][0];
@@ -205,23 +208,61 @@ async function buildOutput(env){
 }
 
 const CORS={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET, OPTIONS','Cache-Control':'no-store','Content-Type':'application/json; charset=utf-8'};
+const WEB_URL='https://cueplayjakarta-cpu.github.io/worldcup-bandar/';
+
+// Ambil data (dari cache bila <60 dtk, kalau tidak tarik baru).
+async function getData(env, ctx){
+  const cache=caches.default;
+  try{ const c=await cache.match(CACHE_KEY); if(c){ const d=await c.clone().json(); if(Date.now()-new Date(d.generatedAt).getTime()<TTL_MS) return d; } }catch(e){}
+  const out=await buildOutput(env);
+  if(ctx&&ctx.waitUntil) ctx.waitUntil(cache.put(CACHE_KEY,new Response(JSON.stringify(out),{headers:{'Cache-Control':'max-age=120'}})));
+  else try{ await cache.put(CACHE_KEY,new Response(JSON.stringify(out),{headers:{'Cache-Control':'max-age=120'}})); }catch(e){}
+  return out;
+}
+
+// ===================== BOT TELEGRAM =====================
+async function tgSend(token, chatId, text){
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({chat_id:chatId,text,parse_mode:'HTML',disable_web_page_preview:true})});
+}
+function botReply(out, raw){
+  const ms=out.matches||[], cmd=(raw||'').toLowerCase(), s=out.summary||{};
+  if(/^\/start|^\/help|halo|hai|menu/.test(cmd))
+    return '🦞⚽ <b>Lensa Bandar</b> — pembaca gerak bandar Piala Dunia.\n\nPerintah:\n/jebakan — laga yang publik lagi dipancing\n/live — laga yang sedang berjalan\n/hari — ringkasan semua laga\n\nDetail lengkap (web): '+WEB_URL+'\n\n<i>Alat informasi, bukan ajakan bertaruh, bukan jaminan untung.</i>';
+  if(/^\/live/.test(cmd)){
+    const live=ms.filter(m=>m.live);
+    if(!live.length) return 'Belum ada laga LIVE sekarang. Coba /jebakan atau /hari.';
+    return '🔴 <b>SEDANG LIVE</b>\n\n'+live.map(m=>`• <b>${m.home} ${m.score?m.score.home+'-'+m.score.away:''} ${m.away}</b>${m.minute?" ("+String(m.minute).replace(/'+$/,'')+"')":''}\n  ${m.conclusion&&m.conclusion.trapped?'⚠️ dipancing ke: '+m.conclusion.headline.replace('Pemasang lagi dipancing ke: ',''):'✅ aman'}`).join('\n\n');
+  }
+  if(/^\/hari|^\/odds|^\/ringkas/.test(cmd)){
+    const head=`📊 <b>${s.total||ms.length} laga</b> · ${s.trapped||0} ada jebakan · ${s.favoriteTraps||0} jebakan favorit · ${s.live||0} live`;
+    const top=ms.slice(0,10).map(m=>{ const d=m.overallLight==='red'?'🔴':m.overallLight==='yellow'?'🟡':'🟢'; return `${d} ${m.home} v ${m.away}`; });
+    return head+'\n\n'+top.join('\n')+'\n\nDetail: '+WEB_URL;
+  }
+  // default & /jebakan → daftar laga ber-jebakan
+  const trap=ms.filter(m=>m.conclusion&&m.conclusion.trapped).slice(0,12);
+  const head=`🎯 <b>Hati-hati — publik lagi dipancing ke sini</b>\n(${s.total||ms.length} laga, ${s.trapped||0} ada jebakan)`;
+  if(!trap.length) return head+'\n\nTidak ada jebakan mencolok saat ini. ✅\n\nDetail: '+WEB_URL;
+  const lines=trap.map(m=>{ const d=m.overallLight==='red'?'🔴':'🟡'; const side=m.conclusion.headline.replace('Pemasang lagi dipancing ke: ',''); return `${d} ${m.home} v ${m.away}\n   → ${side}`; });
+  return head+'\n\n'+lines.join('\n')+'\n\n<i>Ingat: ini peringatan biar nggak ikut arus, bukan ramalan pasti.</i>\nDetail: '+WEB_URL;
+}
+async function handleTelegram(request, env, ctx){
+  let update; try{ update=await request.json(); }catch(e){ return new Response('ok'); }
+  const msg=update.message||update.edited_message; if(!msg||!msg.chat) return new Response('ok');
+  if(!env.TELEGRAM_TOKEN) return new Response('ok');
+  try{ const out=await getData(env,ctx); await tgSend(env.TELEGRAM_TOKEN,msg.chat.id,botReply(out,(msg.text||'').trim())); }
+  catch(e){ try{ await tgSend(env.TELEGRAM_TOKEN,msg.chat.id,'Maaf, lagi gangguan ambil data. Coba lagi sebentar ya.'); }catch(_){}}
+  return new Response('ok');
+}
 
 export default {
   async fetch(request, env, ctx){
     if(request.method==='OPTIONS') return new Response(null,{headers:CORS});
+    if(request.method==='POST') return handleTelegram(request, env, ctx);   // webhook Telegram
     if(!env.ODDS_API_IO_KEY) return new Response(JSON.stringify({error:'ODDS_API_IO_KEY belum diset (Settings → Variables → Secret)'}),{status:500,headers:CORS});
-    const cache=caches.default;
-    // sajikan dari cache bila masih segar (<60 dtk)
-    try{ const c=await cache.match(CACHE_KEY); if(c){ const data=await c.clone().json(); if(Date.now()-new Date(data.generatedAt).getTime()<TTL_MS) return new Response(JSON.stringify(data),{headers:CORS}); } }catch(e){}
-    try{
-      const out=await buildOutput(env);
-      ctx.waitUntil(cache.put(CACHE_KEY,new Response(JSON.stringify(out),{headers:{'Cache-Control':'max-age=120'}})));
-      return new Response(JSON.stringify(out),{headers:CORS});
-    }catch(e){
-      // kalau gagal tarik, sajikan cache lama bila ada
-      try{ const c=await cache.match(CACHE_KEY); if(c) return new Response(c.body,{headers:CORS}); }catch(_){}
-      return new Response(JSON.stringify({error:String(e)}),{status:502,headers:CORS});
-    }
+    try{ const out=await getData(env,ctx); return new Response(JSON.stringify(out),{headers:CORS}); }
+    catch(e){ try{ const c=await caches.default.match(CACHE_KEY); if(c) return new Response(c.body,{headers:CORS}); }catch(_){}
+      return new Response(JSON.stringify({error:String(e)}),{status:502,headers:CORS}); }
   },
   // Cron (opsional) — hangatkan cache tiap 1 menit
   async scheduled(event, env, ctx){

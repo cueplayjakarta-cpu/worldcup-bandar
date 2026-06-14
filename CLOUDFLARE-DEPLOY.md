@@ -42,5 +42,24 @@ Halaman akan menarik data dari Worker tiap **30 detik**, dan Worker menyegarkan 
 - API key **tidak pernah** ke halaman/publik — cuma ada sebagai Secret di Worker.
 - Worker hanya bisa akses internet odds-api.io. **Nol akses** ke VPS/data/bot-mu.
 
+## C. Bot Telegram (chat dari HP) 🤖
+
+Worker yang sama juga bisa jadi **bot Telegram** — teman-temanmu tinggal chat dari HP, kapan saja, walau Mac mati.
+
+1. Di Telegram, chat **@BotFather** → kirim `/newbot` → ikuti (kasih nama & username) → kamu dapat **TOKEN** (string panjang).
+2. Di Worker Cloudflare: **Settings → Variables and Secrets → Add** → Type **Secret**, Name `TELEGRAM_TOKEN`, Value = token tadi → **Deploy**.
+3. **Sambungkan bot ke Worker** (sekali): buka URL ini di browser (ganti `TOKEN` & `WORKER_URL`):
+   ```
+   https://api.telegram.org/botTOKEN/setWebhook?url=WORKER_URL
+   ```
+   Contoh: `https://api.telegram.org/bot123:ABC/setWebhook?url=https://lensa-bandar.xxxx.workers.dev`
+   Kalau muncul `{"ok":true,...}` → tersambung. 🎉
+4. **Tes:** chat bot-mu, ketik **/jebakan** → bot balas daftar laga yang publik lagi dipancing. Perintah lain: **/live**, **/hari**, **/start**.
+5. **Bagikan ke grup:** masukkan bot ke grup Telegram teman-temanmu. Siapa pun tinggal ketik `/jebakan` atau `/live`.
+
+> Bot membaca data yang sama (di-cache ~1 menit), jadi ringan & nggak boros kuota.
+
+---
+
 ## Matikan mode live (balik ke GitHub statis)
 Kosongkan lagi `DEFAULT_LIVE_URL` (atau buka link tanpa `?live=`). Halaman balik pakai data statis GitHub.

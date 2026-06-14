@@ -6,3 +6,6 @@ data/raw-sample.json
 node_modules/
 .DS_Store
 lainnya/
+cf-token.txt
+deploy-log.txt
+telegram-token.txt

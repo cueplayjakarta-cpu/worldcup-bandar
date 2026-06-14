@@ -14,11 +14,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Tarik 1 respons mentah
+      - name: Jalankan generator asli (menulis data/raw-sample.json)
         env:
           ODDS_API_IO_KEY: ${{ secrets.ODDS_API_IO_KEY }}
-        run: node debug-raw.js
+        run: node fetch-odds.js || true
       - uses: actions/upload-artifact@v4
         with:
           name: debug-raw
-          path: debug-raw.json
+          path: data/raw-sample.json
+          if-no-files-found: warn

@@ -570,13 +570,24 @@ function entrySides(o) {                                                    // s
 // Pilih garis UTAMA = baris dengan odds paling seimbang (selisih terkecil) dalam rentang wajar.
 function pickMainLine(odds, lo, hi) {
   if (!Array.isArray(odds)) return null;
-  let best = null, bestDiff = Infinity;
+  const valid = [];
   for (const o of odds) {
     const line = entryLine(o); const [a, b] = entrySides(o);
     if (a == null || b == null || line == null) continue;
     if (lo != null && (line < lo || line > hi)) continue;
-    const d = Math.abs(a - b);
-    if (d < bestDiff) { bestDiff = d; best = { line, a, b }; }
+    valid.push({ line, a, b });
+  }
+  if (!valid.length) return null;
+  // Buang outlier: entri sampah (mis. garis -6 berharga ~imbang) bisa "menang" karena
+  // gap harga kecil. Batasi ke garis di sekitar MEDIAN ladder (±1.5 bola) dulu, baru pilih
+  // gap terkecil. Tangga AH nyata cuma membentang ~0.5 bola, jadi window ini aman.
+  const lines = valid.map(v => v.line).sort((x, y) => x - y);
+  const med = lines[Math.floor((lines.length - 1) / 2)];
+  const pool = valid.filter(v => Math.abs(v.line - med) <= 1.5);
+  let best = null, bestDiff = Infinity;
+  for (const v of (pool.length ? pool : valid)) {
+    const d = Math.abs(v.a - v.b);
+    if (d < bestDiff) { bestDiff = d; best = v; }
   }
   return best;
 }

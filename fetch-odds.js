@@ -120,8 +120,8 @@ function gradeMarket(m, normalMargin) {
     else if (m.margin > normalMargin + 1) tech.push(`Jatah bandar agak besar (${m.margin.toFixed(1)}%)`);
   }
   if (m.lineMove && m.lineMove.dir !== 'flat') tech.push('Garis bergeser');
-  if (m.waterMoveHome && m.waterMoveHome.dir === 'down' && Math.abs(m.waterMoveHome.delta) >= 0.07) { score += 1; flags.push('Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana'); }
-  if (m.waterMoveAway && m.waterMoveAway.dir === 'down' && Math.abs(m.waterMoveAway.delta) >= 0.07) { score += 1; flags.push('Bayaran tim tamu dikecilkan — pemasang menumpuk ke sana'); }
+  if (m.waterMoveHome && m.waterMoveHome.dir === 'down' && Math.abs(m.waterMoveHome.delta) >= 0.10) { score += 1; flags.push('Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana'); }
+  if (m.waterMoveAway && m.waterMoveAway.dir === 'down' && Math.abs(m.waterMoveAway.delta) >= 0.10) { score += 1; flags.push('Bayaran tim tamu dikecilkan — pemasang menumpuk ke sana'); }
   if (m.divergence) { score += m.divergence.strong ? 2 : 1; flags.push(m.divergence.flag); }
   const light = score >= 3 ? 'red' : score >= 1 ? 'yellow' : 'green';
   return { light, flags, tech, score };
@@ -179,8 +179,8 @@ function computeDirection(m, type, home, away) {
     if (type === 'ah') { if (lm.delta < 0) { homeVotes++; reasons.push('garis melebar ke ' + home); } else { awayVotes++; reasons.push('garis menyusut ke ' + away); } }
     else { if (lm.delta > 0) { homeVotes++; reasons.push('garis naik (Over)'); } else { awayVotes++; reasons.push('garis turun (Under)'); } }
   }
-  if (m.waterMoveHome && m.waterMoveHome.dir === 'down' && Math.abs(m.waterMoveHome.delta) >= 0.04) { homeVotes++; reasons.push('water mengeras sisi 1'); }
-  if (m.waterMoveAway && m.waterMoveAway.dir === 'down' && Math.abs(m.waterMoveAway.delta) >= 0.04) { awayVotes++; reasons.push('water mengeras sisi 2'); }
+  if (m.waterMoveHome && m.waterMoveHome.dir === 'down' && Math.abs(m.waterMoveHome.delta) >= 0.06) { homeVotes++; reasons.push('water mengeras sisi 1'); }
+  if (m.waterMoveAway && m.waterMoveAway.dir === 'down' && Math.abs(m.waterMoveAway.delta) >= 0.06) { awayVotes++; reasons.push('water mengeras sisi 2'); }
   const net = homeVotes - awayVotes;
   if (net === 0) return { side: null, strength: 0, arrow: '→', text: 'Belum bergerak', bigMove: false };
   const side = net > 0 ? 'home' : 'away';
@@ -315,7 +315,7 @@ function matchVerdict(markets, home, away) {
   // Jebakan favorit: garis kecil DI favorit + (water mengeras di favorit ATAU divergence umpan ke favorit).
   const favSide = L < 0 ? 'home' : (L > 0 ? 'away' : 'home');
   const waterHardFav = (favSide === 'home' ? ah.waterMoveHome : ah.waterMoveAway);
-  const hardening = waterHardFav && waterHardFav.dir === 'down' && Math.abs(waterHardFav.delta) >= 0.07;
+  const hardening = waterHardFav && waterHardFav.dir === 'down' && Math.abs(waterHardFav.delta) >= 0.10;
   const divBaitFav = ah.divergence && ah.divergence.side === favSide;
   if (absL > 0 && absL < 0.6 && (hardening || divBaitFav)) {
     return { light: 'red', text: `Jebakan favorit: banyak orang taruh ke ${favName} karena kelihatan jagoan, padahal garisnya cuma ${indoHandicap(L)} — sebenarnya laganya jauh lebih ketat. Hati-hati ikut ramai.` };
@@ -344,8 +344,8 @@ function sideLabel(type, side, home, away, mk) {
   return side;
 }
 function hardenSide(mk) {
-  if (mk.waterMoveHome && mk.waterMoveHome.dir === 'down' && Math.abs(mk.waterMoveHome.delta) >= 0.07) return 'home';
-  if (mk.waterMoveAway && mk.waterMoveAway.dir === 'down' && Math.abs(mk.waterMoveAway.delta) >= 0.07) return 'away';
+  if (mk.waterMoveHome && mk.waterMoveHome.dir === 'down' && Math.abs(mk.waterMoveHome.delta) >= 0.10) return 'home';
+  if (mk.waterMoveAway && mk.waterMoveAway.dir === 'down' && Math.abs(mk.waterMoveAway.delta) >= 0.10) return 'away';
   return null;
 }
 // Kumpulkan kandidat "sisi untung bandar", beri bobot, pilih yang terkuat.

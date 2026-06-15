@@ -1424,7 +1424,7 @@
       "home": 1,
       "away": 1
     },
-    "updatedAt": 1781274349035
+    "updatedAt": 1781540850284
   },
   "D2": {
     "id": "D2",
@@ -1445,7 +1445,7 @@
       "overallLight": "green"
     },
     "status": "pending",
-    "updatedAt": 1781274349035
+    "updatedAt": 1781540850284
   },
   "D3": {
     "id": "D3",
@@ -1470,7 +1470,7 @@
       "overallLight": "yellow"
     },
     "status": "pending",
-    "updatedAt": 1781274349035
+    "updatedAt": 1781540850284
   },
   "D4": {
     "id": "D4",
@@ -1483,19 +1483,15 @@
         "draw": 0.3,
         "away": 0.32
       },
-      "trapped": true,
-      "topPick": {
-        "market": "ou",
-        "side": "home",
-        "line": 2.5
-      },
+      "trapped": false,
+      "topPick": null,
       "arah": "Over 2.5 gol",
       "ahLine": 0.25,
       "ouLine": 2.5,
-      "overallLight": "yellow"
+      "overallLight": "green"
     },
     "status": "pending",
-    "updatedAt": 1781274349035
+    "updatedAt": 1781540850284
   },
   "D5": {
     "id": "D5",
@@ -1516,7 +1512,7 @@
       "overallLight": "green"
     },
     "status": "pending",
-    "updatedAt": 1781274349035
+    "updatedAt": 1781540850284
   },
   "D6": {
     "id": "D6",
@@ -1537,6 +1533,6 @@
       "overallLight": "green"
     },
     "status": "pending",
-    "updatedAt": 1781274349035
+    "updatedAt": 1781540850284
   }
 }

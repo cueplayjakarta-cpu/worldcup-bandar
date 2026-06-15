@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T16:15:13.840Z",
+  "generatedAt": "2026-06-15T16:17:16.897Z",
   "source": "odds-api.io / SBOBET (GRATIS)",
   "isDemo": false,
   "reference": "SBOBET",
@@ -35,9 +35,9 @@
       },
       "minute": "[object Object]",
       "win": {
-        "home": 0.8203,
-        "draw": 0.1172,
-        "away": 0.0625
+        "home": 0.7993,
+        "draw": 0.1414,
+        "away": 0.0593
       },
       "overallLight": "yellow",
       "verdict": {
@@ -53,23 +53,23 @@
           },
           "openHome": 2.08,
           "openAway": 1.82,
-          "nowHome": 1.94,
-          "nowAway": 1.96,
+          "nowHome": 2,
+          "nowAway": 1.9,
           "pub": {
             "line": -2,
-            "home": 1.9,
-            "away": 1.95
+            "home": 1.975,
+            "away": 1.875
           },
-          "margin": 2.5667999158426325,
-          "probHome": 0.5026,
-          "probAway": 0.4974,
+          "margin": 2.631578947368407,
+          "probHome": 0.4872,
+          "probAway": 0.5128,
           "waterMoveHome": {
             "dir": "down",
-            "delta": -0.14
+            "delta": -0.08
           },
           "waterMoveAway": {
             "dir": "up",
-            "delta": 0.14
+            "delta": 0.08
           },
           "lineMove": {
             "dir": "up",
@@ -77,17 +77,15 @@
           },
           "lineDisplay": "-2",
           "divergence": null,
-          "light": "yellow",
-          "flags": [
-            "Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana"
-          ],
+          "light": "green",
+          "flags": [],
           "tech": [
             "Garis bergeser"
           ],
-          "score": 1,
+          "score": 0,
           "read": {
-            "holds": "Bandar pegang: Spain sangat dominan (garis −2). Tanpa potongan: peluang Spain ~50% vs Cape Verde/seri ~50%. ⚠️ Tapi garis lagi bergeser −2 1/4 → −2 — Spain melemah, Cape Verde menguat. Jangan asal ambil Spain.",
-            "signal": "⚠️ Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana."
+            "holds": "Bandar pegang: Spain sangat dominan (garis −2). Tanpa potongan: peluang Spain ~49% vs Cape Verde/seri ~51%. ⚠️ Tapi garis lagi bergeser −2 1/4 → −2 — Spain melemah, Cape Verde menguat. Jangan asal ambil Spain.",
+            "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
             "side": null,
@@ -101,56 +99,62 @@
           "label": "Over/Under",
           "line": {
             "open": 3.5,
-            "now": 3
+            "now": 2.75
           },
           "openHome": 1.925,
           "openAway": 1.925,
-          "nowHome": 2.04,
-          "nowAway": 1.84,
+          "nowHome": 1.99,
+          "nowAway": 1.89,
           "pub": {
-            "line": 3,
-            "home": 2.025,
-            "away": 1.825
+            "line": 2.75,
+            "home": 1.9,
+            "away": 1.95
           },
-          "margin": 3.3674339300937772,
-          "probHome": 0.4742,
-          "probAway": 0.5258,
+          "margin": 3.16130919145996,
+          "probHome": 0.4871,
+          "probAway": 0.5129,
           "waterMoveHome": {
             "dir": "up",
-            "delta": 0.11
+            "delta": 0.06
           },
           "waterMoveAway": {
             "dir": "down",
-            "delta": -0.08
+            "delta": -0.04
           },
           "lineMove": {
             "dir": "down",
-            "delta": -0.5
+            "delta": -0.75
           },
-          "lineDisplay": "3",
-          "divergence": null,
-          "light": "green",
-          "flags": [],
+          "lineDisplay": "2.75",
+          "divergence": {
+            "side": "away",
+            "gap": 0.06,
+            "strong": false,
+            "flag": "Di Bet365, Cape Verde dikasih bayaran lebih besar untuk memancing pemasang ke sana"
+          },
+          "light": "yellow",
+          "flags": [
+            "Di Bet365, Cape Verde dikasih bayaran lebih besar untuk memancing pemasang ke sana"
+          ],
           "tech": [
             "Garis bergeser"
           ],
-          "score": 0,
+          "score": 1,
           "read": {
-            "holds": "Bandar pegang: perkiraan ~3 gol (gol sedang). Peluang Over 3 ~47%, Under ~53%.",
-            "signal": "Aman — belum ada tanda menjebak."
+            "holds": "Bandar pegang: perkiraan ~2.75 gol (gol sedang). Peluang Over 2.75 ~49%, Under ~51%.",
+            "signal": "⚠️ Di Bet365, Cape Verde dikasih bayaran lebih besar untuk memancing pemasang ke sana."
           },
           "direction": {
             "side": "away",
-            "strength": 2,
+            "strength": 1,
             "arrow": "➜",
             "bigMove": false,
             "mag": 0,
-            "label": "Under 3 gol",
+            "label": "Under 2.75 gol",
             "reasons": [
-              "garis turun (Under)",
-              "water mengeras sisi 2"
+              "garis turun (Under)"
             ],
-            "text": "Bandar geser ke Under 3 gol"
+            "text": "Bandar geser ke Under 2.75 gol"
           }
         },
         "corner": {
@@ -286,37 +290,36 @@
       "conclusion": {
         "trapped": true,
         "topPick": {
-          "market": "ah",
-          "side": "home",
-          "line": -2
+          "market": "ou",
+          "side": "away",
+          "line": 2.75
         },
-        "headline": "Pemasang lagi dipancing ke: Spain (favorit, garis −2)",
-        "detail": "Uang publik lagi ngumpul ke Spain (favorit, garis −2). Tandanya: bayaran Spain dikecilkan karena uang menumpuk ke sana.",
+        "headline": "Pemasang lagi dipancing ke: Under 2.75 gol",
+        "detail": "Banyak yang ditarik ke Under 2.75 gol. Tandanya: Under 2.75 gol dikasih bayaran lebih besar di Bet365 untuk memancing pemasang.",
         "targets": [
-          "Spain (favorit, garis −2)"
+          "Under 2.75 gol"
         ]
       },
       "guidance": {
         "moved": true,
-        "primary": "Under 3 gol",
-        "narrative": "Over/Under: Under 3 gol (3.5 → 3).",
+        "primary": "Under 2.75 gol",
+        "narrative": "Over/Under: Under 2.75 gol (3.5 → 2.75).",
         "items": [
           {
             "market": "Over/Under",
-            "to": "Under 3 gol",
-            "move": "3.5 → 3"
+            "to": "Under 2.75 gol",
+            "move": "3.5 → 2.75"
           }
         ],
-        "confidence": "Sedang",
-        "strength": 2,
+        "confidence": "Lemah",
+        "strength": 1,
         "insight": null
       },
       "history": {
-        "snapshots": 12,
-        "moves": 11,
+        "snapshots": 13,
+        "moves": 12,
         "lastMoveMin": 0,
         "spark": [
-          -5,
           -5,
           -2.5,
           -2.5,
@@ -327,6 +330,7 @@
           -2.5,
           -2.25,
           -2.25,
+          -2,
           -2
         ]
       }
@@ -609,7 +613,7 @@
       "history": {
         "snapshots": 9,
         "moves": 8,
-        "lastMoveMin": 6,
+        "lastMoveMin": 8,
         "spark": [
           -1.5,
           -1.5,
@@ -901,7 +905,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           1.75,
           1.75,
@@ -928,9 +932,9 @@
       },
       "minute": null,
       "win": {
-        "home": 0.5305,
-        "draw": 0.2785,
-        "away": 0.1911
+        "home": 0.5278,
+        "draw": 0.2803,
+        "away": 0.1919
       },
       "overallLight": "yellow",
       "verdict": {
@@ -1206,7 +1210,7 @@
       "history": {
         "snapshots": 9,
         "moves": 8,
-        "lastMoveMin": 6,
+        "lastMoveMin": 8,
         "spark": [
           -1,
           -1,
@@ -1484,7 +1488,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -2,
           -2,
@@ -1765,7 +1769,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           2,
           2,
@@ -2052,7 +2056,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -2.5,
           -2.5,
@@ -2331,7 +2335,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -2.5,
           -2.5,
@@ -2607,7 +2611,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -3.25,
           -3.25,
@@ -2887,7 +2891,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -1.5,
           -1.5,
@@ -3175,7 +3179,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -0.75,
           -0.75,
@@ -3464,7 +3468,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 1443,
+        "lastMoveMin": 1445,
         "spark": [
           2,
           2,
@@ -3774,7 +3778,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 3060,
+        "lastMoveMin": 3062,
         "spark": [
           -0.5,
           -0.5,
@@ -4071,7 +4075,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -0.75,
           -0.75,
@@ -4117,8 +4121,8 @@
           "nowAway": 2,
           "pub": {
             "line": -1.5,
-            "home": 1.85,
-            "away": 2
+            "home": 1.875,
+            "away": 1.975
           },
           "margin": 2.631578947368407,
           "probHome": 0.5128,
@@ -4369,7 +4373,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -1.25,
           -1.25,
@@ -4670,7 +4674,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 6,
+        "lastMoveMin": 8,
         "spark": [
           -0.5,
           -0.5,
@@ -4958,7 +4962,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -0.5,
           -0.5,
@@ -5253,7 +5257,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           0.5,
           0.5,
@@ -5549,7 +5553,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -3,
           -3,
@@ -5853,7 +5857,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 1544,
+        "lastMoveMin": 1547,
         "spark": [
           -0.25,
           -0.25,
@@ -6144,7 +6148,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -0.75,
           -0.75,
@@ -6446,7 +6450,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -1,
           -1,
@@ -6742,7 +6746,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -1.75,
           -1.75,
@@ -7044,7 +7048,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           0.5,
           0.5,
@@ -7337,7 +7341,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -2.25,
           -2.25,
@@ -7631,7 +7635,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5580,
+        "lastMoveMin": 5582,
         "spark": [
           -1.25,
           -1.25
@@ -7919,7 +7923,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5580,
+        "lastMoveMin": 5582,
         "spark": [
           -1,
           -1
@@ -8211,7 +8215,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5580,
+        "lastMoveMin": 5582,
         "spark": [
           0.75,
           0.75
@@ -8490,7 +8494,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 5469,
+        "lastMoveMin": 5471,
         "spark": [
           -0.75
         ]
@@ -8777,7 +8781,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 1544,
+        "lastMoveMin": 1547,
         "spark": [
           -2.25,
           -2.25
@@ -9069,7 +9073,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 4026,
+        "lastMoveMin": 4028,
         "spark": [
           -0.25
         ]
@@ -9356,7 +9360,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 1544,
+        "lastMoveMin": 1547,
         "spark": [
           0.75,
           0.75
@@ -9635,7 +9639,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1544,
+        "lastMoveMin": 1547,
         "spark": [
           -1.75
         ]
@@ -9913,7 +9917,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1544,
+        "lastMoveMin": 1547,
         "spark": [
           -1.5
         ]
@@ -10187,7 +10191,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1443,
+        "lastMoveMin": 1445,
         "spark": [
           1
         ]
@@ -10465,7 +10469,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1165,
+        "lastMoveMin": 1167,
         "spark": [
           -1
         ]
@@ -10756,7 +10760,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1165,
+        "lastMoveMin": 1167,
         "spark": [
           -0.25
         ]
@@ -11030,7 +11034,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -0.75
         ]
@@ -11308,7 +11312,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           1.25
         ]
@@ -11599,7 +11603,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 15,
+        "lastMoveMin": 17,
         "spark": [
           -1.5
         ]

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T16:55:52.838Z",
+  "generatedAt": "2026-06-15T16:57:54.377Z",
   "source": "DEMO",
   "isDemo": true,
   "reference": "SBOBET",
@@ -330,7 +330,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 4502,
+        "lastMoveMin": 4504,
         "spark": [
           null,
           -0.25
@@ -605,7 +605,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 4502,
+        "lastMoveMin": 4504,
         "spark": [
           null,
           -0.5
@@ -903,7 +903,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 4502,
+        "lastMoveMin": 4504,
         "spark": [
           null,
           -1.25
@@ -1193,7 +1193,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 4502,
+        "lastMoveMin": 4504,
         "spark": [
           null,
           0.25
@@ -1494,7 +1494,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 4502,
+        "lastMoveMin": 4504,
         "spark": [
           null,
           -1.25
@@ -1769,7 +1769,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 4502,
+        "lastMoveMin": 4504,
         "spark": [
           null,
           0.5

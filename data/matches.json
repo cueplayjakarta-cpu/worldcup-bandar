@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T18:29:04.156Z",
+  "generatedAt": "2026-06-15T18:31:06.916Z",
   "source": "odds-api.io / SBOBET (GRATIS)",
   "isDemo": false,
   "reference": "SBOBET",
@@ -35,9 +35,9 @@
       },
       "minute": null,
       "win": {
-        "home": 0.6263,
-        "draw": 0.2294,
-        "away": 0.1442
+        "home": 0.6253,
+        "draw": 0.2285,
+        "away": 0.1462
       },
       "overallLight": "green",
       "verdict": {
@@ -53,23 +53,23 @@
           },
           "openHome": 1.825,
           "openAway": 2.025,
-          "nowHome": 1.94,
-          "nowAway": 2,
+          "nowHome": 1.96,
+          "nowAway": 1.98,
           "pub": {
             "line": -1,
-            "home": 1.875,
-            "away": 1.975
+            "home": 1.925,
+            "away": 1.925
           },
-          "margin": 1.546391752577314,
-          "probHome": 0.5076,
-          "probAway": 0.4924,
+          "margin": 1.5254586683158156,
+          "probHome": 0.5025,
+          "probAway": 0.4975,
           "waterMoveHome": {
             "dir": "up",
-            "delta": 0.11
+            "delta": 0.14
           },
           "waterMoveAway": {
             "dir": "down",
-            "delta": -0.02
+            "delta": -0.04
           },
           "lineMove": {
             "dir": "down",
@@ -84,7 +84,7 @@
           ],
           "score": 0,
           "read": {
-            "holds": "Bandar pegang: Belgium cukup unggul (garis −1). Tanpa potongan: peluang Belgium ~51% vs Egypt/seri ~49%. ⚠️ Tapi garis lagi bergeser −3/4 → −1 — Egypt melemah, Belgium menguat. Jangan asal ambil Egypt.",
+            "holds": "Bandar pegang: Belgium cukup unggul (garis −1). Tanpa potongan: peluang Belgium ~50% vs Egypt/seri ~50%. ⚠️ Tapi garis lagi bergeser −3/4 → −1 — Egypt melemah, Belgium menguat. Jangan asal ambil Egypt.",
             "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
@@ -108,23 +108,23 @@
           },
           "openHome": 2,
           "openAway": 1.85,
-          "nowHome": 1.99,
-          "nowAway": 1.93,
+          "nowHome": 2.02,
+          "nowAway": 1.9,
           "pub": {
             "line": 2.5,
             "home": 1.975,
             "away": 1.875
           },
-          "margin": 2.0647277839977107,
-          "probHome": 0.4923,
-          "probAway": 0.5077,
+          "margin": 2.1365294424179115,
+          "probHome": 0.4847,
+          "probAway": 0.5153,
           "waterMoveHome": {
-            "dir": "down",
-            "delta": -0.01
+            "dir": "up",
+            "delta": 0.02
           },
           "waterMoveAway": {
             "dir": "up",
-            "delta": 0.08
+            "delta": 0.05
           },
           "lineMove": {
             "dir": "flat",
@@ -137,7 +137,7 @@
           "tech": [],
           "score": 0,
           "read": {
-            "holds": "Bandar pegang: perkiraan ~2.5 gol (gol sedang). Peluang Over 2.5 ~49%, Under ~51%.",
+            "holds": "Bandar pegang: perkiraan ~2.5 gol (gol sedang). Peluang Over 2.5 ~48%, Under ~52%.",
             "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
@@ -301,8 +301,8 @@
         "insight": null
       },
       "history": {
-        "snapshots": 19,
-        "moves": 18,
+        "snapshots": 20,
+        "moves": 19,
         "lastMoveMin": 0,
         "spark": [
           -1,
@@ -598,7 +598,7 @@
       "history": {
         "snapshots": 13,
         "moves": 12,
-        "lastMoveMin": 8,
+        "lastMoveMin": 10,
         "spark": [
           1.75,
           1.25,
@@ -907,7 +907,7 @@
       "history": {
         "snapshots": 13,
         "moves": 12,
-        "lastMoveMin": 6,
+        "lastMoveMin": 8,
         "spark": [
           -1,
           -0.5,
@@ -1188,7 +1188,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -2,
           -2,
@@ -1469,7 +1469,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           2,
           2,
@@ -1756,7 +1756,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 16,
+        "lastMoveMin": 18,
         "spark": [
           -2.5,
           -2.5,
@@ -2036,7 +2036,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 16,
+        "lastMoveMin": 18,
         "spark": [
           -2.5,
           -2.5,
@@ -2317,7 +2317,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -3.25,
           -3.25,
@@ -2597,7 +2597,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -1.5,
           -1.5,
@@ -2885,7 +2885,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -0.75,
           -0.75,
@@ -3174,7 +3174,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 1577,
+        "lastMoveMin": 1579,
         "spark": [
           2,
           2,
@@ -3484,7 +3484,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 3194,
+        "lastMoveMin": 3196,
         "spark": [
           -0.5,
           -0.5,
@@ -3773,7 +3773,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -0.75,
           -0.75,
@@ -4071,7 +4071,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -1.25,
           -1.25,
@@ -4372,7 +4372,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 140,
+        "lastMoveMin": 142,
         "spark": [
           -0.5,
           -0.5,
@@ -4660,7 +4660,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -0.5,
           -0.5,
@@ -4955,7 +4955,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           0.5,
           0.5,
@@ -5251,7 +5251,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -3,
           -3,
@@ -5552,7 +5552,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 16,
+        "lastMoveMin": 18,
         "spark": [
           -0.25,
           -0.25,
@@ -5844,7 +5844,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -0.75,
           -0.75,
@@ -6146,7 +6146,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -1,
           -1,
@@ -6442,7 +6442,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -1.75,
           -1.75,
@@ -6744,7 +6744,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           0.5,
           0.5,
@@ -7037,7 +7037,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -2.25,
           -2.25,
@@ -7331,7 +7331,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5714,
+        "lastMoveMin": 5716,
         "spark": [
           -1.25,
           -1.25
@@ -7631,7 +7631,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5714,
+        "lastMoveMin": 5716,
         "spark": [
           -1,
           -1
@@ -7923,7 +7923,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5714,
+        "lastMoveMin": 5716,
         "spark": [
           0.75,
           0.75
@@ -8202,7 +8202,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 5603,
+        "lastMoveMin": 5605,
         "spark": [
           -0.75
         ]
@@ -8484,7 +8484,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 16,
+        "lastMoveMin": 18,
         "spark": [
           -2.25,
           -2.25,
@@ -8777,7 +8777,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 4160,
+        "lastMoveMin": 4162,
         "spark": [
           -0.25
         ]
@@ -9064,7 +9064,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 1678,
+        "lastMoveMin": 1680,
         "spark": [
           0.75,
           0.75
@@ -9343,7 +9343,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1678,
+        "lastMoveMin": 1680,
         "spark": [
           -1.75
         ]
@@ -9621,7 +9621,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1678,
+        "lastMoveMin": 1680,
         "spark": [
           -1.5
         ]
@@ -9895,7 +9895,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1577,
+        "lastMoveMin": 1579,
         "spark": [
           1
         ]
@@ -10173,7 +10173,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1299,
+        "lastMoveMin": 1301,
         "spark": [
           -1
         ]
@@ -10447,7 +10447,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -0.75
         ]
@@ -10738,7 +10738,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1299,
+        "lastMoveMin": 1301,
         "spark": [
           -0.25
         ]
@@ -11016,7 +11016,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           1.25
         ]
@@ -11307,7 +11307,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 149,
+        "lastMoveMin": 151,
         "spark": [
           -1.5
         ]
@@ -11598,7 +11598,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 16,
+        "lastMoveMin": 18,
         "spark": [
           0.5
         ]

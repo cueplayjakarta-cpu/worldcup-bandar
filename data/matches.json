@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T16:13:11.040Z",
+  "generatedAt": "2026-06-15T16:15:13.840Z",
   "source": "odds-api.io / SBOBET (GRATIS)",
   "isDemo": false,
   "reference": "SBOBET",
@@ -15,9 +15,9 @@
   "summary": {
     "total": 40,
     "live": 1,
-    "trapped": 25,
+    "trapped": 26,
     "favoriteTraps": 1,
-    "clean": 15
+    "clean": 14
   },
   "note": "Alat informasi pergerakan odds. Tidak melacak taruhan siapa pun. Bukan jaminan untung.",
   "matches": [
@@ -35,55 +35,59 @@
       },
       "minute": "[object Object]",
       "win": {
-        "home": 0.807,
-        "draw": 0.1296,
-        "away": 0.0634
+        "home": 0.8203,
+        "draw": 0.1172,
+        "away": 0.0625
       },
-      "overallLight": "green",
+      "overallLight": "yellow",
       "verdict": {
-        "light": "green",
-        "text": "Pasar wajar, belum ada yang diramaikan."
+        "light": "yellow",
+        "text": "Ada tarikan tipis ke satu sisi. Jangan buru-buru ikut."
       },
       "markets": {
         "ah": {
           "label": "Handicap",
           "line": {
             "open": -2.25,
-            "now": -2.25
+            "now": -2
           },
           "openHome": 2.08,
           "openAway": 1.82,
-          "nowHome": 2.08,
-          "nowAway": 1.82,
+          "nowHome": 1.94,
+          "nowAway": 1.96,
           "pub": {
-            "line": -2.25,
-            "home": 2.025,
-            "away": 1.825
+            "line": -2,
+            "home": 1.9,
+            "away": 1.95
           },
-          "margin": 3.0219780219780112,
-          "probHome": 0.4667,
-          "probAway": 0.5333,
+          "margin": 2.5667999158426325,
+          "probHome": 0.5026,
+          "probAway": 0.4974,
           "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
+            "dir": "down",
+            "delta": -0.14
           },
           "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
+            "dir": "up",
+            "delta": 0.14
           },
           "lineMove": {
-            "dir": "flat",
-            "delta": 0
+            "dir": "up",
+            "delta": 0.25
           },
-          "lineDisplay": "-2.25",
+          "lineDisplay": "-2",
           "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
+          "light": "yellow",
+          "flags": [
+            "Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana"
+          ],
+          "tech": [
+            "Garis bergeser"
+          ],
+          "score": 1,
           "read": {
-            "holds": "Bandar pegang: Spain sangat dominan (garis −2 1/4). Tanpa potongan: peluang Spain ~47% vs Cape Verde/seri ~53%.",
-            "signal": "Aman — belum ada tanda menjebak."
+            "holds": "Bandar pegang: Spain sangat dominan (garis −2). Tanpa potongan: peluang Spain ~50% vs Cape Verde/seri ~50%. ⚠️ Tapi garis lagi bergeser −2 1/4 → −2 — Spain melemah, Cape Verde menguat. Jangan asal ambil Spain.",
+            "signal": "⚠️ Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana."
           },
           "direction": {
             "side": null,
@@ -101,23 +105,23 @@
           },
           "openHome": 1.925,
           "openAway": 1.925,
-          "nowHome": 1.88,
-          "nowAway": 2,
+          "nowHome": 2.04,
+          "nowAway": 1.84,
           "pub": {
             "line": 3,
-            "home": 1.85,
-            "away": 2
+            "home": 2.025,
+            "away": 1.825
           },
-          "margin": 3.1914893617021267,
-          "probHome": 0.5155,
-          "probAway": 0.4845,
+          "margin": 3.3674339300937772,
+          "probHome": 0.4742,
+          "probAway": 0.5258,
           "waterMoveHome": {
-            "dir": "down",
-            "delta": -0.05
+            "dir": "up",
+            "delta": 0.11
           },
           "waterMoveAway": {
-            "dir": "up",
-            "delta": 0.07
+            "dir": "down",
+            "delta": -0.08
           },
           "lineMove": {
             "dir": "down",
@@ -132,18 +136,19 @@
           ],
           "score": 0,
           "read": {
-            "holds": "Bandar pegang: perkiraan ~3 gol (gol sedang). Peluang Over 3 ~52%, Under ~48%.",
+            "holds": "Bandar pegang: perkiraan ~3 gol (gol sedang). Peluang Over 3 ~47%, Under ~53%.",
             "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
             "side": "away",
-            "strength": 1,
+            "strength": 2,
             "arrow": "➜",
             "bigMove": false,
             "mag": 0,
             "label": "Under 3 gol",
             "reasons": [
-              "garis turun (Under)"
+              "garis turun (Under)",
+              "water mengeras sisi 2"
             ],
             "text": "Bandar geser ke Under 3 gol"
           }
@@ -279,11 +284,17 @@
         }
       },
       "conclusion": {
-        "trapped": false,
-        "topPick": null,
-        "headline": "Belum ada sisi yang dipancing.",
-        "detail": "Dua sisi seimbang, tidak ada sisi yang dipancing. Pasar adem.",
-        "targets": []
+        "trapped": true,
+        "topPick": {
+          "market": "ah",
+          "side": "home",
+          "line": -2
+        },
+        "headline": "Pemasang lagi dipancing ke: Spain (favorit, garis −2)",
+        "detail": "Uang publik lagi ngumpul ke Spain (favorit, garis −2). Tandanya: bayaran Spain dikecilkan karena uang menumpuk ke sana.",
+        "targets": [
+          "Spain (favorit, garis −2)"
+        ]
       },
       "guidance": {
         "moved": true,
@@ -296,13 +307,13 @@
             "move": "3.5 → 3"
           }
         ],
-        "confidence": "Lemah",
-        "strength": 1,
+        "confidence": "Sedang",
+        "strength": 2,
         "insight": null
       },
       "history": {
-        "snapshots": 11,
-        "moves": 10,
+        "snapshots": 12,
+        "moves": 11,
         "lastMoveMin": 0,
         "spark": [
           -5,
@@ -315,7 +326,8 @@
           -2.75,
           -2.5,
           -2.25,
-          -2.25
+          -2.25,
+          -2
         ]
       }
     },
@@ -597,7 +609,7 @@
       "history": {
         "snapshots": 9,
         "moves": 8,
-        "lastMoveMin": 4,
+        "lastMoveMin": 6,
         "spark": [
           -1.5,
           -1.5,
@@ -889,7 +901,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           1.75,
           1.75,
@@ -1194,7 +1206,7 @@
       "history": {
         "snapshots": 9,
         "moves": 8,
-        "lastMoveMin": 4,
+        "lastMoveMin": 6,
         "spark": [
           -1,
           -1,
@@ -1472,7 +1484,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -2,
           -2,
@@ -1753,7 +1765,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           2,
           2,
@@ -2040,7 +2052,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -2.5,
           -2.5,
@@ -2319,7 +2331,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -2.5,
           -2.5,
@@ -2595,7 +2607,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -3.25,
           -3.25,
@@ -2875,7 +2887,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -1.5,
           -1.5,
@@ -3163,7 +3175,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -0.75,
           -0.75,
@@ -3452,7 +3464,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 1441,
+        "lastMoveMin": 1443,
         "spark": [
           2,
           2,
@@ -3762,7 +3774,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 3058,
+        "lastMoveMin": 3060,
         "spark": [
           -0.5,
           -0.5,
@@ -4059,7 +4071,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -0.75,
           -0.75,
@@ -4357,7 +4369,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -1.25,
           -1.25,
@@ -4658,7 +4670,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 4,
+        "lastMoveMin": 6,
         "spark": [
           -0.5,
           -0.5,
@@ -4946,7 +4958,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -0.5,
           -0.5,
@@ -5241,7 +5253,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           0.5,
           0.5,
@@ -5537,7 +5549,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -3,
           -3,
@@ -5841,7 +5853,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 1542,
+        "lastMoveMin": 1544,
         "spark": [
           -0.25,
           -0.25,
@@ -6132,7 +6144,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -0.75,
           -0.75,
@@ -6434,7 +6446,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -1,
           -1,
@@ -6730,7 +6742,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -1.75,
           -1.75,
@@ -7032,7 +7044,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           0.5,
           0.5,
@@ -7325,7 +7337,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -2.25,
           -2.25,
@@ -7619,7 +7631,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5578,
+        "lastMoveMin": 5580,
         "spark": [
           -1.25,
           -1.25
@@ -7907,7 +7919,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5578,
+        "lastMoveMin": 5580,
         "spark": [
           -1,
           -1
@@ -8199,7 +8211,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5578,
+        "lastMoveMin": 5580,
         "spark": [
           0.75,
           0.75
@@ -8478,7 +8490,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 5467,
+        "lastMoveMin": 5469,
         "spark": [
           -0.75
         ]
@@ -8765,7 +8777,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 1542,
+        "lastMoveMin": 1544,
         "spark": [
           -2.25,
           -2.25
@@ -9057,7 +9069,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 4024,
+        "lastMoveMin": 4026,
         "spark": [
           -0.25
         ]
@@ -9344,7 +9356,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 1542,
+        "lastMoveMin": 1544,
         "spark": [
           0.75,
           0.75
@@ -9623,7 +9635,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1542,
+        "lastMoveMin": 1544,
         "spark": [
           -1.75
         ]
@@ -9901,7 +9913,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1542,
+        "lastMoveMin": 1544,
         "spark": [
           -1.5
         ]
@@ -10175,7 +10187,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1441,
+        "lastMoveMin": 1443,
         "spark": [
           1
         ]
@@ -10453,7 +10465,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1163,
+        "lastMoveMin": 1165,
         "spark": [
           -1
         ]
@@ -10744,7 +10756,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1163,
+        "lastMoveMin": 1165,
         "spark": [
           -0.25
         ]
@@ -11018,7 +11030,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -0.75
         ]
@@ -11296,7 +11308,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           1.25
         ]
@@ -11587,7 +11599,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 13,
+        "lastMoveMin": 15,
         "spark": [
           -1.5
         ]

@@ -1424,7 +1424,7 @@
       "home": 1,
       "away": 1
     },
-    "updatedAt": 1781540850284
+    "updatedAt": 1781540971822
   },
   "D2": {
     "id": "D2",
@@ -1445,7 +1445,7 @@
       "overallLight": "green"
     },
     "status": "pending",
-    "updatedAt": 1781540850284
+    "updatedAt": 1781540971822
   },
   "D3": {
     "id": "D3",
@@ -1470,7 +1470,7 @@
       "overallLight": "yellow"
     },
     "status": "pending",
-    "updatedAt": 1781540850284
+    "updatedAt": 1781540971822
   },
   "D4": {
     "id": "D4",
@@ -1491,7 +1491,7 @@
       "overallLight": "green"
     },
     "status": "pending",
-    "updatedAt": 1781540850284
+    "updatedAt": 1781540971822
   },
   "D5": {
     "id": "D5",
@@ -1512,7 +1512,7 @@
       "overallLight": "green"
     },
     "status": "pending",
-    "updatedAt": 1781540850284
+    "updatedAt": 1781540971822
   },
   "D6": {
     "id": "D6",
@@ -1533,6 +1533,6 @@
       "overallLight": "green"
     },
     "status": "pending",
-    "updatedAt": 1781540850284
+    "updatedAt": 1781540971822
   }
 }

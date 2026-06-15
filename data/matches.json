@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T17:02:00.243Z",
+  "generatedAt": "2026-06-15T18:12:40.383Z",
   "source": "odds-api.io / SBOBET (GRATIS)",
   "isDemo": false,
   "reference": "SBOBET",
@@ -14,323 +14,13 @@
   "cornerAvailable": false,
   "summary": {
     "total": 40,
-    "live": 1,
-    "trapped": 26,
+    "live": 0,
+    "trapped": 24,
     "favoriteTraps": 1,
-    "clean": 14
+    "clean": 16
   },
   "note": "Alat informasi pergerakan odds. Tidak melacak taruhan siapa pun. Bukan jaminan untung.",
   "matches": [
-    {
-      "id": "66456994",
-      "home": "Spain",
-      "away": "Cape Verde",
-      "group": "International - FIFA World Cup",
-      "kickoff": "2026-06-15T16:00:00Z",
-      "status": "live",
-      "live": true,
-      "score": {
-        "home": 0,
-        "away": 0
-      },
-      "minute": "[object Object]",
-      "win": {
-        "home": 0.7643,
-        "draw": 0.1813,
-        "away": 0.0544
-      },
-      "overallLight": "yellow",
-      "verdict": {
-        "light": "yellow",
-        "text": "Ada tarikan tipis ke satu sisi. Jangan buru-buru ikut."
-      },
-      "markets": {
-        "ah": {
-          "label": "Handicap",
-          "line": {
-            "open": -2.25,
-            "now": -1.5
-          },
-          "openHome": 2.08,
-          "openAway": 1.82,
-          "nowHome": 1.89,
-          "nowAway": 2.01,
-          "pub": {
-            "line": -1.5,
-            "home": 1.9,
-            "away": 1.95
-          },
-          "margin": 2.6612966911474523,
-          "probHome": 0.5154,
-          "probAway": 0.4846,
-          "waterMoveHome": {
-            "dir": "down",
-            "delta": -0.19
-          },
-          "waterMoveAway": {
-            "dir": "up",
-            "delta": 0.19
-          },
-          "lineMove": {
-            "dir": "up",
-            "delta": 0.75
-          },
-          "lineDisplay": "-1.5",
-          "divergence": null,
-          "light": "yellow",
-          "flags": [
-            "Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana"
-          ],
-          "tech": [
-            "Garis bergeser"
-          ],
-          "score": 1,
-          "read": {
-            "holds": "Bandar pegang: Spain unggul jelas (garis −1 1/2). Tanpa potongan: peluang Spain ~52% vs Cape Verde/seri ~48%. ⚠️ Tapi garis lagi bergeser −2 1/4 → −1 1/2 — Spain melemah, Cape Verde menguat. Jangan asal ambil Spain.",
-            "signal": "⚠️ Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana."
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": "Belum bergerak",
-            "bigMove": false
-          }
-        },
-        "ou": {
-          "label": "Over/Under",
-          "line": {
-            "open": 3,
-            "now": 2
-          },
-          "openHome": 1.88,
-          "openAway": 2,
-          "nowHome": 1.95,
-          "nowAway": 1.93,
-          "pub": {
-            "line": 2,
-            "home": 1.95,
-            "away": 1.9
-          },
-          "margin": 3.0955227846419575,
-          "probHome": 0.4974,
-          "probAway": 0.5026,
-          "waterMoveHome": {
-            "dir": "up",
-            "delta": 0.07
-          },
-          "waterMoveAway": {
-            "dir": "down",
-            "delta": -0.07
-          },
-          "lineMove": {
-            "dir": "down",
-            "delta": -1
-          },
-          "lineDisplay": "2",
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [
-            "Garis bergeser"
-          ],
-          "score": 0,
-          "read": {
-            "holds": "Bandar pegang: perkiraan ~2 gol (laga ketat / sedikit gol). Peluang Over 2 ~50%, Under ~50%.",
-            "signal": "Aman — belum ada tanda menjebak."
-          },
-          "direction": {
-            "side": "away",
-            "strength": 2,
-            "arrow": "➜",
-            "bigMove": false,
-            "mag": 0,
-            "label": "Under 2 gol",
-            "reasons": [
-              "garis turun (Under)",
-              "water mengeras sisi 2"
-            ],
-            "text": "Bandar geser ke Under 2 gol"
-          }
-        },
-        "corner": {
-          "label": "Corner (FT)",
-          "line": {
-            "open": null,
-            "now": null
-          },
-          "openHome": null,
-          "openAway": null,
-          "nowHome": null,
-          "nowAway": null,
-          "pub": null,
-          "margin": null,
-          "probHome": null,
-          "probAway": null,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": null,
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
-          "read": {
-            "holds": "",
-            "signal": ""
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": ""
-          }
-        },
-        "cornerHT": {
-          "label": "Corner (Babak 1)",
-          "line": {
-            "open": null,
-            "now": null
-          },
-          "openHome": null,
-          "openAway": null,
-          "nowHome": null,
-          "nowAway": null,
-          "pub": null,
-          "margin": null,
-          "probHome": null,
-          "probAway": null,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": null,
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
-          "read": {
-            "holds": "",
-            "signal": ""
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": ""
-          }
-        },
-        "card": {
-          "label": "Kartu",
-          "line": {
-            "open": null,
-            "now": null
-          },
-          "openHome": null,
-          "openAway": null,
-          "nowHome": null,
-          "nowAway": null,
-          "pub": null,
-          "margin": null,
-          "probHome": null,
-          "probAway": null,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": null,
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
-          "read": {
-            "holds": "",
-            "signal": ""
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": ""
-          }
-        }
-      },
-      "conclusion": {
-        "trapped": true,
-        "topPick": {
-          "market": "ah",
-          "side": "home",
-          "line": -1.5
-        },
-        "headline": "Pemasang lagi dipancing ke: Spain (favorit, garis −1 1/2)",
-        "detail": "Banyak yang ditarik ke Spain (favorit, garis −1 1/2). Tandanya: bayaran Spain dikecilkan karena uang menumpuk ke sana.",
-        "targets": [
-          "Spain (favorit, garis −1 1/2)"
-        ]
-      },
-      "guidance": {
-        "moved": true,
-        "primary": "Under 2 gol",
-        "narrative": "Over/Under: Under 2 gol (3 → 2).",
-        "items": [
-          {
-            "market": "Over/Under",
-            "to": "Under 2 gol",
-            "move": "3 → 2"
-          }
-        ],
-        "confidence": "Sedang",
-        "strength": 2,
-        "insight": null
-      },
-      "history": {
-        "snapshots": 19,
-        "moves": 18,
-        "lastMoveMin": 0,
-        "spark": [
-          -2.75,
-          -2.5,
-          -2.25,
-          -2.25,
-          -2,
-          -2,
-          -2,
-          -2,
-          -1.75,
-          -1.75,
-          -1.5,
-          -1.5
-        ]
-      }
-    },
     {
       "id": "66456982",
       "home": "Belgium",
@@ -345,14 +35,14 @@
       },
       "minute": null,
       "win": {
-        "home": 0.5982,
-        "draw": 0.2378,
-        "away": 0.164
+        "home": 0.622,
+        "draw": 0.2316,
+        "away": 0.1464
       },
-      "overallLight": "yellow",
+      "overallLight": "green",
       "verdict": {
-        "light": "yellow",
-        "text": "Ada tarikan tipis ke satu sisi. Jangan buru-buru ikut."
+        "light": "green",
+        "text": "Pasar wajar, belum ada yang diramaikan."
       },
       "markets": {
         "ah": {
@@ -363,23 +53,23 @@
           },
           "openHome": 1.825,
           "openAway": 2.025,
-          "nowHome": 2.06,
-          "nowAway": 1.88,
+          "nowHome": 1.98,
+          "nowAway": 1.96,
           "pub": {
             "line": -1,
-            "home": 2.025,
-            "away": 1.825
+            "home": 1.95,
+            "away": 1.9
           },
-          "margin": 1.7351786820904769,
-          "probHome": 0.4772,
-          "probAway": 0.5228,
+          "margin": 1.5254586683158156,
+          "probHome": 0.4975,
+          "probAway": 0.5025,
           "waterMoveHome": {
             "dir": "up",
-            "delta": 0.24
+            "delta": 0.16
           },
           "waterMoveAway": {
             "dir": "down",
-            "delta": -0.15
+            "delta": -0.06
           },
           "lineMove": {
             "dir": "down",
@@ -387,17 +77,15 @@
           },
           "lineDisplay": "-1",
           "divergence": null,
-          "light": "yellow",
-          "flags": [
-            "Bayaran tim tamu dikecilkan — pemasang menumpuk ke sana"
-          ],
+          "light": "green",
+          "flags": [],
           "tech": [
             "Garis bergeser"
           ],
-          "score": 1,
+          "score": 0,
           "read": {
-            "holds": "Bandar pegang: Belgium cukup unggul (garis −1). Tanpa potongan: peluang Belgium ~48% vs Egypt/seri ~52%. ⚠️ Tapi garis lagi bergeser −3/4 → −1 — Egypt melemah, Belgium menguat. Jangan asal ambil Egypt.",
-            "signal": "⚠️ Bayaran tim tamu dikecilkan — pemasang menumpuk ke sana."
+            "holds": "Bandar pegang: Belgium cukup unggul (garis −1). Tanpa potongan: peluang Belgium ~50% vs Egypt/seri ~50%. ⚠️ Tapi garis lagi bergeser −3/4 → −1 — Egypt melemah, Belgium menguat. Jangan asal ambil Egypt.",
+            "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
             "side": null,
@@ -415,23 +103,23 @@
           },
           "openHome": 2,
           "openAway": 1.85,
-          "nowHome": 1.97,
-          "nowAway": 1.95,
+          "nowHome": 2.04,
+          "nowAway": 1.88,
           "pub": {
             "line": 2.5,
-            "home": 1.925,
-            "away": 1.925
+            "home": 2,
+            "away": 1.85
           },
-          "margin": 2.0434726018482507,
-          "probHome": 0.4974,
-          "probAway": 0.5026,
+          "margin": 2.211097204839385,
+          "probHome": 0.4796,
+          "probAway": 0.5204,
           "waterMoveHome": {
-            "dir": "down",
-            "delta": -0.03
+            "dir": "up",
+            "delta": 0.04
           },
           "waterMoveAway": {
             "dir": "up",
-            "delta": 0.1
+            "delta": 0.03
           },
           "lineMove": {
             "dir": "flat",
@@ -444,7 +132,7 @@
           "tech": [],
           "score": 0,
           "read": {
-            "holds": "Bandar pegang: perkiraan ~2.5 gol (gol sedang). Peluang Over 2.5 ~50%, Under ~50%.",
+            "holds": "Bandar pegang: perkiraan ~2.5 gol (gol sedang). Peluang Over 2.5 ~48%, Under ~52%.",
             "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
@@ -586,17 +274,11 @@
         }
       },
       "conclusion": {
-        "trapped": true,
-        "topPick": {
-          "market": "ah",
-          "side": "away",
-          "line": -1
-        },
-        "headline": "Pemasang lagi dipancing ke: Egypt",
-        "detail": "Banyak yang ditarik ke Egypt. Tandanya: bayaran Egypt dikecilkan karena uang menumpuk ke sana.",
-        "targets": [
-          "Egypt"
-        ]
+        "trapped": false,
+        "topPick": null,
+        "headline": "Belum ada sisi yang dipancing.",
+        "detail": "Dua sisi seimbang, tidak ada sisi yang dipancing. Pasar adem.",
+        "targets": []
       },
       "guidance": {
         "moved": false,
@@ -607,9 +289,9 @@
         "strength": 0
       },
       "history": {
-        "snapshots": 10,
-        "moves": 9,
-        "lastMoveMin": 2,
+        "snapshots": 11,
+        "moves": 10,
+        "lastMoveMin": 0,
         "spark": [
           -1.5,
           -1.5,
@@ -618,6 +300,7 @@
           -0.75,
           -0.75,
           -0.75,
+          -1,
           -1,
           -1,
           -1
@@ -638,9 +321,9 @@
       },
       "minute": null,
       "win": {
-        "home": 0.1134,
-        "draw": 0.2205,
-        "away": 0.6661
+        "home": 0.1133,
+        "draw": 0.2209,
+        "away": 0.6658
       },
       "overallLight": "yellow",
       "verdict": {
@@ -656,23 +339,23 @@
           },
           "openHome": 1.825,
           "openAway": 2.025,
-          "nowHome": 1.87,
-          "nowAway": 2.07,
+          "nowHome": 1.86,
+          "nowAway": 2.08,
           "pub": {
             "line": 1.25,
             "home": 1.825,
             "away": 2.025
           },
-          "margin": 1.7851145728383422,
-          "probHome": 0.5254,
-          "probAway": 0.4746,
+          "margin": 1.8403639371381342,
+          "probHome": 0.5279,
+          "probAway": 0.4721,
           "waterMoveHome": {
             "dir": "up",
-            "delta": 0.05
+            "delta": 0.04
           },
           "waterMoveAway": {
             "dir": "up",
-            "delta": 0.04
+            "delta": 0.06
           },
           "lineMove": {
             "dir": "flat",
@@ -704,23 +387,23 @@
           },
           "openHome": 2,
           "openAway": 1.85,
-          "nowHome": 1.86,
-          "nowAway": 2.06,
+          "nowHome": 1.88,
+          "nowAway": 2.04,
           "pub": {
             "line": 2.25,
-            "home": 1.825,
-            "away": 2.025
+            "home": 1.85,
+            "away": 2
           },
-          "margin": 2.3071301806034006,
-          "probHome": 0.5255,
-          "probAway": 0.4745,
+          "margin": 2.211097204839385,
+          "probHome": 0.5204,
+          "probAway": 0.4796,
           "waterMoveHome": {
             "dir": "down",
-            "delta": -0.14
+            "delta": -0.12
           },
           "waterMoveAway": {
             "dir": "up",
-            "delta": 0.21
+            "delta": 0.19
           },
           "lineMove": {
             "dir": "down",
@@ -737,7 +420,7 @@
           ],
           "score": 1,
           "read": {
-            "holds": "Bandar pegang: perkiraan ~2.25 gol (laga ketat / sedikit gol). Peluang Over 2.25 ~53%, Under ~47%.",
+            "holds": "Bandar pegang: perkiraan ~2.25 gol (laga ketat / sedikit gol). Peluang Over 2.25 ~52%, Under ~48%.",
             "signal": "⚠️ Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana."
           },
           "direction": {
@@ -900,9 +583,9 @@
         "strength": 0
       },
       "history": {
-        "snapshots": 9,
-        "moves": 8,
-        "lastMoveMin": 2,
+        "snapshots": 10,
+        "moves": 9,
+        "lastMoveMin": 0,
         "spark": [
           1.75,
           1.75,
@@ -911,6 +594,7 @@
           1.25,
           1.25,
           1,
+          1.25,
           1.25,
           1.25
         ]
@@ -930,9 +614,9 @@
       },
       "minute": null,
       "win": {
-        "home": 0.5278,
-        "draw": 0.2803,
-        "away": 0.1919
+        "home": 0.5248,
+        "draw": 0.2802,
+        "away": 0.195
       },
       "overallLight": "yellow",
       "verdict": {
@@ -948,23 +632,23 @@
           },
           "openHome": 1.95,
           "openAway": 1.85,
-          "nowHome": 2.09,
-          "nowAway": 1.85,
+          "nowHome": 2.12,
+          "nowAway": 1.83,
           "pub": {
             "line": -0.75,
             "home": 2.05,
             "away": 1.8
           },
-          "margin": 1.9009440062071725,
-          "probHome": 0.4695,
-          "probAway": 0.5305,
+          "margin": 1.8146200639240995,
+          "probHome": 0.4633,
+          "probAway": 0.5367,
           "waterMoveHome": {
             "dir": "up",
-            "delta": 0.14
+            "delta": 0.17
           },
           "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
+            "dir": "down",
+            "delta": -0.02
           },
           "lineMove": {
             "dir": "up",
@@ -979,7 +663,7 @@
           ],
           "score": 0,
           "read": {
-            "holds": "Bandar pegang: Iran cukup unggul (garis −3/4). Tanpa potongan: peluang Iran ~47% vs New Zealand/seri ~53%. ⚠️ Tapi garis lagi bergeser −1 → −3/4 — Iran melemah, New Zealand menguat. Jangan asal ambil Iran.",
+            "holds": "Bandar pegang: Iran cukup unggul (garis −3/4). Tanpa potongan: peluang Iran ~46% vs New Zealand/seri ~54%. ⚠️ Tapi garis lagi bergeser −1 → −3/4 — Iran melemah, New Zealand menguat. Jangan asal ambil Iran.",
             "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
@@ -1206,9 +890,9 @@
         "insight": null
       },
       "history": {
-        "snapshots": 11,
-        "moves": 10,
-        "lastMoveMin": 2,
+        "snapshots": 12,
+        "moves": 11,
+        "lastMoveMin": 0,
         "spark": [
           -1,
           -1,
@@ -1217,6 +901,7 @@
           -0.5,
           -0.5,
           -0.5,
+          -0.75,
           -0.75,
           -0.75,
           -0.75,
@@ -1488,7 +1173,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -2,
           -2,
@@ -1769,7 +1454,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           2,
           2,
@@ -1792,9 +1477,9 @@
       },
       "minute": null,
       "win": {
-        "home": 0.6881,
-        "draw": 0.2072,
-        "away": 0.1047
+        "home": 0.6875,
+        "draw": 0.2079,
+        "away": 0.1046
       },
       "overallLight": "yellow",
       "verdict": {
@@ -1810,23 +1495,23 @@
           },
           "openHome": 2.11,
           "openAway": 1.7,
-          "nowHome": 1.97,
-          "nowAway": 1.95,
+          "nowHome": 1.99,
+          "nowAway": 1.93,
           "pub": {
             "line": -1.25,
             "home": 1.925,
             "away": 1.925
           },
-          "margin": 2.0434726018482507,
-          "probHome": 0.4974,
-          "probAway": 0.5026,
+          "margin": 2.0647277839977107,
+          "probHome": 0.4923,
+          "probAway": 0.5077,
           "waterMoveHome": {
             "dir": "down",
-            "delta": -0.14
+            "delta": -0.12
           },
           "waterMoveAway": {
             "dir": "up",
-            "delta": 0.25
+            "delta": 0.23
           },
           "lineMove": {
             "dir": "up",
@@ -1843,7 +1528,7 @@
           ],
           "score": 1,
           "read": {
-            "holds": "Bandar pegang: Argentina unggul jelas (garis −1 1/4). Tanpa potongan: peluang Argentina ~50% vs Algeria/seri ~50%. ⚠️ Tapi garis lagi bergeser −2 1/2 → −1 1/4 — Argentina melemah, Algeria menguat. Jangan asal ambil Argentina.",
+            "holds": "Bandar pegang: Argentina unggul jelas (garis −1 1/4). Tanpa potongan: peluang Argentina ~49% vs Algeria/seri ~51%. ⚠️ Tapi garis lagi bergeser −2 1/2 → −1 1/4 — Argentina melemah, Algeria menguat. Jangan asal ambil Argentina.",
             "signal": "⚠️ Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana."
           },
           "direction": {
@@ -2054,12 +1739,13 @@
         "strength": 0
       },
       "history": {
-        "snapshots": 6,
-        "moves": 5,
-        "lastMoveMin": 62,
+        "snapshots": 7,
+        "moves": 6,
+        "lastMoveMin": 0,
         "spark": [
           -2.5,
           -2.5,
+          -1.25,
           -1.25,
           -1.25,
           -1.25,
@@ -2081,9 +1767,9 @@
       },
       "minute": null,
       "win": {
-        "home": 0.695,
-        "draw": 0.1877,
-        "away": 0.1173
+        "home": 0.694,
+        "draw": 0.1874,
+        "away": 0.1186
       },
       "overallLight": "green",
       "verdict": {
@@ -2147,23 +1833,23 @@
           },
           "openHome": 1.825,
           "openAway": 2.025,
-          "nowHome": 1.92,
-          "nowAway": 1.98,
+          "nowHome": 1.89,
+          "nowAway": 2.01,
           "pub": {
             "line": 2.75,
             "home": 1.85,
             "away": 2
           },
-          "margin": 2.5883838383838453,
-          "probHome": 0.5077,
-          "probAway": 0.4923,
+          "margin": 2.6612966911474523,
+          "probHome": 0.5154,
+          "probAway": 0.4846,
           "waterMoveHome": {
             "dir": "up",
-            "delta": 0.09
+            "delta": 0.06
           },
           "waterMoveAway": {
             "dir": "down",
-            "delta": -0.04
+            "delta": -0.02
           },
           "lineMove": {
             "dir": "flat",
@@ -2176,7 +1862,7 @@
           "tech": [],
           "score": 0,
           "read": {
-            "holds": "Bandar pegang: perkiraan ~2.75 gol (gol sedang). Peluang Over 2.75 ~51%, Under ~49%.",
+            "holds": "Bandar pegang: perkiraan ~2.75 gol (gol sedang). Peluang Over 2.75 ~52%, Under ~48%.",
             "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
@@ -2333,12 +2019,13 @@
         "strength": 0
       },
       "history": {
-        "snapshots": 7,
-        "moves": 6,
-        "lastMoveMin": 62,
+        "snapshots": 8,
+        "moves": 7,
+        "lastMoveMin": 0,
         "spark": [
           -2.5,
           -2.5,
+          -1.5,
           -1.5,
           -1.5,
           -1.5,
@@ -2615,7 +2302,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -3.25,
           -3.25,
@@ -2895,7 +2582,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -1.5,
           -1.5,
@@ -3183,7 +2870,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -0.75,
           -0.75,
@@ -3472,7 +3159,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 1490,
+        "lastMoveMin": 1560,
         "spark": [
           2,
           2,
@@ -3782,7 +3469,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 3107,
+        "lastMoveMin": 3178,
         "spark": [
           -0.5,
           -0.5,
@@ -3829,8 +3516,8 @@
           "nowAway": 1.9,
           "pub": {
             "line": -1,
-            "home": 1.975,
-            "away": 1.875
+            "home": 2,
+            "away": 1.85
           },
           "margin": 2.631578947368407,
           "probHome": 0.4872,
@@ -3881,8 +3568,8 @@
           "nowAway": 2,
           "pub": {
             "line": 2.25,
-            "home": 1.8,
-            "away": 2.05
+            "home": 1.825,
+            "away": 2.025
           },
           "margin": 3.1914893617021267,
           "probHome": 0.5155,
@@ -3900,21 +3587,14 @@
             "delta": 0
           },
           "lineDisplay": "2.25",
-          "divergence": {
-            "side": "away",
-            "gap": 0.05,
-            "strong": false,
-            "flag": "Di Bet365, Bosnia and Herzegovina dikasih bayaran lebih besar untuk memancing pemasang ke sana"
-          },
-          "light": "yellow",
-          "flags": [
-            "Di Bet365, Bosnia and Herzegovina dikasih bayaran lebih besar untuk memancing pemasang ke sana"
-          ],
+          "divergence": null,
+          "light": "green",
+          "flags": [],
           "tech": [],
-          "score": 1,
+          "score": 0,
           "read": {
             "holds": "Bandar pegang: perkiraan ~2.25 gol (laga ketat / sedikit gol). Peluang Over 2.25 ~52%, Under ~48%.",
-            "signal": "⚠️ Di Bet365, Bosnia and Herzegovina dikasih bayaran lebih besar untuk memancing pemasang ke sana."
+            "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
             "side": null,
@@ -4057,14 +3737,13 @@
       "conclusion": {
         "trapped": true,
         "topPick": {
-          "market": "ou",
+          "market": "ah",
           "side": "away",
-          "line": 2.25
+          "line": -1
         },
-        "headline": "Pemasang lagi dipancing ke: Under 2.25 gol",
-        "detail": "Orang ramai-ramai dipancing ke Under 2.25 gol. Tandanya: Under 2.25 gol dikasih bayaran lebih besar di Bet365 untuk memancing pemasang.",
+        "headline": "Pemasang lagi dipancing ke: Bosnia and Herzegovina",
+        "detail": "Banyak yang ditarik ke Bosnia and Herzegovina. Tandanya: bayaran Bosnia and Herzegovina dikecilkan karena uang menumpuk ke sana.",
         "targets": [
-          "Under 2.25 gol",
           "Bosnia and Herzegovina"
         ]
       },
@@ -4079,7 +3758,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -0.75,
           -0.75,
@@ -4377,7 +4056,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -1.25,
           -1.25,
@@ -4678,7 +4357,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 53,
+        "lastMoveMin": 124,
         "spark": [
           -0.5,
           -0.5,
@@ -4966,7 +4645,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -0.5,
           -0.5,
@@ -4993,9 +4672,9 @@
       },
       "minute": null,
       "win": {
-        "home": 0.194,
-        "draw": 0.2733,
-        "away": 0.5327
+        "home": 0.1904,
+        "draw": 0.2709,
+        "away": 0.5387
       },
       "overallLight": "green",
       "verdict": {
@@ -5261,7 +4940,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           0.5,
           0.5,
@@ -5308,8 +4987,8 @@
           "nowAway": 1.92,
           "pub": {
             "line": -2.5,
-            "home": 1.95,
-            "away": 1.9
+            "home": 1.925,
+            "away": 1.925
           },
           "margin": 2.5883838383838453,
           "probHome": 0.4923,
@@ -5557,7 +5236,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -3,
           -3,
@@ -5582,9 +5261,9 @@
       },
       "minute": null,
       "win": {
-        "home": 0.455,
-        "draw": 0.2863,
-        "away": 0.2587
+        "home": 0.4595,
+        "draw": 0.2838,
+        "away": 0.2567
       },
       "overallLight": "yellow",
       "verdict": {
@@ -5600,23 +5279,23 @@
           },
           "openHome": 1.91,
           "openAway": 1.93,
-          "nowHome": 2.07,
-          "nowAway": 1.83,
+          "nowHome": 2.05,
+          "nowAway": 1.85,
           "pub": {
             "line": -0.5,
             "home": 2,
             "away": 1.85
           },
-          "margin": 2.9539874871307603,
-          "probHome": 0.4692,
-          "probAway": 0.5308,
+          "margin": 2.8345418589321048,
+          "probHome": 0.4744,
+          "probAway": 0.5256,
           "waterMoveHome": {
             "dir": "up",
-            "delta": 0.16
+            "delta": 0.14
           },
           "waterMoveAway": {
             "dir": "down",
-            "delta": -0.1
+            "delta": -0.08
           },
           "lineMove": {
             "dir": "down",
@@ -5624,17 +5303,15 @@
           },
           "lineDisplay": "-0.5",
           "divergence": null,
-          "light": "yellow",
-          "flags": [
-            "Bayaran tim tamu dikecilkan — pemasang menumpuk ke sana"
-          ],
+          "light": "green",
+          "flags": [],
           "tech": [
             "Garis bergeser"
           ],
-          "score": 1,
+          "score": 0,
           "read": {
             "holds": "Bandar pegang: Turkiye unggul tipis (garis −1/2). Tanpa potongan: peluang Turkiye ~47% vs Paraguay/seri ~53%. ⚠️ Tapi garis lagi bergeser −1/4 → −1/2 — Paraguay melemah, Turkiye menguat. Jangan asal ambil Paraguay.",
-            "signal": "⚠️ Bayaran tim tamu dikecilkan — pemasang menumpuk ke sana."
+            "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
             "side": null,
@@ -5832,14 +5509,13 @@
       "conclusion": {
         "trapped": true,
         "topPick": {
-          "market": "ah",
-          "side": "away",
-          "line": -0.5
+          "market": "ou",
+          "side": "home",
+          "line": 2.25
         },
-        "headline": "Pemasang lagi dipancing ke: Paraguay",
-        "detail": "Uang publik lagi ngumpul ke Paraguay. Tandanya: bayaran Paraguay dikecilkan karena uang menumpuk ke sana.",
+        "headline": "Pemasang lagi dipancing ke: Over 2.25 gol",
+        "detail": "Banyak yang ditarik ke Over 2.25 gol. Tandanya: bayaran Over 2.25 gol dikecilkan karena uang menumpuk ke sana.",
         "targets": [
-          "Paraguay",
           "Over 2.25 gol"
         ]
       },
@@ -5859,15 +5535,16 @@
         "insight": null
       },
       "history": {
-        "snapshots": 6,
-        "moves": 5,
-        "lastMoveMin": 1591,
+        "snapshots": 7,
+        "moves": 6,
+        "lastMoveMin": 0,
         "spark": [
           -0.25,
           -0.25,
           -0.25,
           -0.25,
           -0.25,
+          -0.5,
           -0.5
         ]
       }
@@ -6152,7 +5829,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -0.75,
           -0.75,
@@ -6454,7 +6131,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -1,
           -1,
@@ -6750,7 +6427,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -1.75,
           -1.75,
@@ -7052,7 +6729,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           0.5,
           0.5,
@@ -7345,7 +7022,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -2.25,
           -2.25,
@@ -7639,7 +7316,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5627,
+        "lastMoveMin": 5698,
         "spark": [
           -1.25,
           -1.25
@@ -7680,7 +7357,11 @@
           "openAway": 2.13,
           "nowHome": 1.72,
           "nowAway": 2.13,
-          "pub": null,
+          "pub": {
+            "line": -1,
+            "home": 1.8,
+            "away": 2.05
+          },
           "margin": 5.087891691232671,
           "probHome": 0.5532,
           "probAway": 0.4468,
@@ -7697,16 +7378,23 @@
             "delta": 0
           },
           "lineDisplay": "-1",
-          "divergence": null,
-          "light": "green",
-          "flags": [],
+          "divergence": {
+            "side": "home",
+            "gap": 0.08,
+            "strong": true,
+            "flag": "Di Bet365, Uruguay dikasih bayaran lebih besar untuk memancing pemasang ke sana"
+          },
+          "light": "yellow",
+          "flags": [
+            "Di Bet365, Uruguay dikasih bayaran lebih besar untuk memancing pemasang ke sana"
+          ],
           "tech": [
             "Jatah bandar besar (5.1%)"
           ],
-          "score": 0,
+          "score": 2,
           "read": {
             "holds": "Bandar pegang: Uruguay cukup unggul (garis −1). Tanpa potongan: peluang Uruguay ~55% vs Cape Verde/seri ~45%.",
-            "signal": "Aman — belum ada tanda menjebak."
+            "signal": "⚠️ Di Bet365, Uruguay dikasih bayaran lebih besar untuk memancing pemasang ke sana."
           },
           "direction": {
             "side": null,
@@ -7728,8 +7416,8 @@
           "nowAway": 1.9,
           "pub": {
             "line": 2.5,
-            "home": 1.9,
-            "away": 1.95
+            "home": 1.975,
+            "away": 1.875
           },
           "margin": 4.714912280701755,
           "probHome": 0.4974,
@@ -7748,14 +7436,14 @@
           },
           "lineDisplay": "2.5",
           "divergence": {
-            "side": "away",
-            "gap": 0.05,
+            "side": "home",
+            "gap": 0.055,
             "strong": false,
-            "flag": "Di Bet365, Cape Verde dikasih bayaran lebih besar untuk memancing pemasang ke sana"
+            "flag": "Di Bet365, Uruguay dikasih bayaran lebih besar untuk memancing pemasang ke sana"
           },
           "light": "yellow",
           "flags": [
-            "Di Bet365, Cape Verde dikasih bayaran lebih besar untuk memancing pemasang ke sana"
+            "Di Bet365, Uruguay dikasih bayaran lebih besar untuk memancing pemasang ke sana"
           ],
           "tech": [
             "Jatah bandar agak besar (4.7%)"
@@ -7763,7 +7451,7 @@
           "score": 1,
           "read": {
             "holds": "Bandar pegang: perkiraan ~2.5 gol (gol sedang). Peluang Over 2.5 ~50%, Under ~50%.",
-            "signal": "⚠️ Di Bet365, Cape Verde dikasih bayaran lebih besar untuk memancing pemasang ke sana."
+            "signal": "⚠️ Di Bet365, Uruguay dikasih bayaran lebih besar untuk memancing pemasang ke sana."
           },
           "direction": {
             "side": null,
@@ -7906,14 +7594,15 @@
       "conclusion": {
         "trapped": true,
         "topPick": {
-          "market": "ou",
-          "side": "away",
-          "line": 2.5
+          "market": "ah",
+          "side": "home",
+          "line": -1
         },
-        "headline": "Pemasang lagi dipancing ke: Under 2.5 gol",
-        "detail": "Orang ramai-ramai dipancing ke Under 2.5 gol. Tandanya: Under 2.5 gol dikasih bayaran lebih besar di Bet365 untuk memancing pemasang.",
+        "headline": "Pemasang lagi dipancing ke: Uruguay (favorit, garis −1)",
+        "detail": "Orang ramai-ramai dipancing ke Uruguay (favorit, garis −1). Tandanya: Uruguay dikasih bayaran lebih besar di Bet365 untuk memancing pemasang.",
         "targets": [
-          "Under 2.5 gol"
+          "Uruguay (favorit, garis −1)",
+          "Over 2.5 gol"
         ]
       },
       "guidance": {
@@ -7927,7 +7616,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5627,
+        "lastMoveMin": 5698,
         "spark": [
           -1,
           -1
@@ -8219,7 +7908,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 5627,
+        "lastMoveMin": 5698,
         "spark": [
           0.75,
           0.75
@@ -8498,7 +8187,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 5516,
+        "lastMoveMin": 5586,
         "spark": [
           -0.75
         ]
@@ -8518,14 +8207,14 @@
       },
       "minute": null,
       "win": {
-        "home": 0.8389,
-        "draw": 0.1099,
-        "away": 0.0513
+        "home": 0.841,
+        "draw": 0.1076,
+        "away": 0.0514
       },
-      "overallLight": "yellow",
+      "overallLight": "green",
       "verdict": {
-        "light": "yellow",
-        "text": "Ada tarikan tipis ke satu sisi. Jangan buru-buru ikut."
+        "light": "green",
+        "text": "Pasar wajar, belum ada yang diramaikan."
       },
       "markets": {
         "ah": {
@@ -8536,19 +8225,19 @@
           },
           "openHome": 1.78,
           "openAway": 2.06,
-          "nowHome": 1.78,
-          "nowAway": 2.06,
+          "nowHome": 1.74,
+          "nowAway": 2.11,
           "pub": null,
-          "margin": 4.723464601287231,
-          "probHome": 0.5365,
-          "probAway": 0.4635,
+          "margin": 4.864629296726042,
+          "probHome": 0.5481,
+          "probAway": 0.4519,
           "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
+            "dir": "down",
+            "delta": -0.04
           },
           "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
+            "dir": "up",
+            "delta": 0.05
           },
           "lineMove": {
             "dir": "flat",
@@ -8559,11 +8248,11 @@
           "light": "green",
           "flags": [],
           "tech": [
-            "Jatah bandar agak besar (4.7%)"
+            "Jatah bandar agak besar (4.9%)"
           ],
           "score": 0,
           "read": {
-            "holds": "Bandar pegang: France sangat dominan (garis −2 1/4). Tanpa potongan: peluang France ~54% vs Iraq/seri ~46%.",
+            "holds": "Bandar pegang: France sangat dominan (garis −2 1/4). Tanpa potongan: peluang France ~55% vs Iraq/seri ~45%.",
             "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
@@ -8582,53 +8271,47 @@
           },
           "openHome": 1.75,
           "openAway": 2.07,
-          "nowHome": 1.75,
-          "nowAway": 2.07,
-          "pub": {
-            "line": 3,
-            "home": 1.8,
-            "away": 2.05
-          },
-          "margin": 5.452035886818507,
-          "probHome": 0.5419,
-          "probAway": 0.4581,
+          "nowHome": 1.66,
+          "nowAway": 2.19,
+          "pub": null,
+          "margin": 5.903064312042705,
+          "probHome": 0.5688,
+          "probAway": 0.4312,
           "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
+            "dir": "down",
+            "delta": -0.09
           },
           "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
+            "dir": "up",
+            "delta": 0.12
           },
           "lineMove": {
             "dir": "flat",
             "delta": 0
           },
           "lineDisplay": "3",
-          "divergence": {
-            "side": "home",
-            "gap": 0.05,
-            "strong": false,
-            "flag": "Di Bet365, France dikasih bayaran lebih besar untuk memancing pemasang ke sana"
-          },
-          "light": "yellow",
-          "flags": [
-            "Di Bet365, France dikasih bayaran lebih besar untuk memancing pemasang ke sana"
-          ],
+          "divergence": null,
+          "light": "green",
+          "flags": [],
           "tech": [
-            "Jatah bandar besar (5.5%)"
+            "Jatah bandar besar (5.9%)"
           ],
-          "score": 1,
+          "score": 0,
           "read": {
-            "holds": "Bandar pegang: perkiraan ~3 gol (gol sedang). Peluang Over 3 ~54%, Under ~46%.",
-            "signal": "⚠️ Di Bet365, France dikasih bayaran lebih besar untuk memancing pemasang ke sana."
+            "holds": "Bandar pegang: perkiraan ~3 gol (gol sedang). Peluang Over 3 ~57%, Under ~43%.",
+            "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": "Belum bergerak",
-            "bigMove": false
+            "side": "home",
+            "strength": 1,
+            "arrow": "➜",
+            "bigMove": false,
+            "mag": 0,
+            "label": "Over 3 gol",
+            "reasons": [
+              "water mengeras sisi 1"
+            ],
+            "text": "Bandar geser ke Over 3 gol"
           }
         },
         "corner": {
@@ -8762,31 +8445,33 @@
         }
       },
       "conclusion": {
-        "trapped": true,
-        "topPick": {
-          "market": "ou",
-          "side": "home",
-          "line": 3
-        },
-        "headline": "Pemasang lagi dipancing ke: Over 3 gol",
-        "detail": "Uang publik lagi ngumpul ke Over 3 gol. Tandanya: Over 3 gol dikasih bayaran lebih besar di Bet365 untuk memancing pemasang.",
-        "targets": [
-          "Over 3 gol"
-        ]
+        "trapped": false,
+        "topPick": null,
+        "headline": "Belum ada sisi yang dipancing.",
+        "detail": "Belum ada tarikan ke satu sisi. Di sini bandar main wajar.",
+        "targets": []
       },
       "guidance": {
-        "moved": false,
-        "primary": null,
-        "narrative": null,
-        "items": [],
-        "confidence": "—",
-        "strength": 0
+        "moved": true,
+        "primary": "Over 3 gol",
+        "narrative": "Over/Under: Over 3 gol.",
+        "items": [
+          {
+            "market": "Over/Under",
+            "to": "Over 3 gol",
+            "move": "water mengeras"
+          }
+        ],
+        "confidence": "Lemah",
+        "strength": 1,
+        "insight": null
       },
       "history": {
-        "snapshots": 2,
-        "moves": 1,
-        "lastMoveMin": 1591,
+        "snapshots": 3,
+        "moves": 2,
+        "lastMoveMin": 0,
         "spark": [
+          -2.25,
           -2.25,
           -2.25
         ]
@@ -9077,7 +8762,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 4073,
+        "lastMoveMin": 4143,
         "spark": [
           -0.25
         ]
@@ -9364,7 +9049,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 1591,
+        "lastMoveMin": 1662,
         "spark": [
           0.75,
           0.75
@@ -9643,7 +9328,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1591,
+        "lastMoveMin": 1662,
         "spark": [
           -1.75
         ]
@@ -9921,7 +9606,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1591,
+        "lastMoveMin": 1662,
         "spark": [
           -1.5
         ]
@@ -10195,7 +9880,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1490,
+        "lastMoveMin": 1560,
         "spark": [
           1
         ]
@@ -10473,9 +10158,283 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1212,
+        "lastMoveMin": 1283,
         "spark": [
           -1
+        ]
+      }
+    },
+    {
+      "id": "66456926",
+      "home": "Bosnia and Herzegovina",
+      "away": "Qatar",
+      "group": "International - FIFA World Cup",
+      "kickoff": "2026-06-24T19:00:00Z",
+      "status": "pending",
+      "live": false,
+      "score": {
+        "home": 0,
+        "away": 0
+      },
+      "minute": null,
+      "win": {
+        "home": 0.614,
+        "draw": 0.2374,
+        "away": 0.1486
+      },
+      "overallLight": "green",
+      "verdict": {
+        "light": "green",
+        "text": "Aman & tenang. Belum ada sisi yang dipancing mencolok."
+      },
+      "markets": {
+        "ah": {
+          "label": "Handicap",
+          "line": {
+            "open": -0.75,
+            "now": -0.75
+          },
+          "openHome": 1.67,
+          "openAway": 2.2,
+          "nowHome": 1.67,
+          "nowAway": 2.2,
+          "pub": null,
+          "margin": 5.334784975503548,
+          "probHome": 0.5685,
+          "probAway": 0.4315,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": "-0.75",
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [
+            "Jatah bandar besar (5.3%)"
+          ],
+          "score": 0,
+          "read": {
+            "holds": "Bandar pegang: Bosnia and Herzegovina cukup unggul (garis −3/4). Tanpa potongan: peluang Bosnia and Herzegovina ~57% vs Qatar/seri ~43%.",
+            "signal": "Aman — belum ada tanda menjebak."
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": "Belum bergerak",
+            "bigMove": false
+          }
+        },
+        "ou": {
+          "label": "Over/Under",
+          "line": {
+            "open": 2.25,
+            "now": 2.25
+          },
+          "openHome": 1.82,
+          "openAway": 2,
+          "nowHome": 1.82,
+          "nowAway": 2,
+          "pub": {
+            "line": 2.25,
+            "home": 1.825,
+            "away": 2.025
+          },
+          "margin": 4.9450549450549275,
+          "probHome": 0.5236,
+          "probAway": 0.4764,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": "2.25",
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [
+            "Jatah bandar agak besar (4.9%)"
+          ],
+          "score": 0,
+          "read": {
+            "holds": "Bandar pegang: perkiraan ~2.25 gol (laga ketat / sedikit gol). Peluang Over 2.25 ~52%, Under ~48%.",
+            "signal": "Aman — belum ada tanda menjebak."
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": "Belum bergerak",
+            "bigMove": false
+          }
+        },
+        "corner": {
+          "label": "Corner (FT)",
+          "line": {
+            "open": null,
+            "now": null
+          },
+          "openHome": null,
+          "openAway": null,
+          "nowHome": null,
+          "nowAway": null,
+          "pub": null,
+          "margin": null,
+          "probHome": null,
+          "probAway": null,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": null,
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [],
+          "score": 0,
+          "read": {
+            "holds": "",
+            "signal": ""
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": ""
+          }
+        },
+        "cornerHT": {
+          "label": "Corner (Babak 1)",
+          "line": {
+            "open": null,
+            "now": null
+          },
+          "openHome": null,
+          "openAway": null,
+          "nowHome": null,
+          "nowAway": null,
+          "pub": null,
+          "margin": null,
+          "probHome": null,
+          "probAway": null,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": null,
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [],
+          "score": 0,
+          "read": {
+            "holds": "",
+            "signal": ""
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": ""
+          }
+        },
+        "card": {
+          "label": "Kartu",
+          "line": {
+            "open": null,
+            "now": null
+          },
+          "openHome": null,
+          "openAway": null,
+          "nowHome": null,
+          "nowAway": null,
+          "pub": null,
+          "margin": null,
+          "probHome": null,
+          "probAway": null,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": null,
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [],
+          "score": 0,
+          "read": {
+            "holds": "",
+            "signal": ""
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": ""
+          }
+        }
+      },
+      "conclusion": {
+        "trapped": false,
+        "topPick": null,
+        "headline": "Belum ada sisi yang dipancing.",
+        "detail": "Belum ada tarikan ke satu sisi. Di sini bandar main wajar.",
+        "targets": []
+      },
+      "guidance": {
+        "moved": false,
+        "primary": null,
+        "narrative": null,
+        "items": [],
+        "confidence": "—",
+        "strength": 0
+      },
+      "history": {
+        "snapshots": 1,
+        "moves": 0,
+        "lastMoveMin": 133,
+        "spark": [
+          -0.75
         ]
       }
     },
@@ -10764,561 +10723,9 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1212,
+        "lastMoveMin": 1283,
         "spark": [
           -0.25
-        ]
-      }
-    },
-    {
-      "id": "66456926",
-      "home": "Bosnia and Herzegovina",
-      "away": "Qatar",
-      "group": "International - FIFA World Cup",
-      "kickoff": "2026-06-24T19:00:00Z",
-      "status": "pending",
-      "live": false,
-      "score": {
-        "home": 0,
-        "away": 0
-      },
-      "minute": null,
-      "win": {
-        "home": 0.614,
-        "draw": 0.2374,
-        "away": 0.1486
-      },
-      "overallLight": "green",
-      "verdict": {
-        "light": "green",
-        "text": "Aman & tenang. Belum ada sisi yang dipancing mencolok."
-      },
-      "markets": {
-        "ah": {
-          "label": "Handicap",
-          "line": {
-            "open": -0.75,
-            "now": -0.75
-          },
-          "openHome": 1.67,
-          "openAway": 2.2,
-          "nowHome": 1.67,
-          "nowAway": 2.2,
-          "pub": null,
-          "margin": 5.334784975503548,
-          "probHome": 0.5685,
-          "probAway": 0.4315,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": "-0.75",
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [
-            "Jatah bandar besar (5.3%)"
-          ],
-          "score": 0,
-          "read": {
-            "holds": "Bandar pegang: Bosnia and Herzegovina cukup unggul (garis −3/4). Tanpa potongan: peluang Bosnia and Herzegovina ~57% vs Qatar/seri ~43%.",
-            "signal": "Aman — belum ada tanda menjebak."
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": "Belum bergerak",
-            "bigMove": false
-          }
-        },
-        "ou": {
-          "label": "Over/Under",
-          "line": {
-            "open": 2.25,
-            "now": 2.25
-          },
-          "openHome": 1.82,
-          "openAway": 2,
-          "nowHome": 1.82,
-          "nowAway": 2,
-          "pub": {
-            "line": 2.25,
-            "home": 1.825,
-            "away": 2.025
-          },
-          "margin": 4.9450549450549275,
-          "probHome": 0.5236,
-          "probAway": 0.4764,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": "2.25",
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [
-            "Jatah bandar agak besar (4.9%)"
-          ],
-          "score": 0,
-          "read": {
-            "holds": "Bandar pegang: perkiraan ~2.25 gol (laga ketat / sedikit gol). Peluang Over 2.25 ~52%, Under ~48%.",
-            "signal": "Aman — belum ada tanda menjebak."
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": "Belum bergerak",
-            "bigMove": false
-          }
-        },
-        "corner": {
-          "label": "Corner (FT)",
-          "line": {
-            "open": null,
-            "now": null
-          },
-          "openHome": null,
-          "openAway": null,
-          "nowHome": null,
-          "nowAway": null,
-          "pub": null,
-          "margin": null,
-          "probHome": null,
-          "probAway": null,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": null,
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
-          "read": {
-            "holds": "",
-            "signal": ""
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": ""
-          }
-        },
-        "cornerHT": {
-          "label": "Corner (Babak 1)",
-          "line": {
-            "open": null,
-            "now": null
-          },
-          "openHome": null,
-          "openAway": null,
-          "nowHome": null,
-          "nowAway": null,
-          "pub": null,
-          "margin": null,
-          "probHome": null,
-          "probAway": null,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": null,
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
-          "read": {
-            "holds": "",
-            "signal": ""
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": ""
-          }
-        },
-        "card": {
-          "label": "Kartu",
-          "line": {
-            "open": null,
-            "now": null
-          },
-          "openHome": null,
-          "openAway": null,
-          "nowHome": null,
-          "nowAway": null,
-          "pub": null,
-          "margin": null,
-          "probHome": null,
-          "probAway": null,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": null,
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
-          "read": {
-            "holds": "",
-            "signal": ""
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": ""
-          }
-        }
-      },
-      "conclusion": {
-        "trapped": false,
-        "topPick": null,
-        "headline": "Belum ada sisi yang dipancing.",
-        "detail": "Belum ada tarikan ke satu sisi. Di sini bandar main wajar.",
-        "targets": []
-      },
-      "guidance": {
-        "moved": false,
-        "primary": null,
-        "narrative": null,
-        "items": [],
-        "confidence": "—",
-        "strength": 0
-      },
-      "history": {
-        "snapshots": 1,
-        "moves": 0,
-        "lastMoveMin": 62,
-        "spark": [
-          -0.75
-        ]
-      }
-    },
-    {
-      "id": "66456936",
-      "home": "Scotland",
-      "away": "Brazil",
-      "group": "International - FIFA World Cup",
-      "kickoff": "2026-06-24T22:00:00Z",
-      "status": "pending",
-      "live": false,
-      "score": {
-        "home": 0,
-        "away": 0
-      },
-      "minute": null,
-      "win": {
-        "home": 0.1316,
-        "draw": 0.2148,
-        "away": 0.6536
-      },
-      "overallLight": "green",
-      "verdict": {
-        "light": "green",
-        "text": "Aman & tenang. Belum ada sisi yang dipancing mencolok."
-      },
-      "markets": {
-        "ah": {
-          "label": "Handicap",
-          "line": {
-            "open": 1.25,
-            "now": 1.25
-          },
-          "openHome": 1.84,
-          "openAway": 2,
-          "nowHome": 1.84,
-          "nowAway": 2,
-          "pub": {
-            "line": 1.25,
-            "home": 1.875,
-            "away": 1.975
-          },
-          "margin": 4.347826086956519,
-          "probHome": 0.5208,
-          "probAway": 0.4792,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": "1.25",
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [
-            "Jatah bandar agak besar (4.3%)"
-          ],
-          "score": 0,
-          "read": {
-            "holds": "Bandar pegang: Brazil unggul jelas (garis +1 1/4). Tanpa potongan: peluang Brazil ~48% vs Scotland/seri ~52%.",
-            "signal": "Aman — belum ada tanda menjebak."
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": "Belum bergerak",
-            "bigMove": false
-          }
-        },
-        "ou": {
-          "label": "Over/Under",
-          "line": {
-            "open": 2.5,
-            "now": 2.5
-          },
-          "openHome": 1.82,
-          "openAway": 2,
-          "nowHome": 1.82,
-          "nowAway": 2,
-          "pub": {
-            "line": 2.5,
-            "home": 1.85,
-            "away": 2
-          },
-          "margin": 4.9450549450549275,
-          "probHome": 0.5236,
-          "probAway": 0.4764,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": "2.5",
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [
-            "Jatah bandar agak besar (4.9%)"
-          ],
-          "score": 0,
-          "read": {
-            "holds": "Bandar pegang: perkiraan ~2.5 gol (gol sedang). Peluang Over 2.5 ~52%, Under ~48%.",
-            "signal": "Aman — belum ada tanda menjebak."
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": "Belum bergerak",
-            "bigMove": false
-          }
-        },
-        "corner": {
-          "label": "Corner (FT)",
-          "line": {
-            "open": null,
-            "now": null
-          },
-          "openHome": null,
-          "openAway": null,
-          "nowHome": null,
-          "nowAway": null,
-          "pub": null,
-          "margin": null,
-          "probHome": null,
-          "probAway": null,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": null,
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
-          "read": {
-            "holds": "",
-            "signal": ""
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": ""
-          }
-        },
-        "cornerHT": {
-          "label": "Corner (Babak 1)",
-          "line": {
-            "open": null,
-            "now": null
-          },
-          "openHome": null,
-          "openAway": null,
-          "nowHome": null,
-          "nowAway": null,
-          "pub": null,
-          "margin": null,
-          "probHome": null,
-          "probAway": null,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": null,
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
-          "read": {
-            "holds": "",
-            "signal": ""
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": ""
-          }
-        },
-        "card": {
-          "label": "Kartu",
-          "line": {
-            "open": null,
-            "now": null
-          },
-          "openHome": null,
-          "openAway": null,
-          "nowHome": null,
-          "nowAway": null,
-          "pub": null,
-          "margin": null,
-          "probHome": null,
-          "probAway": null,
-          "waterMoveHome": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "waterMoveAway": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineMove": {
-            "dir": "flat",
-            "delta": 0
-          },
-          "lineDisplay": null,
-          "divergence": null,
-          "light": "green",
-          "flags": [],
-          "tech": [],
-          "score": 0,
-          "read": {
-            "holds": "",
-            "signal": ""
-          },
-          "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": ""
-          }
-        }
-      },
-      "conclusion": {
-        "trapped": false,
-        "topPick": null,
-        "headline": "Belum ada sisi yang dipancing.",
-        "detail": "Bandar cuma ambil potongan wajar di dua sisi — belum ada yang diramaikan.",
-        "targets": []
-      },
-      "guidance": {
-        "moved": false,
-        "primary": null,
-        "narrative": null,
-        "items": [],
-        "confidence": "—",
-        "strength": 0
-      },
-      "history": {
-        "snapshots": 1,
-        "moves": 0,
-        "lastMoveMin": 62,
-        "spark": [
-          1.25
         ]
       }
     },
@@ -11607,9 +11014,578 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 62,
+        "lastMoveMin": 133,
         "spark": [
           -1.5
+        ]
+      }
+    },
+    {
+      "id": "66456936",
+      "home": "Scotland",
+      "away": "Brazil",
+      "group": "International - FIFA World Cup",
+      "kickoff": "2026-06-24T22:00:00Z",
+      "status": "pending",
+      "live": false,
+      "score": {
+        "home": 0,
+        "away": 0
+      },
+      "minute": null,
+      "win": {
+        "home": 0.1316,
+        "draw": 0.2148,
+        "away": 0.6536
+      },
+      "overallLight": "green",
+      "verdict": {
+        "light": "green",
+        "text": "Aman & tenang. Belum ada sisi yang dipancing mencolok."
+      },
+      "markets": {
+        "ah": {
+          "label": "Handicap",
+          "line": {
+            "open": 1.25,
+            "now": 1.25
+          },
+          "openHome": 1.84,
+          "openAway": 2,
+          "nowHome": 1.84,
+          "nowAway": 2,
+          "pub": {
+            "line": 1.25,
+            "home": 1.875,
+            "away": 1.975
+          },
+          "margin": 4.347826086956519,
+          "probHome": 0.5208,
+          "probAway": 0.4792,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": "1.25",
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [
+            "Jatah bandar agak besar (4.3%)"
+          ],
+          "score": 0,
+          "read": {
+            "holds": "Bandar pegang: Brazil unggul jelas (garis +1 1/4). Tanpa potongan: peluang Brazil ~48% vs Scotland/seri ~52%.",
+            "signal": "Aman — belum ada tanda menjebak."
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": "Belum bergerak",
+            "bigMove": false
+          }
+        },
+        "ou": {
+          "label": "Over/Under",
+          "line": {
+            "open": 2.5,
+            "now": 2.5
+          },
+          "openHome": 1.82,
+          "openAway": 2,
+          "nowHome": 1.82,
+          "nowAway": 2,
+          "pub": {
+            "line": 2.5,
+            "home": 1.85,
+            "away": 2
+          },
+          "margin": 4.9450549450549275,
+          "probHome": 0.5236,
+          "probAway": 0.4764,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": "2.5",
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [
+            "Jatah bandar agak besar (4.9%)"
+          ],
+          "score": 0,
+          "read": {
+            "holds": "Bandar pegang: perkiraan ~2.5 gol (gol sedang). Peluang Over 2.5 ~52%, Under ~48%.",
+            "signal": "Aman — belum ada tanda menjebak."
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": "Belum bergerak",
+            "bigMove": false
+          }
+        },
+        "corner": {
+          "label": "Corner (FT)",
+          "line": {
+            "open": null,
+            "now": null
+          },
+          "openHome": null,
+          "openAway": null,
+          "nowHome": null,
+          "nowAway": null,
+          "pub": null,
+          "margin": null,
+          "probHome": null,
+          "probAway": null,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": null,
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [],
+          "score": 0,
+          "read": {
+            "holds": "",
+            "signal": ""
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": ""
+          }
+        },
+        "cornerHT": {
+          "label": "Corner (Babak 1)",
+          "line": {
+            "open": null,
+            "now": null
+          },
+          "openHome": null,
+          "openAway": null,
+          "nowHome": null,
+          "nowAway": null,
+          "pub": null,
+          "margin": null,
+          "probHome": null,
+          "probAway": null,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": null,
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [],
+          "score": 0,
+          "read": {
+            "holds": "",
+            "signal": ""
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": ""
+          }
+        },
+        "card": {
+          "label": "Kartu",
+          "line": {
+            "open": null,
+            "now": null
+          },
+          "openHome": null,
+          "openAway": null,
+          "nowHome": null,
+          "nowAway": null,
+          "pub": null,
+          "margin": null,
+          "probHome": null,
+          "probAway": null,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": null,
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [],
+          "score": 0,
+          "read": {
+            "holds": "",
+            "signal": ""
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": ""
+          }
+        }
+      },
+      "conclusion": {
+        "trapped": false,
+        "topPick": null,
+        "headline": "Belum ada sisi yang dipancing.",
+        "detail": "Bandar cuma ambil potongan wajar di dua sisi — belum ada yang diramaikan.",
+        "targets": []
+      },
+      "guidance": {
+        "moved": false,
+        "primary": null,
+        "narrative": null,
+        "items": [],
+        "confidence": "—",
+        "strength": 0
+      },
+      "history": {
+        "snapshots": 1,
+        "moves": 0,
+        "lastMoveMin": 133,
+        "spark": [
+          1.25
+        ]
+      }
+    },
+    {
+      "id": "66456912",
+      "home": "Czechia",
+      "away": "Mexico",
+      "group": "International - FIFA World Cup",
+      "kickoff": "2026-06-25T01:00:00Z",
+      "status": "pending",
+      "live": false,
+      "score": {
+        "home": 0,
+        "away": 0
+      },
+      "minute": null,
+      "win": {
+        "home": 0.2211,
+        "draw": 0.2767,
+        "away": 0.5022
+      },
+      "overallLight": "yellow",
+      "verdict": {
+        "light": "yellow",
+        "text": "Mulai ada gerakan ke satu sisi — perhatikan."
+      },
+      "markets": {
+        "ah": {
+          "label": "Handicap",
+          "line": {
+            "open": 0.5,
+            "now": 0.5
+          },
+          "openHome": 2,
+          "openAway": 1.84,
+          "nowHome": 2,
+          "nowAway": 1.84,
+          "pub": {
+            "line": 0.5,
+            "home": 2.05,
+            "away": 1.8
+          },
+          "margin": 4.347826086956519,
+          "probHome": 0.4792,
+          "probAway": 0.5208,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": "0.5",
+          "divergence": {
+            "side": "home",
+            "gap": 0.05,
+            "strong": false,
+            "flag": "Di Bet365, Czechia dikasih bayaran lebih besar untuk memancing pemasang ke sana"
+          },
+          "light": "yellow",
+          "flags": [
+            "Di Bet365, Czechia dikasih bayaran lebih besar untuk memancing pemasang ke sana"
+          ],
+          "tech": [
+            "Jatah bandar agak besar (4.3%)"
+          ],
+          "score": 1,
+          "read": {
+            "holds": "Bandar pegang: Mexico unggul tipis (garis +1/2). Tanpa potongan: peluang Mexico ~52% vs Czechia/seri ~48%.",
+            "signal": "⚠️ Di Bet365, Czechia dikasih bayaran lebih besar untuk memancing pemasang ke sana."
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": "Belum bergerak",
+            "bigMove": false
+          }
+        },
+        "ou": {
+          "label": "Over/Under",
+          "line": {
+            "open": 2.25,
+            "now": 2.25
+          },
+          "openHome": 1.87,
+          "openAway": 1.95,
+          "nowHome": 1.87,
+          "nowAway": 1.95,
+          "pub": {
+            "line": 2.25,
+            "home": 1.9,
+            "away": 1.95
+          },
+          "margin": 4.7579871109282745,
+          "probHome": 0.5105,
+          "probAway": 0.4895,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": "2.25",
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [
+            "Jatah bandar agak besar (4.8%)"
+          ],
+          "score": 0,
+          "read": {
+            "holds": "Bandar pegang: perkiraan ~2.25 gol (laga ketat / sedikit gol). Peluang Over 2.25 ~51%, Under ~49%.",
+            "signal": "Aman — belum ada tanda menjebak."
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": "Belum bergerak",
+            "bigMove": false
+          }
+        },
+        "corner": {
+          "label": "Corner (FT)",
+          "line": {
+            "open": null,
+            "now": null
+          },
+          "openHome": null,
+          "openAway": null,
+          "nowHome": null,
+          "nowAway": null,
+          "pub": null,
+          "margin": null,
+          "probHome": null,
+          "probAway": null,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": null,
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [],
+          "score": 0,
+          "read": {
+            "holds": "",
+            "signal": ""
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": ""
+          }
+        },
+        "cornerHT": {
+          "label": "Corner (Babak 1)",
+          "line": {
+            "open": null,
+            "now": null
+          },
+          "openHome": null,
+          "openAway": null,
+          "nowHome": null,
+          "nowAway": null,
+          "pub": null,
+          "margin": null,
+          "probHome": null,
+          "probAway": null,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": null,
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [],
+          "score": 0,
+          "read": {
+            "holds": "",
+            "signal": ""
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": ""
+          }
+        },
+        "card": {
+          "label": "Kartu",
+          "line": {
+            "open": null,
+            "now": null
+          },
+          "openHome": null,
+          "openAway": null,
+          "nowHome": null,
+          "nowAway": null,
+          "pub": null,
+          "margin": null,
+          "probHome": null,
+          "probAway": null,
+          "waterMoveHome": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "waterMoveAway": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineMove": {
+            "dir": "flat",
+            "delta": 0
+          },
+          "lineDisplay": null,
+          "divergence": null,
+          "light": "green",
+          "flags": [],
+          "tech": [],
+          "score": 0,
+          "read": {
+            "holds": "",
+            "signal": ""
+          },
+          "direction": {
+            "side": null,
+            "strength": 0,
+            "arrow": "→",
+            "text": ""
+          }
+        }
+      },
+      "conclusion": {
+        "trapped": true,
+        "topPick": {
+          "market": "ah",
+          "side": "home",
+          "line": 0.5
+        },
+        "headline": "Pemasang lagi dipancing ke: Czechia",
+        "detail": "Arus taruhan condong ke Czechia. Tandanya: Czechia dikasih bayaran lebih besar di Bet365 untuk memancing pemasang.",
+        "targets": [
+          "Czechia"
+        ]
+      },
+      "guidance": {
+        "moved": false,
+        "primary": null,
+        "narrative": null,
+        "items": [],
+        "confidence": "—",
+        "strength": 0
+      },
+      "history": {
+        "snapshots": 1,
+        "moves": 0,
+        "lastMoveMin": 0,
+        "spark": [
+          0.5
         ]
       }
     }

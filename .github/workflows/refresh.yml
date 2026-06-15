@@ -34,12 +34,19 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           END=$(( $(date +%s) + 54*60 ))
           while [ "$(date +%s)" -lt "$END" ]; do
-            node fetch-odds.js || node fetch-odds.js --demo || true
-            git add data/matches.js data/matches.json data/history.json data/archive.json 2>/dev/null || true
-            if ! git diff --cached --quiet; then
-              git commit -q -m "auto: refresh odds $(date -u +%FT%TZ) [skip ci]" || true
-              git pull --rebase -q origin main || true
-              git push -q || true
+            node fetch-odds.js || true
+            # JANGAN pernah commit demo. Kalau API kosong/gagal (isDemo), buang hasilnya
+            # dan pertahankan data REAL terakhir yang sudah live.
+            if node -e 'const d=JSON.parse(require("fs").readFileSync("data/matches.js","utf8").replace(/^window\.__BANDAR_DATA__\s*=\s*/,"").replace(/;\s*$/,"")); process.exit(d.isDemo?1:0)'; then
+              git add data/matches.js data/matches.json data/history.json data/archive.json 2>/dev/null || true
+              if ! git diff --cached --quiet; then
+                git commit -q -m "auto: refresh odds $(date -u +%FT%TZ) [skip ci]" || true
+                git pull --rebase -q origin main || true
+                git push -q || true
+              fi
+            else
+              echo "API kosong → pertahankan data REAL terakhir, skip commit"
+              git checkout -- data/ 2>/dev/null || true
             fi
             SLEEP=$(node -e '
               try{

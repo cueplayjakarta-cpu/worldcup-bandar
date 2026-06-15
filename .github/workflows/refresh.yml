@@ -1,41 +1,58 @@
 name: Refresh odds
 
-# Auto-tarik odds & perbarui situs. API key disimpan sebagai SECRET (tidak pernah publik).
+# GitHub men-drop cron rapat (*/5) karena prioritas terendah → bisa diam berjam-jam.
+# Cron PER-JAM jauh lebih dihormati. Tiap run lalu LOOPING ~54 menit di dalamnya:
+# padat (2 mnt) saat ada laga live / kickoff <90 mnt, santai (10 mnt) saat sepi.
+# Hasil: update nyaris non-stop, tanpa butuh infra eksternal.
 on:
   schedule:
-    - cron: '*/5 * * * *'    # tiap ~5 menit (mengikuti laga; GitHub kadang menunda sedikit)
-  workflow_dispatch:           # tombol "Run workflow" manual
+    - cron: '7 * * * *'        # tiap jam (menit :07, hindari kemacetan :00)
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
   group: refresh-odds
-  cancel-in-progress: false
+  cancel-in-progress: true       # run jam berikutnya menggantikan yang masih nyangkut
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Tarik odds (atau fallback demo)
+      - name: Loop refresh ~54 menit (padat jelang kickoff)
         env:
           ODDS_API_IO_KEY: ${{ secrets.ODDS_API_IO_KEY }}
-        run: node fetch-odds.js || node fetch-odds.js --demo
-
-      - name: Commit data baru bila berubah
         run: |
           git config user.name "lensa-bandar-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/matches.js data/matches.json data/history.json data/archive.json 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "Tidak ada perubahan."
-          else
-            git commit -m "auto: refresh odds $(date -u +%FT%TZ) [skip ci]"
-            git push
-          fi
+          END=$(( $(date +%s) + 54*60 ))
+          while [ "$(date +%s)" -lt "$END" ]; do
+            node fetch-odds.js || node fetch-odds.js --demo || true
+            git add data/matches.js data/matches.json data/history.json data/archive.json 2>/dev/null || true
+            if ! git diff --cached --quiet; then
+              git commit -q -m "auto: refresh odds $(date -u +%FT%TZ) [skip ci]" || true
+              git pull --rebase -q origin main || true
+              git push -q || true
+            fi
+            SLEEP=$(node -e '
+              try{
+                const fs=require("fs");
+                const d=JSON.parse(fs.readFileSync("data/matches.js","utf8").replace(/^window\.__BANDAR_DATA__\s*=\s*/,"").replace(/;\s*$/,""));
+                const now=Date.now(); let mins=Infinity, live=false;
+                for(const m of d.matches){ if(m.live) live=true;
+                  if(m.kickoff){ const dm=(new Date(m.kickoff).getTime()-now)/60000; if(dm>-15&&dm<mins) mins=dm; } }
+                process.stdout.write((live || mins<=90) ? "120" : "600");
+              }catch(e){ process.stdout.write("300"); }
+            ')
+            REMAIN=$(( END - $(date +%s) )); [ "$REMAIN" -le 0 ] && break
+            [ "${SLEEP:-300}" -gt "$REMAIN" ] && SLEEP="$REMAIN"
+            sleep "${SLEEP:-300}"
+          done
+          echo "Loop selesai $(date -u +%FT%TZ)"

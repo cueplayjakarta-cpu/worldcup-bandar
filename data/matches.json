@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T23:43:23.564Z",
+  "generatedAt": "2026-06-15T23:45:26.918Z",
   "source": "odds-api.io / SBOBET (GRATIS)",
   "isDemo": false,
   "reference": "SBOBET",
@@ -35,9 +35,9 @@
       },
       "minute": "[object Object]",
       "win": {
-        "home": 0.5634,
-        "draw": 0.3353,
-        "away": 0.1013
+        "home": 0.5849,
+        "draw": 0.3243,
+        "away": 0.0908
       },
       "overallLight": "red",
       "verdict": {
@@ -53,23 +53,23 @@
           },
           "openHome": 1.825,
           "openAway": 2.025,
-          "nowHome": 2.19,
-          "nowAway": 1.76,
+          "nowHome": 2.14,
+          "nowAway": 1.79,
           "pub": {
             "line": 0.25,
-            "home": 2.125,
-            "away": 1.75
+            "home": 2.1,
+            "away": 1.775
           },
-          "margin": 2.4802822748028364,
-          "probHome": 0.4456,
-          "probAway": 0.5544,
+          "margin": 2.5948937503263103,
+          "probHome": 0.4555,
+          "probAway": 0.5445,
           "waterMoveHome": {
             "dir": "up",
-            "delta": 0.36
+            "delta": 0.32
           },
           "waterMoveAway": {
             "dir": "down",
-            "delta": -0.26
+            "delta": -0.23
           },
           "lineMove": {
             "dir": "down",
@@ -86,7 +86,7 @@
           ],
           "score": 1,
           "read": {
-            "holds": "Bandar pegang: Uruguay unggul sangat tipis — nyaris imbang (garis +1/4). Tanpa potongan: peluang Uruguay ~55% vs Saudi Arabia/seri ~45%. ⚠️ Tapi garis lagi bergeser +1 1/4 → +1/4 — Uruguay melemah, Saudi Arabia menguat. Jangan asal ambil Uruguay.",
+            "holds": "Bandar pegang: Uruguay unggul sangat tipis — nyaris imbang (garis +1/4). Tanpa potongan: peluang Uruguay ~54% vs Saudi Arabia/seri ~46%. ⚠️ Tapi garis lagi bergeser +1 1/4 → +1/4 — Uruguay melemah, Saudi Arabia menguat. Jangan asal ambil Uruguay.",
             "signal": "⚠️ Bayaran tim tamu dikecilkan — pemasang menumpuk ke sana. Garisnya kecil padahal favorit — di sinilah orang gampang nekat taruh besar, dan itu yang dimau bandar."
           },
           "direction": {
@@ -105,23 +105,23 @@
           },
           "openHome": 2,
           "openAway": 1.85,
-          "nowHome": 1.94,
-          "nowAway": 1.96,
+          "nowHome": 1.98,
+          "nowAway": 1.92,
           "pub": {
             "line": 1.5,
-            "home": 1.925,
-            "away": 1.925
+            "home": 1.95,
+            "away": 1.9
           },
-          "margin": 2.5667999158426325,
-          "probHome": 0.5026,
-          "probAway": 0.4974,
+          "margin": 2.5883838383838453,
+          "probHome": 0.4923,
+          "probAway": 0.5077,
           "waterMoveHome": {
             "dir": "down",
-            "delta": -0.06
+            "delta": -0.02
           },
           "waterMoveAway": {
             "dir": "up",
-            "delta": 0.11
+            "delta": 0.07
           },
           "lineMove": {
             "dir": "down",
@@ -136,15 +136,20 @@
           ],
           "score": 0,
           "read": {
-            "holds": "Bandar pegang: perkiraan ~1.5 gol (laga ketat / sedikit gol). Peluang Over 1.5 ~50%, Under ~50%.",
+            "holds": "Bandar pegang: perkiraan ~1.5 gol (laga ketat / sedikit gol). Peluang Over 1.5 ~49%, Under ~51%.",
             "signal": "Aman — belum ada tanda menjebak."
           },
           "direction": {
-            "side": null,
-            "strength": 0,
-            "arrow": "→",
-            "text": "Belum bergerak",
-            "bigMove": false
+            "side": "away",
+            "strength": 1,
+            "arrow": "➜",
+            "bigMove": false,
+            "mag": 0,
+            "label": "Under 1.5 gol",
+            "reasons": [
+              "garis turun (Under)"
+            ],
+            "text": "Bandar geser ke Under 1.5 gol"
           }
         },
         "corner": {
@@ -291,19 +296,25 @@
         ]
       },
       "guidance": {
-        "moved": false,
-        "primary": null,
-        "narrative": null,
-        "items": [],
-        "confidence": "—",
-        "strength": 0
+        "moved": true,
+        "primary": "Under 1.5 gol",
+        "narrative": "Over/Under: Under 1.5 gol (2.5 → 1.5).",
+        "items": [
+          {
+            "market": "Over/Under",
+            "to": "Under 1.5 gol",
+            "move": "2.5 → 1.5"
+          }
+        ],
+        "confidence": "Lemah",
+        "strength": 1,
+        "insight": null
       },
       "history": {
-        "snapshots": 23,
-        "moves": 22,
+        "snapshots": 24,
+        "moves": 23,
         "lastMoveMin": 0,
         "spark": [
-          1.25,
           1.25,
           0.75,
           0.5,
@@ -313,6 +324,7 @@
           0.5,
           0.5,
           0.5,
+          0.25,
           0.25,
           0.25
         ]
@@ -332,9 +344,9 @@
       },
       "minute": null,
       "win": {
-        "home": 0.5276,
-        "draw": 0.2793,
-        "away": 0.193
+        "home": 0.5245,
+        "draw": 0.2809,
+        "away": 0.1946
       },
       "overallLight": "yellow",
       "verdict": {
@@ -610,7 +622,7 @@
       "history": {
         "snapshots": 14,
         "moves": 13,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -0.5,
           -0.5,
@@ -907,7 +919,7 @@
       "history": {
         "snapshots": 9,
         "moves": 8,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -2,
           -2,
@@ -1189,7 +1201,7 @@
       "history": {
         "snapshots": 5,
         "moves": 4,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           2,
           2,
@@ -1477,7 +1489,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -2.5,
           -2.5,
@@ -1758,7 +1770,7 @@
       "history": {
         "snapshots": 9,
         "moves": 8,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -2.5,
           -2.5,
@@ -2040,7 +2052,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -3.25,
           -3.25,
@@ -2321,7 +2333,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -1.5,
           -1.5,
@@ -2610,7 +2622,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -0.75,
           -0.75,
@@ -2900,7 +2912,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           2,
           2,
@@ -3211,7 +3223,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -0.5,
           -0.5,
@@ -3521,7 +3533,7 @@
       "history": {
         "snapshots": 6,
         "moves": 5,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -0.75,
           -0.75,
@@ -3820,7 +3832,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -1.25,
           -1.25,
@@ -4122,7 +4134,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -0.5,
           -0.5,
@@ -4418,7 +4430,7 @@
       "history": {
         "snapshots": 9,
         "moves": 8,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -0.5,
           -0.5,
@@ -4714,7 +4726,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           0.5,
           0.5,
@@ -5011,7 +5023,7 @@
       "history": {
         "snapshots": 7,
         "moves": 6,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -3,
           -3,
@@ -5319,7 +5331,7 @@
       "history": {
         "snapshots": 8,
         "moves": 7,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -0.25,
           -0.25,
@@ -5612,7 +5624,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -0.75,
           -0.75,
@@ -5909,7 +5921,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           -1,
           -1,
@@ -6206,7 +6218,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 463,
+        "lastMoveMin": 466,
         "spark": [
           -1.75,
           -1.75,
@@ -6508,7 +6520,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 463,
+        "lastMoveMin": 466,
         "spark": [
           0.5,
           0.5,
@@ -6801,7 +6813,7 @@
       "history": {
         "snapshots": 4,
         "moves": 3,
-        "lastMoveMin": 463,
+        "lastMoveMin": 466,
         "spark": [
           -2.25,
           -2.25,
@@ -7082,7 +7094,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 6028,
+        "lastMoveMin": 6030,
         "spark": [
           -1.25,
           -1.25
@@ -7382,7 +7394,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 6028,
+        "lastMoveMin": 6030,
         "spark": [
           -1,
           -1
@@ -7682,7 +7694,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 6028,
+        "lastMoveMin": 6030,
         "spark": [
           0.75,
           0.75
@@ -7961,7 +7973,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 5917,
+        "lastMoveMin": 5919,
         "spark": [
           -0.75
         ]
@@ -8243,7 +8255,7 @@
       "history": {
         "snapshots": 3,
         "moves": 2,
-        "lastMoveMin": 331,
+        "lastMoveMin": 333,
         "spark": [
           -2.25,
           -2.25,
@@ -8536,7 +8548,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 4474,
+        "lastMoveMin": 4476,
         "spark": [
           -0.25
         ]
@@ -8823,7 +8835,7 @@
       "history": {
         "snapshots": 2,
         "moves": 1,
-        "lastMoveMin": 1993,
+        "lastMoveMin": 1995,
         "spark": [
           0.75,
           0.75
@@ -9102,7 +9114,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1993,
+        "lastMoveMin": 1995,
         "spark": [
           -1.75
         ]
@@ -9380,7 +9392,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1993,
+        "lastMoveMin": 1995,
         "spark": [
           -1.5
         ]
@@ -9671,7 +9683,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1891,
+        "lastMoveMin": 1893,
         "spark": [
           1
         ]
@@ -9949,7 +9961,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1614,
+        "lastMoveMin": 1616,
         "spark": [
           -1
         ]
@@ -10240,7 +10252,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 1614,
+        "lastMoveMin": 1616,
         "spark": [
           -0.25
         ]
@@ -10514,7 +10526,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 463,
+        "lastMoveMin": 466,
         "spark": [
           -0.75
         ]
@@ -10792,7 +10804,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 463,
+        "lastMoveMin": 466,
         "spark": [
           1.25
         ]
@@ -11083,7 +11095,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 463,
+        "lastMoveMin": 466,
         "spark": [
           -1.5
         ]
@@ -11374,7 +11386,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 331,
+        "lastMoveMin": 333,
         "spark": [
           0.5
         ]
@@ -11644,7 +11656,7 @@
       "history": {
         "snapshots": 1,
         "moves": 0,
-        "lastMoveMin": 19,
+        "lastMoveMin": 21,
         "spark": [
           0.5
         ]

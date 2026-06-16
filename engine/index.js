@@ -211,12 +211,12 @@ function generateRead(type, m, home, away) {
     if (L < 0) { favName = home; dogName = away; favP = p && p.home; }
     else if (L > 0) { favName = away; dogName = home; favP = p && p.away; }
     else { if (p && p.home >= p.away) { favName = home; dogName = away; favP = p.home; } else { favName = away; dogName = home; favP = p.away; } }
-    holds = `Bandar pegang: ${favName} ${strengthWord(Math.abs(L || 0))} (garis ${indoHandicap(L)}).` +
+    holds = `Bandar jagokan: ${favName} ${strengthWord(Math.abs(L || 0))} (voor ${indoHandicap(L)}).` +
       (favP != null ? ` Tanpa potongan: peluang ${favName} ~${pct(favP)}% vs ${dogName}/seri ~${pct(1 - favP)}%.` : '');
     const lo = m.line && m.line.open, ln = m.line && m.line.now;
     if (lo != null && ln != null && Math.abs(ln - lo) >= 0.25) {
       const gaining = (ln > lo) ? away : home, weakening = gaining === home ? away : home;
-      holds += ` ⚠️ Tapi garis lagi bergeser ${indoHandicap(lo)} → ${indoHandicap(ln)} — ${weakening} melemah, ${gaining} menguat. Jangan asal ambil ${weakening}.`;
+      holds += ` ⚠️ Tapi voor lagi bergeser ${indoHandicap(lo)} → ${indoHandicap(ln)} — ${weakening} melemah, ${gaining} menguat. Jangan asal ambil ${weakening}.`;
     }
   } else if (type === 'ou') {
     const pOver = p && p.home;
@@ -359,6 +359,57 @@ function honestSignals(match) {
 }
 
 // =====================================================================
+//  SKENARIO BANDAR (statis) — baca STRUKTUR satu snapshot, tak perlu pergerakan.
+//  Klasifikasi VOOR (|handicap|) × TOTAL (garis O/U gol), lalu tentukan sisi giringan
+//  (Bandar nyaman MENAMPUNG) vs sisi bandar (Bandar JAGOKAN diam-diam).
+// =====================================================================
+function scenario(v, t) {
+  if (v == null || t == null) return { key: 'tak_jelas', label: 'data kurang' };
+  v = Math.abs(v);
+  if (v <= 0.75) return { key: 'ketat', label: 'laga ketat / koin-flip' };
+  if (v >= 2.5) {
+    if (t >= 3.25) return { key: 'rout_pesta', label: 'rout pesta gol' };
+    if (t <= 2.75) return { key: 'besar_clean', label: 'menang besar tapi clean (≤3 gol)' };
+    return { key: 'besar', label: 'menang besar' };
+  }
+  // voor menengah (0.75 < v < 2.5)
+  if (v <= 1.5 && t <= 2.5) return { key: 'tipis_mampet', label: 'menang tipis mampet' };
+  if (t >= 3.25) return { key: 'unggul_rame', label: 'unggul + laga rame' };
+  if (t <= 2.5) return { key: 'unggul_mampet', label: 'unggul tapi cenderung mampet' };
+  return { key: 'unggul', label: 'unggul sedang' };
+}
+function scenarioRead(match) {
+  const ah = match.markets.ah, ou = match.markets.ou;
+  const v = ah && ah.line && ah.line.now != null ? ah.line.now : null;
+  const t = ou && ou.line && ou.line.now != null ? ou.line.now : null;
+  const sc = scenario(v, t);
+  const favSide = v == null ? null : v < 0 ? 'home' : v > 0 ? 'away' : null;
+  const sideLbl = (side) => {
+    if (side == null) return '—';
+    const team = side === 'home' ? match.home : match.away;
+    const sv = side === 'home' ? v : (v == null ? null : -v);
+    return sv == null ? team : `${team} ${indoHandicap(sv)}`;
+  };
+  // SISI GIRINGAN (menampung): prioritas divergence Bet365 (sinyal utama), lalu juice (dibayar plus).
+  let menampungSide = null, basis = '';
+  if (ah && ah.divergence && ah.divergence.side) { menampungSide = ah.divergence.side; basis = 'Bet365 bayar lebih besar di sini → digiring ke publik'; }
+  else if (ah && ah.nowHome != null && ah.nowAway != null) {
+    const dh = hkToDecimal(ah.nowHome), da = hkToDecimal(ah.nowAway);
+    if (dh != null && da != null && Math.abs(dh - da) >= 0.03) { menampungSide = dh > da ? 'home' : 'away'; basis = 'sisi ini dibayar plus (juice lebih tinggi) → digiring'; }
+  }
+  const balanced = (v != null && Math.abs(v) <= 0.75 && !menampungSide);
+  let jagokanSide = null;
+  if (menampungSide) jagokanSide = menampungSide === 'home' ? 'away' : 'home';
+  else if (!balanced && favSide) { jagokanSide = favSide; menampungSide = favSide === 'home' ? 'away' : 'home'; basis = 'voor jelas, juice rata → bandar diam-diam di sisi favorit'; }
+  const s1 = `Skenario bandar: ${sc.label}`;
+  const s2 = balanced
+    ? 'Laga seimbang — bandar tak condong kuat ke mana-mana.'
+    : `Bandar nyaman menampung: ${sideLbl(menampungSide)}  ·  Bandar jagokan diam-diam: ${sideLbl(jagokanSide)}`;
+  return { key: sc.key, label: sc.label, voor: v, total: t, balanced,
+    menampung: balanced ? null : sideLbl(menampungSide), jagokan: balanced ? null : sideLbl(jagokanSide), basis, s1, s2 };
+}
+
+// =====================================================================
 //  DETEKTOR POLA BERLABEL (3C) — tiap fungsi MURNI: (match, ctx) → {key, aktif, kekuatan, alasan}.
 //  ctx = { nowMs } untuk pola berbasis waktu. `alasan` WAJIB berisi & spesifik (bukan "true").
 // =====================================================================
@@ -487,21 +538,29 @@ function crossMarket(match) {
 function gradeMatch(match) {
   const detPower = (match.detectors || []).reduce((s, d) => s + (d.kekuatan || 0), 0);
   const dirPower = match.guidance && match.guidance.moved ? (match.guidance.strength || 0) : 0;
-  const readPower = detPower + dirPower;                  // SINYAL BACA NYATA (pola + arah pergerakan)
-  const honestBonus = (match.honest || []).reduce((s, h) => s + (h.kekuatan || 0), 0) * 1.5; // bidak jujur: BONUS bobot tinggi (bukan sumber tunggal)
+  // STRUKTURAL (statis, tanpa pergerakan): kejelasan skenario dari VOOR + sinyal giringan.
+  const sc = match.scenario || {};
+  const ahL = match.markets.ah && match.markets.ah.line ? match.markets.ah.line.now : null;
+  const v = ahL != null ? Math.abs(ahL) : 0;
+  let structural = v >= 2.5 ? 2 : v >= 1.5 ? 1.5 : v >= 0.75 ? 0.8 : 0;
+  if (match.markets.ah && match.markets.ah.divergence) structural += 2;       // divergence = sinyal giringan UTAMA
+  else if (!sc.balanced && sc.menampung) structural += 0.8;                    // sisi giringan dari juice
+  const readPower = +(detPower + dirPower + structural).toFixed(1);            // pergerakan = penguat OPSIONAL
+  const honestBonus = (match.honest || []).reduce((s, h) => s + (h.kekuatan || 0), 0) * 1.5;
   const cm = crossMarket(match);
   const base = +(readPower + honestBonus + (cm.agree ? 1.5 : 0) - (cm.conflict ? 3 : 0)).toFixed(1);
+  const scenarioValid = sc.key && sc.key !== 'tak_jelas';
   let grade;
-  if (cm.conflict) grade = base >= 4 ? 'C' : 'D';        // bentrok → turunkan; lemah+bentrok = D
-  else if (base >= 7 && readPower >= 3) grade = 'A';     // A WAJIB read kuat (+ biasanya dikonfirmasi bidak jujur)
-  else if (base >= 3 && readPower >= 2) grade = 'B';
-  else if (base >= 1) grade = 'C';                        // termasuk "cuma bidak jujur" = tenang/jujur, bukan read kuat
-  else grade = 'D';                                       // nyaris tanpa sinyal → jangan paksa baca
+  if (cm.conflict) grade = base >= 4 ? 'C' : 'D';        // bentrok → turunkan
+  else if (base >= 7 && readPower >= 3) grade = 'A';     // skenario sangat jelas + giringan kuat (+ konfirmasi)
+  else if (base >= 3.5 && readPower >= 2) grade = 'B';
+  else if (scenarioValid) grade = 'C';                    // skenario valid → minimal ADEM (C), bukan D
+  else grade = 'D';                                       // data tak cukup utk skenario → hindari
   const drivers = [];
   for (const d of (match.detectors || [])) drivers.push(d.alasan);
   for (const h of (match.honest || [])) drivers.push('Bidak jujur (bobot tinggi): ' + h.alasan);
   if (cm.note) drivers.push(cm.note);
-  return { grade, score: base, conflict: cm.conflict, agree: cm.agree, crossNote: cm.note, drivers, meaning: gradeMeaning(grade) };
+  return { grade, score: base, readPower, structural, conflict: cm.conflict, agree: cm.agree, crossNote: cm.note, drivers, meaning: gradeMeaning(grade) };
 }
 function gradeMeaning(g) {
   return g === 'A' ? 'sinyal kuat & konsisten' : g === 'B' ? 'sinyal lumayan'
@@ -590,17 +649,15 @@ function buildReport(match) {
   if ((match.detectors || []).some(d => d.key === 'line_freeze')) confirms.push('Garis tetap beku sampai kickoff (bandar nyaman dgn posisi).');
   invalidates.push('Berita lineup (XI/absensi pemain kunci) yang mengubah kekuatan — bisa membalik baca (lihat Fase 4 / kirim manual).');
   if (!confirms.length) confirms.push('Muncul pergerakan jelas menjelang kickoff yang membentuk arah.');
-  // "BANDAR PALING SUKA TAHAN UANG DI __"
-  const topDet = (match.detectors || []).slice().sort((a, b) => b.kekuatan - a.kekuatan)[0];
-  const tahanUangDi = pancing ? pancing
-    : topDet ? topDet.key.replace(/_/g, ' ')
-      : (g.grade === 'D' ? 'tidak ada sisi jelas (laga bising/sepi) — jangan paksa' : 'margin dua sisi (laga wajar)');
+  const sc = match.scenario || {};
   const lineupChange = match.lineupRead
     ? (match.lineupRead.flip
       ? `Read BERUBAH karena lineup: grade ${match.lineupRead.gradeBefore}→${match.lineupRead.gradeAfter}. ${match.lineupRead.changes.join(' ')}`
       : `Lineup tercatat (tak membalik arah): ${match.lineupRead.changes.join(' ')}`)
     : null;
-  return { grade: g.grade, meaning: g.meaning, fakta, inferensi, spekulasi, bandarPancing: pancing, bandarPegang, confirms, invalidates, tahanUangDi, lineupChange };
+  return { grade: g.grade, meaning: g.meaning, fakta, inferensi, spekulasi,
+    scenarioLabel: sc.label, scenarioS1: sc.s1, scenarioS2: sc.s2, menampung: sc.menampung, jagokan: sc.jagokan, balanced: sc.balanced,
+    bandarPancing: sc.menampung, bandarPegang: sc.jagokan, confirms, invalidates, lineupChange };
 }
 
 // Ringkasan papan (dipakai Node & Worker) — termasuk distribusi grade.
@@ -749,6 +806,7 @@ function analyzeMatch(raw, hist, isLive, ctx) {
   out.guidance = matchGuidance(markets, raw.home, raw.away);
   out.honest = honestSignals(out);
   out.detectors = runDetectors(out, ctx || { nowMs: Date.now() });
+  out.scenario = scenarioRead(out);
   out.grade = gradeMatch(out);
   out.lineup = raw.lineup || null;
   applyLineup(out);                 // 4B: bisa menurunkan/membalik grade (set out.lineupRead)
@@ -912,7 +970,7 @@ module.exports = {
   // analisis
   NORMAL_MARGIN, gradeMarket, computeDivergence, buildMarket, computeDirection, movePhrase, matchGuidance,
   indoHandicap, strengthWord, generateRead, matchVerdict, sideLabel, hardenSide, deriveConclusion,
-  honestSignals, runDetectors, crossMarket, gradeMatch, buildReport, summarize, adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
+  honestSignals, scenario, scenarioRead, runDetectors, crossMarket, gradeMatch, buildReport, summarize, adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
   // normalisasi sumber
   bookArr, marketEntries, entryLine, entrySides, pickMainLine, pickAtLine, emptyMarket, buildLiveMarket, normalizeOddsApiIo,
   parseManual,

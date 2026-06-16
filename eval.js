@@ -150,31 +150,41 @@ console.log('\n── 9. Parser format resmi odds-api.io (Sbobet + Bet365) ─�
   check('divergence menandai umpan publik di Man Utd', am.markets.ah.divergence && am.markets.ah.divergence.side === 'home');
 }
 
-console.log('\n── 10. Corner FT & Babak 1 dari Sbobet "Totals" (gratis), kartu kosong ──');
+console.log('\n── 10. Mapping market BENAR + HT (Spread/Totals HT) + bidak jujur ──');
 {
+  // Struktur SBOBET asli (dikonfirmasi dari sampel live France–Senegal).
   const sample = [{
-    id: 777, home: 'Mexico', away: 'South Africa', date: '2026-06-11T19:00:00Z', league: { name: 'FIFA World Cup' },
+    id: 777, home: 'France', away: 'Senegal', date: '2026-06-11T19:00:00Z', league: { name: 'FIFA World Cup' },
     bookmakers: {
       Sbobet: [
-        { name: 'Spread', odds: [{ hdp: -2.5, home: '1.62', away: '2.28' }, { hdp: -2.25, home: '1.44', away: '2.66' }] },
-        { name: 'Totals', odds: [{ hdp: 8, over: '1.81', under: '2.01' }, { hdp: 8.5, over: '2.11', under: '1.72' }] },
-        { name: 'Totals HT', odds: [{ hdp: 4, over: '1.85', under: '1.97' }, { hdp: 4.5, over: '2.31', under: '1.58' }] },
-      ],
-      Bet365: [
-        { name: 'Totals', odds: [{ hdp: 2.25, over: '2.00', under: '1.85' }, { hdp: 2.5, over: '2.25', under: '1.62' }] },
+        { name: 'ML', odds: [{ home: '1.46', draw: '4.46', away: '6.90' }] },
+        { name: 'Spread', odds: [{ hdp: -1.5, home: '2.42', away: '1.64' }, { hdp: -1.25, home: '2.08', away: '1.86' }] },
+        { name: 'Totals', odds: [{ hdp: 2.75, over: '2.00', under: '1.92' }, { hdp: 2.25, over: '1.58', under: '2.51' }] },
+        { name: 'Spread HT', odds: [{ hdp: -0.75, home: '2.40', away: '1.63' }, { hdp: -0.5, home: '1.99', away: '1.93' }] },
+        { name: 'Totals HT', odds: [{ hdp: 1, over: '1.78', under: '2.13' }, { hdp: 1.25, over: '2.21', under: '1.72' }] },
+        { name: 'Corners Totals', odds: [{ hdp: 9.5, over: '1.87', under: '1.95' }, { hdp: 9, over: '1.67', under: '2.17' }] },
+        { name: 'Corners Totals HT', odds: [{ hdp: 4.5, over: '1.87', under: '1.95' }, { hdp: 4, over: '1.68', under: '2.16' }] },
+        { name: 'Bookings Totals', odds: [{ hdp: 3.5, over: '1.92', under: '1.90' }, { hdp: 3.25, over: '1.64', under: '2.21' }] },
       ],
     },
   }];
   const r = A.normalizeOddsApiIo(sample)[0];
   const m = A.analyzeMatch(r, null, false);
-  check('AH garis utama −2.5 (paling seimbang)', r.ah.line.now === -2.5, String(r.ah.line.now));
-  check('O/U gol dari Bet365 (2.25), bukan corner Sbobet', r.ou.line.now === 2.25, String(r.ou.line.now));
-  check('Corner FT dari Sbobet "Totals" = 8', r.corner.line.now === 8, String(r.corner.line.now));
-  check('Corner Babak 1 dari "Totals HT" = 4', r.cornerHT.line.now === 4, String(r.cornerHT.line.now));
-  check('kalimat corner FT benar', /~8 corner \(full-time\)/.test(m.markets.corner.read.holds), m.markets.corner.read.holds);
-  check('kalimat corner B1 benar', /~4 corner \(babak 1\)/.test(m.markets.cornerHT.read.holds), m.markets.cornerHT.read.holds);
-  check('Kartu = belum tersambung (lineDisplay null)', m.markets.card.lineDisplay === null, String(m.markets.card.lineDisplay));
+  check('AH gol (Spread) = -1.25', r.ah.line.now === -1.25, String(r.ah.line.now));
+  check('O/U GOL dari "Totals" = 2.75 (bukan corner!)', r.ou.line.now === 2.75, String(r.ou.line.now));
+  check('AH BABAK 1 (Spread HT) = -0.5', r.ahHT.line.now === -0.5, String(r.ahHT.line.now));
+  check('O/U BABAK 1 gol (Totals HT) = 1', r.ouHT.line.now === 1, String(r.ouHT.line.now));
+  check('Corner FT dari "Corners Totals" = 9.5', r.corner.line.now === 9.5, String(r.corner.line.now));
+  check('Corner B1 dari "Corners Totals HT" = 4.5', r.cornerHT.line.now === 4.5, String(r.cornerHT.line.now));
+  check('Kartu dari "Bookings Totals" = 3.5', r.card.line.now === 3.5, String(r.card.line.now));
+  check('1X2 FT dari ML (home favorit)', m.win && m.win.home > m.win.away, JSON.stringify(m.win));
+  check('market HT terbangun (label + de-vig)', m.markets.ahHT.lineDisplay != null && m.markets.ouHT.probHome != null);
   check('tidak ada "null" di kalimat manapun', !/~null|Over null/.test(JSON.stringify(m.markets)), 'ada null');
+  // BIDAK JUJUR: total HT rendah (1) + voor HT ~imbang (-0.5) + corner moderat (9.5).
+  const h = m.honest || [];
+  check('bidak jujur: ht_low_scoring aktif', h.some(s => s.key === 'ht_low_scoring' && s.aktif), JSON.stringify(h.map(s=>s.key)));
+  check('bidak jujur: controlled_game aktif', h.some(s => s.key === 'controlled_game'), JSON.stringify(h.map(s=>s.key)));
+  check('bidak jujur: alasan BERISI (bukan kosong)', h.length > 0 && h.every(s => s.alasan && s.alasan.length > 20), JSON.stringify(h.map(s=>s.alasan&&s.alasan.length)));
 }
 
 console.log('\n── 11. Status LIVE terbawa ke output ──');

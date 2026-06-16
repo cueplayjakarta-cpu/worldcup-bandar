@@ -549,22 +549,27 @@ function gradeMatch(match) {
   let structural = v >= 2.5 ? 3.5 : v >= 1.75 ? 2.5 : v >= 1.5 ? 2.0 : v >= 1.0 ? 1.3 : v >= 0.75 ? 0.6 : 0;
   if (match.markets.ah && match.markets.ah.divergence) structural += 1.5;      // divergence = giringan UTAMA (bonus di atas voor)
   else if (!sc.balanced && sc.menampung) structural += 0.6;                    // giringan dari juice (bonus kecil)
+  // READ NYATA = structural(voor+giringan) + detektor + arah. INI yang menentukan HURUF grade.
   const readPower = +(detPower + dirPower + structural).toFixed(1);            // pergerakan = penguat OPSIONAL
-  const honestBonus = (match.honest || []).reduce((s, h) => s + (h.kekuatan || 0), 0) * 1.5;
   const cm = crossMarket(match);
-  const base = +(readPower + honestBonus + (cm.agree ? 1.5 : 0) - (cm.conflict ? 3 : 0)).toFixed(1);
+  // cross-market (searah/bentrok) bagian dari read nyata; bidak jujur TIDAK (anti lompat-grade).
+  const eff = +(readPower + (cm.agree ? 1.5 : 0) - (cm.conflict ? 3 : 0)).toFixed(1);
   const scenarioValid = sc.key && sc.key !== 'tak_jelas';
   let grade;
-  if (cm.conflict) grade = base >= 4 ? 'C' : 'D';        // bentrok → turunkan
-  else if (base >= 7 && readPower >= 3) grade = 'A';     // skenario sangat jelas + giringan kuat (+ konfirmasi)
-  else if (base >= 3.5 && readPower >= 2) grade = 'B';
-  else if (scenarioValid) grade = 'C';                    // skenario valid → minimal ADEM (C), bukan D
-  else grade = 'D';                                       // data tak cukup utk skenario → hindari
+  if (eff >= 6.5) grade = 'A';                            // A WAJIB read nyata kuat (skenario besar + TWIST: margin_trap/divergence)
+  else if (eff >= 3.5) grade = 'B';                       // voor besar saja (tanpa twist) → B
+  else if (scenarioValid) grade = cm.conflict ? 'D' : 'C'; // bentrok+lemah → D (hindari); selain itu C (adem)
+  else grade = 'D';
+  // BIDAK JUJUR = penguat keyakinan DALAM grade (TIDAK mengubah huruf). Proxy (inferensi) ≠ draw-HT asli (fakta).
+  const honest = match.honest || [];
+  const honestFakta = honest.some(h => h.label === 'fakta');
+  const honestNote = honest.length ? (honestFakta ? 'dikonfirmasi harga draw-HT asli (fakta)' : 'didukung bidak jujur proxy (inferensi lemah — tak menaikkan grade)') : null;
   const drivers = [];
   for (const d of (match.detectors || [])) drivers.push(d.alasan);
-  for (const h of (match.honest || [])) drivers.push('Bidak jujur (bobot tinggi): ' + h.alasan);
+  for (const h of (match.honest || [])) drivers.push('Bidak jujur (' + (h.label || 'inferensi') + ', penguat — tak menaikkan grade): ' + h.alasan);
   if (cm.note) drivers.push(cm.note);
-  return { grade, score: base, readPower, structural, conflict: cm.conflict, agree: cm.agree, crossNote: cm.note, drivers, meaning: gradeMeaning(grade) };
+  return { grade, score: eff, readPower, structural, conflict: cm.conflict, agree: cm.agree, crossNote: cm.note,
+    honestConfirm: honest.length > 0, honestFakta, honestNote, drivers, meaning: gradeMeaning(grade) + (honestNote ? ' · ' + honestNote : '') };
 }
 function gradeMeaning(g) {
   return g === 'A' ? 'sinyal kuat & konsisten' : g === 'B' ? 'sinyal lumayan'

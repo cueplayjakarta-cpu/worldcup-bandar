@@ -315,8 +315,11 @@ console.log('\n── 15. Grade A/B/C/D + cross-market (3D) ──');
     ah: mkt(-2.5, 1.95, 1.95, 1.95, 1.95), ahHT: mkt(-0.5, 0.95, 0.95, 0.95, 0.95),
     ouHT: mkt(1.0, 0.95, 0.95, 0.95, 0.95), corner: mkt(9.5, 0.9, 0.9, 0.9, 0.9),
   }), null, true);
-  check('read kuat (margin_trap) + bidak jujur → grade A', readHonest.grade.grade === 'A', readHonest.grade.grade + ' score=' + readHonest.grade.score);
+  check('read kuat (margin_trap, readPower≥6.5) → grade A', readHonest.grade.grade === 'A', readHonest.grade.grade + ' rp=' + readHonest.grade.readPower);
   check('grade drivers berisi alasan', readHonest.grade.drivers.length > 0 && readHonest.grade.drivers.every(x => x && x.length > 10));
+  // KUNCI: bidak jujur TIDAK boleh melompatkan grade (read nyata B → tetap B walau banyak bidak jujur).
+  const noJump = A.analyzeMatch(A.parseManual('A vs B\nAH -1.75 1.95 1.95\nOU 3 0.95 0.95\nAH HT -0.5 0.95 0.95\nOU HT 1.0 0.95 0.95\nCorner 9.5 1.9 1.9').raw, null, false);
+  check('bidak jujur TIDAK melompatkan B→A (read nyata penentu)', noJump.grade.grade === 'B' && noJump.honest.length > 0, noJump.grade.grade + ' rp=' + noJump.grade.readPower + ' honest=' + noJump.honest.length);
 }
 
 console.log('\n── 16. Output template + label FAKTA/INFERENSI/SPEKULASI (3E) ──');

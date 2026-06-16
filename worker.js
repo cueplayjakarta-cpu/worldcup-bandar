@@ -20,6 +20,9 @@ const LIMIT = 24;              // batasi jumlah laga (hemat CPU free-tier)
 const CACHE_KEY = 'https://lensa-bandar.cache/matches-v4v';  // bump → cold-start fresh dgn grade/report
 const HIST_KEY = 'https://lensa-bandar.cache/history';       // TETAP (jangan hilangkan baseline)
 const META_KEY = 'https://lensa-bandar.cache/meta-v4v';
+const REPO = 'cueplayjakarta-cpu/worldcup-bandar';
+const STATIC_PATH = 'data/matches.js';
+const STATIC_EVERY_MS = 3 * 3600000;   // worker tulis-balik cadangan statis tiap ~3 jam (ganti cron GitHub yg tak andal)
 
 // Sisa kuota dari header API terakhir (untuk guard backoff).
 let LAST_RL = { remaining: null, reset: null };
@@ -133,6 +136,26 @@ async function handleManual(request){
   return new Response(JSON.stringify({ok:true,parsedView:p.parsedView,warnings:p.warnings,match}),{headers:CORS});
 }
 
+// ===================== TULIS-BALIK CADANGAN STATIS ke GitHub =====================
+// Worker (andal) commit data/matches.js = cermin output worker → cadangan selalu seversi & segar,
+// tanpa bergantung cron GitHub yg sering di-drop. Butuh secret GH_TOKEN (scope repo).
+function b64utf8(str){ const b=new TextEncoder().encode(str); let s=''; for(let i=0;i<b.length;i++) s+=String.fromCharCode(b[i]); return btoa(s); }
+async function ghReq(path, opt, token){
+  const h=Object.assign({Authorization:'Bearer '+token,'User-Agent':'lensa-bandar-worker',Accept:'application/vnd.github+json'},(opt&&opt.headers)||{});
+  return fetch('https://api.github.com'+path, Object.assign({},opt,{headers:h}));
+}
+async function commitStatic(out, env){
+  if(!env.GH_TOKEN) return false;
+  const url=`/repos/${REPO}/contents/${STATIC_PATH}`;
+  let sha=null;
+  try{ const cur=await ghReq(url+'?ref=main',{},env.GH_TOKEN); if(cur.ok){ sha=(await cur.json()).sha; } }catch(e){}
+  const content='window.__BANDAR_DATA__ = '+JSON.stringify(out)+';\n';
+  const body={ message:'worker: refresh cadangan statis '+out.generatedAt+' [skip ci]', content:b64utf8(content), branch:'main' };
+  if(sha) body.sha=sha;
+  const r=await ghReq(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},env.GH_TOKEN);
+  return r.ok;
+}
+
 export default {
   // Permintaan halaman: SELALU sajikan cache (cron yang me-refresh). Hanya cold-start
   // yang menarik API — biar konsumsi kuota terikat ke cron, bukan jumlah pengunjung.
@@ -163,6 +186,10 @@ export default {
       const out=await buildOutput(env); await writeCache(out);
       meta.lastFetchAt=now; meta.lastError=null;
       if(LAST_RL.remaining!=null && LAST_RL.remaining<12 && LAST_RL.reset) meta.backoffUntil=Date.parse(LAST_RL.reset)||0; else meta.backoffUntil=0;
+      // tulis-balik cadangan statis tiap ~3 jam (cermin worker; ganti cron GitHub yg tak andal).
+      if(env.GH_TOKEN && (!meta.lastStaticAt || now-meta.lastStaticAt>=STATIC_EVERY_MS)){
+        try{ if(await commitStatic(out, env)){ meta.lastStaticAt=now; meta.staticErr=null; } }catch(e){ meta.staticErr=String(e&&e.message||e); }
+      }
     }catch(e){
       if(e&&e.rateLimited) meta.backoffUntil=(e.reset&&Date.parse(e.reset))||(now+15*60000);
       else meta.backoffUntil=now+5*60000;

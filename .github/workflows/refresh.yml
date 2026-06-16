@@ -1,12 +1,10 @@
 name: Refresh odds (cadangan)
 
-# Sumber UTAMA situs = Cloudflare Worker (cron */2, andal & tepat waktu).
-# Action ini cuma menjaga file STATIS (data/matches.js) tetap cukup segar sebagai
-# CADANGAN bila Worker down. Sengaja ringan (1x tarik per jam) agar tidak menghabiskan
-# kuota free tier odds-api.io yang juga dipakai Worker.
+# Cadangan statis (data/matches.js) sekarang DITULIS BALIK oleh Cloudflare Worker tiap ~3 jam
+# (cermin output worker — selalu seversi & segar). GitHub `schedule` SENGAJA DIMATIKAN karena
+# sering di-drop (cadangan pernah beku 19 jam). Action ini cuma manual (workflow_dispatch),
+# untuk darurat kalau worker-writeback bermasalah.
 on:
-  schedule:
-    - cron: '17 * * * *'      # tiap jam (menit :17)
   workflow_dispatch:
 
 permissions:

@@ -3,5 +3,17 @@ main = "worker.js"
 compatibility_date = "2026-06-01"
 workers_dev = true
 
+# Cron memanggil scheduled() tiap 3 menit, TAPI worker yang memutuskan kapan benar-benar
+# menarik API (ADAPTIF berdasar jarak ke kickoff terdekat):
+#   HOT  (ada laga live / kickoff <60mnt) → tarik tiap ~3 menit (tangkap late-steam & line-freeze)
+#   MED  (kickoff <3 jam)                 → tiap ~10 menit
+#   SEPI (selain itu)                     → tiap ~20 menit
+# Plus: 429/sisa-kuota menipis → backoff otomatis sampai window reset (tidak nge-hammer).
+#
+# KUOTA (header x-ratelimit-limit key ini): 100 request / JAM berjalan.
+#   ~4 call per fetch (events + events/live + 1-3 batch odds).
+#   Puncak HOT ~ 20 fetch/jam x 4 ~ 80 call/jam  (< 100, aman).
+#   SEPI       ~ 3 fetch/jam x 4 ~ 12 call/jam.
+#   Estimasi harian ~ 700-800 call. Guard sisa-kuota mencegah lewat cap apa pun window-nya.
 [triggers]
-crons = ["*/2 * * * *"]
+crons = ["*/3 * * * *"]

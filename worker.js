@@ -19,9 +19,36 @@ const TTL_MS = 60000;          // segar ulang tiap ~60 detik
 const LIMIT = 24;              // batasi jumlah laga (hemat CPU free-tier)
 const CACHE_KEY = 'https://lensa-bandar.cache/matches';
 const HIST_KEY = 'https://lensa-bandar.cache/history';
+const META_KEY = 'https://lensa-bandar.cache/meta';   // {lastFetchAt, backoffUntil, lastError}
+
+// Sisa kuota dari header API terakhir (untuk guard backoff).
+let LAST_RL = { remaining: null, reset: null };
+
+// ---- cache helpers ----
+async function readMeta(){ try{ const m=await caches.default.match(META_KEY); if(m) return await m.json(); }catch(e){} return {}; }
+async function writeMeta(meta){ try{ await caches.default.put(META_KEY,new Response(JSON.stringify(meta),{headers:{'Cache-Control':'max-age=86400'}})); }catch(e){} }
+async function readCache(){ try{ const c=await caches.default.match(CACHE_KEY); if(c) return await c.json(); }catch(e){} return null; }
+async function writeCache(out){ try{ await caches.default.put(CACHE_KEY,new Response(JSON.stringify(out),{headers:{'Cache-Control':'max-age=600'}})); }catch(e){} }
+
+// Jarak (menit) ke kickoff terdekat; 0 kalau ada laga live.
+function minutesToNextKO(matches){
+  if(!Array.isArray(matches)) return Infinity;
+  const now=Date.now(); let mins=Infinity;
+  for(const m of matches){ if(m.live) return 0; if(m.kickoff){ const dm=(new Date(m.kickoff).getTime()-now)/60000; if(dm>-15 && dm<mins) mins=dm; } }
+  return mins;
+}
+// Cadence ADAPTIF: HOT 3mnt (<60mnt/live), MED 10mnt (<3jam), SEPI 20mnt.
+function cadenceMs(matches){ const m=minutesToNextKO(matches); if(m<=60) return 3*60000; if(m<=180) return 10*60000; return 20*60000; }
 
 // ===================== AMBIL DATA (Worker fetch) =====================
-async function jget(url){ const r=await fetch(url,{cf:{cacheTtl:0}}); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }
+async function jget(url){
+  const r=await fetch(url,{cf:{cacheTtl:0}});
+  const rem=r.headers.get('x-ratelimit-remaining'), reset=r.headers.get('x-ratelimit-reset');
+  if(rem!=null||reset!=null) LAST_RL={remaining:rem!=null?+rem:null,reset:reset||null};
+  if(r.status===429){ const e=new Error('HTTP 429'); e.rateLimited=true; e.reset=reset||null; throw e; }
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
+}
 async function fetchLive(key){
   const k=encodeURIComponent(key);
   const evRes=await jget(`${ODDS_BASE}/events?sport=football&apiKey=${k}`);
@@ -55,13 +82,11 @@ async function buildOutput(env){
 const CORS={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET, OPTIONS','Cache-Control':'no-store','Content-Type':'application/json; charset=utf-8'};
 const WEB_URL='https://cueplayjakarta-cpu.github.io/worldcup-bandar/';
 
-// Ambil data (dari cache bila <60 dtk, kalau tidak tarik baru).
+// Untuk webhook Telegram: sajikan cache; kalau kosong & tidak backoff, tarik sekali.
 async function getData(env, ctx){
-  const cache=caches.default;
-  try{ const c=await cache.match(CACHE_KEY); if(c){ const d=await c.clone().json(); if(Date.now()-new Date(d.generatedAt).getTime()<TTL_MS) return d; } }catch(e){}
+  const c=await readCache(); if(c) return c;
   const out=await buildOutput(env);
-  if(ctx&&ctx.waitUntil) ctx.waitUntil(cache.put(CACHE_KEY,new Response(JSON.stringify(out),{headers:{'Cache-Control':'max-age=120'}})));
-  else try{ await cache.put(CACHE_KEY,new Response(JSON.stringify(out),{headers:{'Cache-Control':'max-age=120'}})); }catch(e){}
+  if(ctx&&ctx.waitUntil) ctx.waitUntil(writeCache(out)); else await writeCache(out);
   return out;
 }
 
@@ -100,16 +125,37 @@ async function handleTelegram(request, env, ctx){
 }
 
 export default {
+  // Permintaan halaman: SELALU sajikan cache (cron yang me-refresh). Hanya cold-start
+  // yang menarik API — biar konsumsi kuota terikat ke cron, bukan jumlah pengunjung.
   async fetch(request, env, ctx){
     if(request.method==='OPTIONS') return new Response(null,{headers:CORS});
     if(request.method==='POST') return handleTelegram(request, env, ctx);   // webhook Telegram
     if(!env.ODDS_API_IO_KEY) return new Response(JSON.stringify({error:'ODDS_API_IO_KEY belum diset (Settings → Variables → Secret)'}),{status:500,headers:CORS});
-    try{ const out=await getData(env,ctx); return new Response(JSON.stringify(out),{headers:CORS}); }
-    catch(e){ try{ const c=await caches.default.match(CACHE_KEY); if(c) return new Response(c.body,{headers:CORS}); }catch(_){}
-      return new Response(JSON.stringify({error:String(e)}),{status:502,headers:CORS}); }
+    const cached=await readCache();
+    if(cached) return new Response(JSON.stringify(cached),{headers:CORS});
+    const meta=await readMeta(); const now=Date.now();
+    if(meta.backoffUntil && now<meta.backoffUntil) return new Response(JSON.stringify({error:'rate-limited',retryAt:new Date(meta.backoffUntil).toISOString()}),{status:503,headers:CORS});
+    try{ const out=await buildOutput(env); ctx.waitUntil(writeCache(out)); return new Response(JSON.stringify(out),{headers:CORS}); }
+    catch(e){ if(e&&e.rateLimited){ meta.backoffUntil=(e.reset&&Date.parse(e.reset))||(now+15*60000); ctx.waitUntil(writeMeta(meta)); }
+      return new Response(JSON.stringify({error:String(e&&e.message||e)}),{status:502,headers:CORS}); }
   },
+  // Cron tiap 3 menit; di sinilah ADAPTIF + backoff diputuskan.
   async scheduled(event, env, ctx){
     if(!env.ODDS_API_IO_KEY) return;
-    try{ const out=await buildOutput(env); await caches.default.put(CACHE_KEY,new Response(JSON.stringify(out),{headers:{'Cache-Control':'max-age=120'}})); }catch(e){}
+    const now=Date.now(); const meta=await readMeta();
+    if(meta.backoffUntil && now<meta.backoffUntil) return;                 // hormati backoff 429
+    const cached=await readCache();
+    const cad=cadenceMs(cached&&cached.matches);
+    if(meta.lastFetchAt && (now-meta.lastFetchAt)<cad) return;             // belum waktunya (adaptif)
+    try{
+      const out=await buildOutput(env); await writeCache(out);
+      meta.lastFetchAt=now; meta.lastError=null;
+      if(LAST_RL.remaining!=null && LAST_RL.remaining<12 && LAST_RL.reset) meta.backoffUntil=Date.parse(LAST_RL.reset)||0; else meta.backoffUntil=0;
+    }catch(e){
+      if(e&&e.rateLimited) meta.backoffUntil=(e.reset&&Date.parse(e.reset))||(now+15*60000);
+      else meta.backoffUntil=now+5*60000;
+      meta.lastError=String(e&&e.message||e);
+    }
+    await writeMeta(meta);
   }
 };

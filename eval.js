@@ -207,6 +207,42 @@ console.log('\n── 12. Arah Bandar (direction) + persentase + guidance ──
   check('narrative idle (null)', clean.guidance.narrative === null);
 }
 
+console.log('\n── 13. History v2: migrasi back-compat + open + high/low ──');
+{
+  // Format LAMA (array of {ahLine,ahH,ahA,ouLine,ouO,ouU}).
+  const oldM1 = [
+    { t: 1, ahLine: -1.0, ahH: 0.95, ahA: 0.95, ouLine: 2.5, ouO: 0.95, ouU: 0.95 },
+    { t: 2, ahLine: -0.75, ahH: 0.92, ahA: 0.98, ouLine: 2.5, ouO: 0.95, ouU: 0.95 },
+  ];
+  // M2 punya snap RACUN (-6 imbang) lalu garis benar -3.5 (gap juice wajar 0.20).
+  const oldM2 = [
+    { t: 1, ahLine: -6, ahH: 1.88, ahA: 1.92, ouLine: 2.5, ouO: 0.95, ouU: 0.95 },
+    { t: 2, ahLine: -3.5, ahH: 1.90, ahA: 2.10, ouLine: 2.5, ouO: 0.95, ouU: 0.95 },
+  ];
+  const e1 = A.adaptEntry(oldM1);
+  check('migrasi → v2 + snaps array', e1.v === 2 && Array.isArray(e1.snaps), JSON.stringify(e1).slice(0, 60));
+  check('snap lama kebaca (ah.l)', e1.snaps[0].ah && e1.snaps[0].ah.l === -1.0, JSON.stringify(e1.snaps[0]));
+  check('OPEN = snap pertama waras (-1.0)', e1.open && e1.open.ah.l === -1.0, JSON.stringify(e1.open && e1.open.ah));
+  check('high/low AH terisi (lo -1, hi -0.75)', e1.hl.ah && e1.hl.ah.lineLo === -1.0 && e1.hl.ah.lineHi === -0.75, JSON.stringify(e1.hl.ah));
+  const e2 = A.adaptEntry(oldM2);
+  check('OPEN tolak snap racun -6 (pilih -3.5)', e2.open && e2.open.ah.l === -3.5, JSON.stringify(e2.open && e2.open.ah));
+
+  // analyzeMatch pakai hist LAMA → baseline open benar, TANPA pergerakan palsu, + migrasi in-place.
+  const hist = { M2: JSON.parse(JSON.stringify(oldM2)) };
+  const raw = { id: 'M2', home: 'A', away: 'B',
+    ah: { line: { open: -3.5, now: -3.5 }, openHome: 1.90, openAway: 2.10, nowHome: 1.90, nowAway: 2.10 },
+    ou: { line: { open: 2.5, now: 2.5 }, openHome: 0.95, openAway: 0.95, nowHome: 0.95, nowAway: 0.95 },
+    corner: cleanCorner, card: cleanCard };
+  const am = A.analyzeMatch(raw, hist, true);
+  check('backfill open AH = -3.5 (bukan -6 racun)', am.markets.ah.line.open === -3.5, String(am.markets.ah.line.open));
+  check('tak ada pergerakan palsu (lineMove flat)', am.markets.ah.lineMove.dir === 'flat', JSON.stringify(am.markets.ah.lineMove));
+  check('hist M2 termigrasi v2 in-place', hist.M2 && hist.M2.v === 2, typeof hist.M2);
+  check('out.history bawa high/low', !!(am.history && am.history.hl && am.history.hl.ah));
+  // snapshot generik rekam SEMUA market tersambung (forward-compat market HT nanti).
+  const snap = A.snapFromMatch(am);
+  check('snapFromMatch rekam ah+ou+corner', !!(snap.ah && snap.ou && snap.corner), Object.keys(snap).join(','));
+}
+
 function within(x, lo, hi) { return x != null && x >= lo && x <= hi; }
 
 console.log('\n────────────────────────────');

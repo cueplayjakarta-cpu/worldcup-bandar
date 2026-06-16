@@ -329,46 +329,104 @@ function deriveConclusion(match) {
 }
 
 // =====================================================================
-//  HISTORY (perjalanan garis antar-waktu) — murni: terima objek hist, tak baca file.
+//  HISTORY v2 (perjalanan garis antar-waktu) — murni: terima objek hist, tak baca file.
+//  Schema entry per laga: { v:2, open:<snap|null>, snaps:[<snap>...≤60], hl:{ [market]:{lineLo,lineHi} } }
+//  Snapshot generik PER MARKET: { t, [market]:{l,h,a} }  (l=garis, h=juice home/over, a=juice away/under)
+//  → forward-compatible: market baru (mis. ah_ht, ou_ht) otomatis terekam tanpa ubah schema.
+//  BACK-COMPAT WAJIB: format lama (array of {ahLine,ahH,ahA,ouLine,ouO,ouU}) tetap kebaca via adapter;
+//  baseline OPENING tidak boleh hilang (di-derive dari snapshot waras pertama).
 // =====================================================================
-function updateHistory(hist, match) {
-  const id = match.id;
-  const snap = { t: Date.now(), ahLine: match.markets.ah.line.now, ouLine: match.markets.ou.line.now,
-    ahH: match.markets.ah.nowHome, ahA: match.markets.ah.nowAway,
-    ouO: match.markets.ou.nowHome, ouU: match.markets.ou.nowAway };
-  if (!hist[id]) hist[id] = [];
-  const last = hist[id][hist[id].length - 1];
-  const changed = !last || last.ahLine !== snap.ahLine || last.ouLine !== snap.ouLine ||
-    last.ahH !== snap.ahH || last.ahA !== snap.ahA || last.ouO !== snap.ouO || last.ouU !== snap.ouU;
-  if (changed) hist[id].push(snap);
-  if (hist[id].length > 60) hist[id] = hist[id].slice(-60);
-  const arr = hist[id];
-  const moves = Math.max(0, arr.length - 1);
-  const lastMoveAgo = arr.length ? Date.now() - arr[arr.length - 1].t : null;
-  return { snapshots: arr.length, moves, lastMoveMin: lastMoveAgo != null ? Math.round(lastMoveAgo / 60000) : null,
-    spark: arr.slice(-12).map(s => s.ahLine) };
+const HIST_MARKETS = ['ah', 'ou', 'corner', 'cornerHT', 'card'];
+
+// Snapshot waras untuk dipakai sebagai OPEN (garis besar tak mungkin imbang; tak loncat jauh dari now).
+function snapSaneAh(snap, nowL) {
+  const a = snap && snap.ah; if (!a || a.l == null || a.h == null || a.a == null) return false;
+  if (Math.abs(a.l) >= 1.5 && Math.abs(a.h - a.a) < 0.2) return false;
+  return nowL == null || Math.abs(a.l - nowL) <= 1.5;
+}
+// Adapter: snapshot format LAMA → baru. (Sudah baru → dikembalikan apa adanya.)
+function adaptSnap(s) {
+  if (!s) return null;
+  if (!('ahLine' in s) && !('ouLine' in s)) return s;     // sudah format baru
+  const ns = { t: s.t };
+  if (s.ahLine != null) ns.ah = { l: s.ahLine, h: s.ahH != null ? s.ahH : null, a: s.ahA != null ? s.ahA : null };
+  if (s.ouLine != null) ns.ou = { l: s.ouLine, h: s.ouO != null ? s.ouO : null, a: s.ouU != null ? s.ouU : null };
+  return ns;
+}
+// Hitung ulang open + high/low dari deretan snapshot (dipakai saat migrasi data lama).
+function recomputeOpenHL(entry) {
+  const snaps = entry.snaps || [];
+  const nowL = snaps.length ? (snaps[snaps.length - 1].ah && snaps[snaps.length - 1].ah.l) : null;
+  entry.open = snaps.find(s => snapSaneAh(s, nowL)) || snaps[0] || null;
+  const hl = {};
+  for (const s of snaps) for (const k of Object.keys(s)) {
+    if (k === 't' || !s[k] || s[k].l == null) continue;
+    const h = hl[k] || (hl[k] = { lineLo: s[k].l, lineHi: s[k].l });
+    if (s[k].l < h.lineLo) h.lineLo = s[k].l; if (s[k].l > h.lineHi) h.lineHi = s[k].l;
+  }
+  entry.hl = hl;
+  return entry;
+}
+// Adapter entry: format LAMA (array) ATAU baru ({v:2,...}) → selalu kembalikan {v:2,open,snaps,hl}.
+function adaptEntry(e) {
+  if (!e) return { v: 2, open: null, snaps: [], hl: {} };
+  if (Array.isArray(e)) return recomputeOpenHL({ v: 2, open: null, snaps: e.map(adaptSnap).filter(Boolean), hl: {} });
+  if (e.v === 2 && Array.isArray(e.snaps)) return e;
+  return recomputeOpenHL({ v: 2, open: e.open ? adaptSnap(e.open) : null, snaps: (e.snaps || []).map(adaptSnap).filter(Boolean), hl: e.hl || {} });
+}
+// Snapshot baru dari hasil analisa: rekam SEMUA market yang tersambung (l + dua sisi juice).
+function snapFromMatch(match) {
+  const snap = { t: Date.now() };
+  for (const k of Object.keys(match.markets)) {
+    const mk = match.markets[k];
+    if (!mk || mk.lineDisplay == null || !mk.line) continue;
+    snap[k] = { l: mk.line.now, h: mk.nowHome != null ? mk.nowHome : null, a: mk.nowAway != null ? mk.nowAway : null };
+  }
+  return snap;
+}
+function sameSnap(a, b) {
+  if (!a || !b) return false;
+  const ka = Object.keys(a).filter(k => k !== 't'), kb = Object.keys(b).filter(k => k !== 't');
+  if (ka.length !== kb.length) return false;
+  for (const k of ka) { const x = a[k], y = b[k]; if (!y || x.l !== y.l || x.h !== y.h || x.a !== y.a) return false; }
+  return true;
+}
+// Catat snapshot baru ke entry (ENTRY SUDAH dimigrasi via adaptEntry oleh pemanggil).
+function updateHist(entry, match) {
+  const snap = snapFromMatch(match);
+  const last = entry.snaps[entry.snaps.length - 1];
+  if (!sameSnap(last, snap)) entry.snaps.push(snap);
+  if (entry.snaps.length > 60) entry.snaps = entry.snaps.slice(-60);
+  // OPEN: set sekali (snapshot waras pertama), lalu beku — tak hilang walau snaps lama tergeser.
+  if (!entry.open) { const nowL = snap.ah && snap.ah.l; entry.open = entry.snaps.find(s => snapSaneAh(s, nowL)) || entry.snaps[0] || null; }
+  // HIGH/LOW: ekstrem garis sepanjang waktu (incremental → tetap akurat walau window geser).
+  for (const k of Object.keys(snap)) {
+    if (k === 't' || snap[k].l == null) continue;
+    const h = entry.hl[k] || (entry.hl[k] = { lineLo: snap[k].l, lineHi: snap[k].l });
+    if (snap[k].l < h.lineLo) h.lineLo = snap[k].l; if (snap[k].l > h.lineHi) h.lineHi = snap[k].l;
+  }
+  const moves = Math.max(0, entry.snaps.length - 1);
+  const lastMoveAgo = entry.snaps.length ? Date.now() - entry.snaps[entry.snaps.length - 1].t : null;
+  return { snapshots: entry.snaps.length, moves, lastMoveMin: lastMoveAgo != null ? Math.round(lastMoveAgo / 60000) : null,
+    spark: entry.snaps.slice(-12).map(s => s.ah && s.ah.l), hl: entry.hl,
+    openAh: entry.open && entry.open.ah ? entry.open.ah.l : null };
 }
 
 // =====================================================================
 //  RANGKAI SATU LAGA
 // =====================================================================
 function analyzeMatch(raw, hist, isLive) {
-  if (isLive && hist && hist[raw.id] && hist[raw.id].length) {
-    const snaps = hist[raw.id];
-    const saneAh = (s, nowL) =>
-      s && s.ahLine != null && s.ahH != null && s.ahA != null &&
-      !(Math.abs(s.ahLine) >= 1.5 && Math.abs(s.ahH - s.ahA) < 0.2) &&
-      (nowL == null || Math.abs(s.ahLine - nowL) <= 1.5);
-    const saneOu = (s, nowL) =>
-      s && s.ouLine != null && s.ouO != null && s.ouU != null &&
-      (nowL == null || Math.abs(s.ouLine - nowL) <= 1.0);
-    if (raw.ah && raw.ah.line.open === raw.ah.line.now) {
-      const h = snaps.find(s => saneAh(s, raw.ah.line.now));
-      if (h) { raw.ah.line.open = h.ahLine; raw.ah.openHome = h.ahH; raw.ah.openAway = h.ahA; }
-    }
-    if (raw.ou && raw.ou.line.open === raw.ou.line.now) {
-      const h = snaps.find(s => saneOu(s, raw.ou.line.now));
-      if (h) { raw.ou.line.open = h.ouLine; raw.ou.openHome = h.ouO; raw.ou.openAway = h.ouU; }
+  // Migrasi entry history (format lama→baru) lalu pakai OPEN beku sebagai baseline pergerakan.
+  let entry = null;
+  if (hist) entry = hist[raw.id] = adaptEntry(hist[raw.id]);
+  if (isLive && entry && entry.open) {
+    const op = entry.open;
+    for (const k of HIST_MARKETS) {
+      if (!raw[k] || !op[k] || !raw[k].line || raw[k].line.open !== raw[k].line.now) continue;
+      const lo = op[k].l, nowL = raw[k].line.now;
+      // AH: cek kewarasan ketat; market lain: cukup tak loncat jauh dari now.
+      const ok = (k === 'ah') ? snapSaneAh(op, nowL) : (lo != null && (nowL == null || Math.abs(lo - nowL) <= 1.5));
+      if (ok) { raw[k].line.open = lo; raw[k].openHome = op[k].h; raw[k].openAway = op[k].a; }
     }
   }
   const mk = (label, key, normalMargin) => buildMarket(Object.assign({ label, normalMargin, homeName: raw.home, awayName: raw.away }, raw[key]));
@@ -398,7 +456,7 @@ function analyzeMatch(raw, hist, isLive) {
     win: raw.win || null, overallLight: verdict.light, verdict, markets };
   out.conclusion = deriveConclusion(out);
   out.guidance = matchGuidance(markets, raw.home, raw.away);
-  if (hist) out.history = updateHistory(hist, out);
+  if (hist) out.history = updateHist(entry, out);
   return out;
 }
 
@@ -494,7 +552,7 @@ module.exports = {
   // analisis
   NORMAL_MARGIN, gradeMarket, computeDivergence, buildMarket, computeDirection, movePhrase, matchGuidance,
   indoHandicap, strengthWord, generateRead, matchVerdict, sideLabel, hardenSide, deriveConclusion,
-  updateHistory, analyzeMatch,
+  adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
   // normalisasi sumber
   bookArr, marketEntries, entryLine, entrySides, pickMainLine, pickAtLine, emptyMarket, buildLiveMarket, normalizeOddsApiIo,
 };

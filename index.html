@@ -77,6 +77,23 @@
   .winbar .wd{background:linear-gradient(180deg,#3a455f,#2c3650);color:#dfe7fb}
   .winbar .wa{background:linear-gradient(180deg,#e0556a,#c63f55);color:#fff}
   .winbar small{font-size:9px;font-weight:600;opacity:.85}
+  /* 1X2 DEMOTED → pendukung kecil di bawah */
+  .winwrap.demoted{opacity:.82;margin-top:2px}
+  .winwrap.demoted .winbar{height:24px}
+  .winwrap.demoted .winbar > div{font-size:10px}
+  .winwrap.demoted .winlab{font-size:9.5px}
+  /* MOVEMENT HERO — AH & O/U: garis vs harga, buka→kini (utama tiap kartu) */
+  .mvhero{margin:0 14px 11px;border-radius:13px;padding:11px 13px;border:1px solid #2b3c63;background:linear-gradient(180deg,#13213f,#0f1a33)}
+  .mvhero .mv-lab{font-size:10px;font-weight:800;letter-spacing:.6px;color:#9db4ee;margin-bottom:9px;text-transform:uppercase}
+  .mv-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-top:1px solid #1c2a49}
+  .mv-row:first-of-type{border-top:none;padding-top:0}
+  .mv-k{font-size:13px;font-weight:800;color:#eaf3ff;min-width:32px;font-family:var(--mono)}
+  .mv-cells{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+  .mv-cell{font-family:var(--mono);font-size:13px;color:#dbe7ff;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .mv-cl{font-size:9px;font-weight:700;color:#6b779b;letter-spacing:.4px;text-transform:uppercase;min-width:32px}
+  .mv-from{color:#8aa0cc} .mv-to{color:#fff;font-weight:800} .mv-d{color:#f0c860;font-size:11px}
+  .mv-flat{color:var(--dim);font-size:11px;font-weight:600} .mv-sl{color:var(--dim)}
+  .arrow-up{color:#5be29b;font-weight:800} .arrow-down{color:#ef5d6d;font-weight:800} .arrow-flat{color:var(--dim)}
   /* conclusion = HERO */
   .concl{margin:0 14px 10px;padding:13px 14px;border-radius:13px;background:linear-gradient(180deg,#2a1020,#1c0d18);border:1px solid #8a2f48;box-shadow:0 6px 22px #e0143c14}
   .concl.clean{background:linear-gradient(180deg,#102219,#0e1a15);border-color:#1d5b43;box-shadow:none}
@@ -236,10 +253,31 @@
     '</div>';
   }
 
+  function fmtNum(v){ return v==null?'—':v; }
+  // Satu baris pergerakan market: GARIS (buka→kini, delta+panah) dan HARGA (juice) DIPISAH jelas.
+  function mvRow(m,k,name){
+    var x=m.markets[k]; if(!x||x.lineDisplay==null) return '';
+    var lm=x.lineMove||{dir:'flat',delta:0};
+    var garis=(lm.dir!=='flat')
+      ? '<span class="mv-from">'+fmtNum(x.line.open)+'</span> '+arrow(lm)+' <span class="mv-to">'+x.lineDisplay+'</span> <span class="mv-d">'+(lm.delta>0?'+':'')+lm.delta+'</span>'
+      : '<span class="mv-to">'+x.lineDisplay+'</span> <span class="mv-flat">tetap</span>';
+    var harga=fmtO(x.openHome)+' '+arrow(x.waterMoveHome)+' '+fmtO(x.nowHome)+' <span class="mv-sl">/</span> '+fmtO(x.openAway)+' '+arrow(x.waterMoveAway)+' '+fmtO(x.nowAway);
+    return '<div class="mv-row"><span class="mv-k">'+name+'</span><div class="mv-cells">'+
+      '<div class="mv-cell"><span class="mv-cl">garis</span>'+garis+'</div>'+
+      '<div class="mv-cell"><span class="mv-cl">harga</span>'+harga+'</div>'+
+    '</div></div>';
+  }
+  // HERO tiap kartu: pergerakan AH & O/U (garis vs harga). Inti baca arah bandar.
+  function mvHero(m){
+    var ah=mvRow(m,'ah','AH'), ou=mvRow(m,'ou','O/U');
+    if(!ah&&!ou) return '';
+    return '<div class="mvhero"><div class="mv-lab">Pergerakan pasar — garis vs harga (buka → kini)</div>'+ah+ou+'</div>';
+  }
+
   function winBar(m){
     var w=m.win; if(!w||w.home==null) return '';
     var h=Math.round(w.home*100), d=Math.round(w.draw*100), a=100-h-d;
-    return '<div class="winwrap"><div class="winlab">Peluang menang (1X2)</div>'+
+    return '<div class="winwrap demoted"><div class="winlab">Pendukung · peluang menang 1X2 (siapa menang — bukan voor)</div>'+
       '<div class="winbar">'+
         '<div class="wh" style="width:'+Math.max(12,h)+'%"><span>'+h+'%</span><small>'+m.home+'</small></div>'+
         '<div class="wd" style="width:'+Math.max(12,d)+'%"><span>'+d+'%</span><small>Seri</small></div>'+
@@ -305,10 +343,11 @@
           '</div>'+
           '<span class="bigdot '+v.light+'"></span>'+
         '</div>'+
-        winBar(m)+
         conclBlock(m.conclusion)+
+        mvHero(m)+
         arahBlock(m)+
         '<div class="mkts">'+MKT_ORDER.map(function(k){return mkBlock(k,m.markets[k],m);}).join('')+'</div>'+
+        winBar(m)+
       '</div>';
     }).join('');
   }

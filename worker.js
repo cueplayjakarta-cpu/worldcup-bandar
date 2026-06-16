@@ -73,7 +73,7 @@ async function buildOutput(env){
   const raw=await fetchLive(env.ODDS_API_IO_KEY);
   const matches=raw.map(m=>analyzeMatch(m,hist,true));
   matches.sort((a,b)=>{ if(a.live!==b.live) return a.live?-1:1; return new Date(a.kickoff||0)-new Date(b.kickoff||0); });
-  const summary={total:matches.length,live:matches.filter(m=>m.live).length,trapped:matches.filter(m=>m.conclusion&&m.conclusion.trapped).length,favoriteTraps:matches.filter(m=>m.verdict&&/Jebakan favorit/i.test(m.verdict.text)).length,clean:matches.filter(m=>m.verdict&&m.verdict.light==='green').length};
+  const summary=E.summarize(matches);
   const out={generatedAt:new Date().toISOString(),source:'odds-api.io / SBOBET (Cloudflare LIVE)',isDemo:false,reference:'SBOBET',compare:'Bet365 (publik)',markets:['Handicap','Over/Under','Corner FT','Corner B1','Kartu'],summary,note:'Alat informasi pergerakan odds. Tidak melacak taruhan siapa pun. Bukan jaminan untung.',matches};
   try{ await cache.put(HIST_KEY,new Response(JSON.stringify(hist),{headers:{'Cache-Control':'max-age=86400'}})); }catch(e){}
   return out;

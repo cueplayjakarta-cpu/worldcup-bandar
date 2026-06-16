@@ -329,6 +329,31 @@ function deriveConclusion(match) {
 }
 
 // =====================================================================
+//  BIDAK JUJUR — "market sepi = bandar tak memancing = keyakinan paling asli".
+//  PENGUAT grade (bukan jebakan). 1X2 babak 1 (harga draw-HT) TIDAK ada di sumber free →
+//  "draw-HT murah" DIDEKATI dari Total HT rendah + voor HT ~imbang (INFERENSI, bukan harga draw langsung).
+//  Tiap sinyal: {key, aktif, kekuatan, alasan} dengan alasan BERISI.
+// =====================================================================
+function honestSignals(match) {
+  const m = match.markets, sig = [];
+  const ouHTl = m.ouHT && m.ouHT.line && m.ouHT.line.now;
+  const ahHTl = m.ahHT && m.ahHT.line && m.ahHT.line.now;
+  const cornL = m.corner && m.corner.line && m.corner.line.now;
+  // Babak 1 ketat & skor rendah (proxy "draw-HT murah"): total HT rendah (+ voor HT ~imbang).
+  if (ouHTl != null && ouHTl <= 1.0) {
+    const tight = ahHTl == null || Math.abs(ahHTl) <= 0.5;
+    sig.push({ key: 'ht_low_scoring', aktif: true, kekuatan: tight ? 2 : 1,
+      alasan: `Total gol babak 1 dipatok rendah (${ouHTl})${ahHTl != null && tight ? ` + voor HT ~imbang (${indoHandicap(ahHTl)})` : ''} — pasar diam-diam menilai babak 1 ketat/skor rendah (≈ draw-HT murah). Market HT sepi, jarang dipancing publik → keyakinan asli bandar.` });
+  }
+  // Laga terkontrol: corner moderat + total HT rendah (bukan dibikin rame).
+  if (cornL != null && cornL >= 8 && cornL <= 11 && ouHTl != null && ouHTl <= 1.25) {
+    sig.push({ key: 'controlled_game', aktif: true, kekuatan: 2,
+      alasan: `Corner moderat (${cornL}) + total HT rendah (${ouHTl}) — tanda laga tempo terkontrol, bukan dipancing ke Over. Market sepi yang jujur → menguatkan baca arah.` });
+  }
+  return sig;
+}
+
+// =====================================================================
 //  HISTORY v2 (perjalanan garis antar-waktu) — murni: terima objek hist, tak baca file.
 //  Schema entry per laga: { v:2, open:<snap|null>, snaps:[<snap>...≤60], hl:{ [market]:{lineLo,lineHi} } }
 //  Snapshot generik PER MARKET: { t, [market]:{l,h,a} }  (l=garis, h=juice home/over, a=juice away/under)
@@ -336,7 +361,7 @@ function deriveConclusion(match) {
 //  BACK-COMPAT WAJIB: format lama (array of {ahLine,ahH,ahA,ouLine,ouO,ouU}) tetap kebaca via adapter;
 //  baseline OPENING tidak boleh hilang (di-derive dari snapshot waras pertama).
 // =====================================================================
-const HIST_MARKETS = ['ah', 'ou', 'corner', 'cornerHT', 'card'];
+const HIST_MARKETS = ['ah', 'ou', 'ahHT', 'ouHT', 'corner', 'cornerHT', 'card'];
 
 // Snapshot SAH sebagai OPEN bila garisnya dekat main-line sekarang (now = hasil pickMainLine
 // median-window, sudah anti-outlier → garis sampah -6 otomatis JAUH dari now dan ditolak).
@@ -435,20 +460,21 @@ function analyzeMatch(raw, hist, isLive) {
   const markets = {
     ah: mk('Handicap', 'ah', NORMAL_MARGIN.ah),
     ou: mk('Over/Under', 'ou', NORMAL_MARGIN.ou),
+    ahHT: mk('Handicap Babak 1', 'ahHT', NORMAL_MARGIN.ah),
+    ouHT: mk('Over/Under Babak 1', 'ouHT', NORMAL_MARGIN.ou),
     corner: mk('Corner (FT)', 'corner', NORMAL_MARGIN.corner),
     cornerHT: mk('Corner (Babak 1)', 'cornerHT', NORMAL_MARGIN.cornerHT),
     card: mk('Kartu', 'card', NORMAL_MARGIN.card),
   };
-  markets.ah.read = generateRead('ah', markets.ah, raw.home, raw.away);
-  markets.ou.read = generateRead('ou', markets.ou, raw.home, raw.away);
-  markets.corner.read = generateRead('corner', markets.corner, raw.home, raw.away);
-  markets.cornerHT.read = generateRead('cornerHT', markets.cornerHT, raw.home, raw.away);
-  markets.card.read = generateRead('card', markets.card, raw.home, raw.away);
-  const dirTypes = { ah: 'ah', ou: 'ou', corner: 'corner', cornerHT: 'cornerHT', card: 'card' };
-  for (const k of Object.keys(dirTypes)) if (markets[k]) markets[k].direction = computeDirection(markets[k], dirTypes[k], raw.home, raw.away);
-  for (const k of ['ah', 'ou']) {
-    if (markets[k].divergence && markets[k].read.signal.indexOf('Bet365') === -1) {
-      markets[k].read.signal += (markets[k].light === 'green' ? ' ' : ' ') + '↔ ' + markets[k].divergence.flag + '.';
+  // Tipe dasar tiap market (HT memakai logika sama dgn FT-nya: ahHT→ah, ouHT→ou).
+  const TYPE = { ah: 'ah', ou: 'ou', ahHT: 'ah', ouHT: 'ou', corner: 'corner', cornerHT: 'cornerHT', card: 'card' };
+  for (const k of Object.keys(markets)) {
+    markets[k].read = generateRead(TYPE[k], markets[k], raw.home, raw.away);
+    markets[k].direction = computeDirection(markets[k], TYPE[k], raw.home, raw.away);
+  }
+  for (const k of ['ah', 'ou', 'ahHT', 'ouHT']) {
+    if (markets[k] && markets[k].divergence && markets[k].read.signal.indexOf('Bet365') === -1) {
+      markets[k].read.signal += ' ↔ ' + markets[k].divergence.flag + '.';
     }
   }
   const verdict = matchVerdict(markets, raw.home, raw.away);
@@ -458,6 +484,7 @@ function analyzeMatch(raw, hist, isLive) {
     win: raw.win || null, overallLight: verdict.light, verdict, markets };
   out.conclusion = deriveConclusion(out);
   out.guidance = matchGuidance(markets, raw.home, raw.away);
+  out.honest = honestSignals(out);
   if (hist) out.history = updateHist(entry, out);
   return out;
 }
@@ -517,33 +544,36 @@ function buildLiveMarket(refOdds, pubOdds, lo, hi) {
     pub: pub ? { line: pub.line, home: pub.a, away: pub.b } : null,
   };
 }
+// Pilih satu market: Sbobet (acuan sharp) kalau ada main-line; kalau tidak, Bet365.
+// Pembanding (pub) diambil dari buku lain pada GARIS yang sama.
+function pickBook(sb, pb, names, lo, hi) {
+  const sbM = marketEntries(sb, names), pbM = marketEntries(pb, names);
+  if (pickMainLine(sbM, lo, hi)) return buildLiveMarket(sbM, pbM, lo, hi);
+  return buildLiveMarket(pbM, sbM, lo, hi);
+}
 function normalizeOddsApiIo(events) {
   if (!Array.isArray(events)) return [];
   const out = [];
   for (const ev of events) {
     const sb = bookArr(ev, 'Sbobet'), pb = bookArr(ev, 'Bet365');
-    const sbSpread = marketEntries(sb, ['Spread', 'Asian Handicap']);
-    const pbSpread = marketEntries(pb, ['Spread', 'Asian Handicap']);
-    const sbTotals = marketEntries(sb, ['Totals', 'Over/Under']);
-    const pbTotals = marketEntries(pb, ['Totals', 'Over/Under']);
-    const sbCorner = marketEntries(sb, ['Totals']);
-    const sbCornerHT = marketEntries(sb, ['Totals HT']);
-    let ah;
-    if (pickMainLine(sbSpread, -6, 6)) ah = buildLiveMarket(sbSpread, pbSpread, -6, 6);
-    else ah = buildLiveMarket(pbSpread, sbSpread, -6, 6);
-    let ou;
-    if (pickMainLine(sbTotals, 0.5, 5.5)) ou = buildLiveMarket(sbTotals, pbTotals, 0.5, 5.5);
-    else ou = buildLiveMarket(pbTotals, sbTotals, 0.5, 5.5);
-    if ((ah.nowHome == null) && (ou.nowHome == null)) continue;
-    const corner = buildLiveMarket(sbCorner, null, 7, 16);
-    const cornerHT = buildLiveMarket(sbCornerHT, null, 3.5, 9);
-    const mlSb = (marketEntries(sb, ['ML', '1X2', 'Match Winner']) || [])[0];
-    const mlPb = (marketEntries(pb, ['ML', '1X2', 'Match Winner']) || [])[0];
-    const ml = mlSb || mlPb || null;
+    // GOL full-time: AH "Spread", O/U "Totals". (Nama market = otoritas; bukan tebak rentang.)
+    const ah = pickBook(sb, pb, ['Spread', 'Asian Handicap'], -6, 6);
+    const ou = pickBook(sb, pb, ['Totals', 'Over/Under'], 0.5, 6);
+    if (ah.nowHome == null && ou.nowHome == null) continue;
+    // GOL babak 1 (HT): AH "Spread HT", O/U "Totals HT".
+    const ahHT = pickBook(sb, pb, ['Spread HT'], -4, 4);
+    const ouHT = pickBook(sb, pb, ['Totals HT'], 0.25, 4);
+    // CORNER (O/U) — market eksplisit (sebelumnya keliru dibaca dari "Totals" gol).
+    const corner = buildLiveMarket(marketEntries(sb, ['Corners Totals']), marketEntries(pb, ['Corners Totals']), 5, 18);
+    const cornerHT = buildLiveMarket(marketEntries(sb, ['Corners Totals HT']), null, 1.5, 10);
+    // KARTU: "Bookings Totals".
+    const card = buildLiveMarket(marketEntries(sb, ['Bookings Totals']), null, 1.5, 9);
+    // 1X2 FT dari "ML". 1X2 BABAK 1 tidak ada di sumber free → null (tidak dikarang).
+    const ml = (marketEntries(sb, ['ML', '1X2', 'Match Winner']) || [])[0] || (marketEntries(pb, ['ML', '1X2', 'Match Winner']) || [])[0] || null;
     const win = ml ? noVig3(ml.home, ml.draw, ml.away) : null;
     out.push({ id: String(ev.id || ev.eventId), home: ev.home, away: ev.away,
       group: (ev.league && (ev.league.name || ev.league)) || ev.leagueName || null, kickoff: ev.date || ev.commenceTime,
-      status: ev.status || 'pending', win, ah, ou, corner, cornerHT, card: emptyMarket() });
+      status: ev.status || 'pending', win, ah, ou, ahHT, ouHT, corner, cornerHT, card });
   }
   return out;
 }
@@ -554,7 +584,7 @@ module.exports = {
   // analisis
   NORMAL_MARGIN, gradeMarket, computeDivergence, buildMarket, computeDirection, movePhrase, matchGuidance,
   indoHandicap, strengthWord, generateRead, matchVerdict, sideLabel, hardenSide, deriveConclusion,
-  adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
+  honestSignals, adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
   // normalisasi sumber
   bookArr, marketEntries, entryLine, entrySides, pickMainLine, pickAtLine, emptyMarket, buildLiveMarket, normalizeOddsApiIo,
 };

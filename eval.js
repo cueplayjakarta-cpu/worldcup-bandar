@@ -304,13 +304,19 @@ console.log('\n── 15. Grade A/B/C/D + cross-market (3D) ──');
   const quiet = A.analyzeMatch(mkRaw({ ah: mkt(-0.5, 0.95, 0.95, 0.95, 0.95) }), null, true);
   check('laga sepi tanpa sinyal → grade D', quiet.grade.grade === 'D', quiet.grade.grade);
   check('grade D bermakna bising/hindari', /bising|hindari/.test(quiet.grade.meaning), quiet.grade.meaning);
-  // BIDAK JUJUR (bobot ×2) mengangkat grade.
-  const honest = A.analyzeMatch(mkRaw({
+  // BIDAK JUJUR (bobot tinggi) = BONUS yg mengangkat read nyata; SENDIRIAN tak cukup untuk A.
+  const honestOnly = A.analyzeMatch(mkRaw({
     ah: mkt(-1, 0.95, 0.95, 0.95, 0.95), ahHT: mkt(-0.5, 0.95, 0.95, 0.95, 0.95),
     ouHT: mkt(1.0, 0.95, 0.95, 0.95, 0.95), corner: mkt(9.5, 0.9, 0.9, 0.9, 0.9),
   }), null, true);
-  check('bidak jujur (HT rendah + corner moderat) → grade A', honest.grade.grade === 'A', honest.grade.grade + ' score=' + honest.grade.score);
-  check('grade drivers berisi alasan', honest.grade.drivers.length > 0 && honest.grade.drivers.every(x => x && x.length > 10));
+  check('bidak jujur SAJA (tanpa read) → C, bukan A', honestOnly.grade.grade === 'C', honestOnly.grade.grade + ' score=' + honestOnly.grade.score);
+  // read NYATA (margin_trap) + bidak jujur → terangkat ke A.
+  const readHonest = A.analyzeMatch(mkRaw({
+    ah: mkt(-2.5, 1.95, 1.95, 1.95, 1.95), ahHT: mkt(-0.5, 0.95, 0.95, 0.95, 0.95),
+    ouHT: mkt(1.0, 0.95, 0.95, 0.95, 0.95), corner: mkt(9.5, 0.9, 0.9, 0.9, 0.9),
+  }), null, true);
+  check('read kuat (margin_trap) + bidak jujur → grade A', readHonest.grade.grade === 'A', readHonest.grade.grade + ' score=' + readHonest.grade.score);
+  check('grade drivers berisi alasan', readHonest.grade.drivers.length > 0 && readHonest.grade.drivers.every(x => x && x.length > 10));
 }
 
 console.log('\n── 16. Output template + label FAKTA/INFERENSI/SPEKULASI (3E) ──');

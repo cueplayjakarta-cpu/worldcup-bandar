@@ -482,14 +482,15 @@ function crossMarket(match) {
 function gradeMatch(match) {
   const detPower = (match.detectors || []).reduce((s, d) => s + (d.kekuatan || 0), 0);
   const dirPower = match.guidance && match.guidance.moved ? (match.guidance.strength || 0) : 0;
-  const honestPower = (match.honest || []).reduce((s, h) => s + (h.kekuatan || 0), 0) * 2; // BIDAK JUJUR: bobot ×2
+  const readPower = detPower + dirPower;                  // SINYAL BACA NYATA (pola + arah pergerakan)
+  const honestBonus = (match.honest || []).reduce((s, h) => s + (h.kekuatan || 0), 0) * 1.5; // bidak jujur: BONUS bobot tinggi (bukan sumber tunggal)
   const cm = crossMarket(match);
-  const base = +(detPower + dirPower + honestPower + (cm.agree ? 2 : 0) - (cm.conflict ? 3 : 0)).toFixed(1);
+  const base = +(readPower + honestBonus + (cm.agree ? 1.5 : 0) - (cm.conflict ? 3 : 0)).toFixed(1);
   let grade;
-  if (cm.conflict) grade = base >= 5 ? 'C' : 'D';        // bentrok → turunkan; lemah+bentrok = D
-  else if (base >= 8) grade = 'A';
-  else if (base >= 4) grade = 'B';
-  else if (base >= 1.5) grade = 'C';
+  if (cm.conflict) grade = base >= 4 ? 'C' : 'D';        // bentrok → turunkan; lemah+bentrok = D
+  else if (base >= 7 && readPower >= 3) grade = 'A';     // A WAJIB read kuat (+ biasanya dikonfirmasi bidak jujur)
+  else if (base >= 3 && readPower >= 2) grade = 'B';
+  else if (base >= 1) grade = 'C';                        // termasuk "cuma bidak jujur" = tenang/jujur, bukan read kuat
   else grade = 'D';                                       // nyaris tanpa sinyal → jangan paksa baca
   const drivers = [];
   for (const d of (match.detectors || [])) drivers.push(d.alasan);

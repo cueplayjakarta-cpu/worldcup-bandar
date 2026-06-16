@@ -365,6 +365,28 @@ console.log('\n── 17. Ingest manual (4A) — parser toleran + draw-HT asli g
   check('toleran: pemisah "-" + lowercase + kata handicap/total', p2.ok && p2.raw.home === 'spanyol' && !!p2.raw.ah && !!p2.raw.ou, JSON.stringify({ h: p2.raw && p2.raw.home, ah: !!p2.raw.ah, ou: !!p2.raw.ou }));
 }
 
+console.log('\n── 18. Lineup modifier (4B) — bisa MEMBALIK read + validasi Belgia–Mesir ──');
+{
+  const p = A.parseManual('Belgia vs Mesir\nLukaku (favorit) cadangan\nSalah (underdog) starter');
+  check('parse lineup: favKeyOut + dogStarIn', !!(p.raw.lineup && p.raw.lineup.favKeyOut && p.raw.lineup.dogStarIn), JSON.stringify(p.raw.lineup));
+  // VALIDASI: odds condong Under/tenang (total rendah), Lukaku cadangan + Salah starter.
+  const board = [
+    'Belgia vs Mesir', 'AH -1.0 0.95 0.95', 'OU 2.25 0.95 0.95',
+    'AH HT -0.5 0.95 0.95', 'OU HT 1.0 0.95 0.95', '1X2 1.55 3.8 6.0', 'Corner 9.5 1.9 1.9',
+    'Lukaku (favorit) cadangan', 'Salah (underdog) starter',
+  ].join('\n');
+  const am = A.analyzeMatch(A.parseManual(board).raw, null, false);
+  check('tanpa lineup → grade C (tenang/Under)', am.lineupRead.gradeBefore === 'C', 'before=' + am.lineupRead.gradeBefore);
+  check('lineup MEMBALIK: grade turun (flip) ke D', am.lineupRead.flip === true && am.grade.grade === 'D', 'after=' + am.grade.grade);
+  check('alasan: Under DITURUNKAN (Salah starter)', am.lineupRead.changes.some(c => /Under DITURUNKAN/i.test(c)), JSON.stringify(am.lineupRead.changes).slice(0, 130));
+  check('alasan: striker favorit CADANGAN (Lukaku)', am.lineupRead.changes.some(c => /favorit CADANGAN/i.test(c)));
+  check('report.lineupChange eksplisit "Read BERUBAH"', /Read BERUBAH karena lineup/i.test(am.report.lineupChange || ''), (am.report.lineupChange || '').slice(0, 70));
+  check('lineup status di FAKTA + dampak di INFERENSI', am.report.fakta.some(f => /Lineup \(status/.test(f)) && am.report.inferensi.some(i => /lineup→read/.test(i)));
+  // Rule 3: odds Over tapi underdog parkir → Under didukung (read berubah).
+  const over = A.analyzeMatch(A.parseManual('A vs B\nAH 0 0.95 0.95\nOU 3.5 0.95 0.95\nunderdog parkir bertahan').raw, null, false);
+  check('underdog parkir + odds Over → Under didukung', !!(over.lineupRead && over.lineupRead.changes.some(c => /Over.*diturunkan|Under didukung/i.test(c))), JSON.stringify(over.lineupRead && over.lineupRead.changes));
+}
+
 function within(x, lo, hi) { return x != null && x >= lo && x <= hi; }
 
 console.log('\n────────────────────────────');

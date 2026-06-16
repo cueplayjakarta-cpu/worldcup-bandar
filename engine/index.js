@@ -501,9 +501,45 @@ function gradeMatch(match) {
   for (const d of (match.detectors || [])) drivers.push(d.alasan);
   for (const h of (match.honest || [])) drivers.push('Bidak jujur (bobot tinggi): ' + h.alasan);
   if (cm.note) drivers.push(cm.note);
-  const meaning = grade === 'A' ? 'sinyal kuat & konsisten' : grade === 'B' ? 'sinyal lumayan'
-    : grade === 'C' ? 'campur/lemah — hati-hati' : 'bising/hindari — data tak cukup untuk dibaca, jangan paksa';
-  return { grade, score: base, conflict: cm.conflict, agree: cm.agree, crossNote: cm.note, drivers, meaning };
+  return { grade, score: base, conflict: cm.conflict, agree: cm.agree, crossNote: cm.note, drivers, meaning: gradeMeaning(grade) };
+}
+function gradeMeaning(g) {
+  return g === 'A' ? 'sinyal kuat & konsisten' : g === 'B' ? 'sinyal lumayan'
+    : g === 'C' ? 'campur/lemah — hati-hati' : 'bising/hindari — data tak cukup untuk dibaca, jangan paksa';
+}
+function lowerGrade(g) { const o = ['A', 'B', 'C', 'D'], i = o.indexOf(g); return i < 0 ? 'D' : o[Math.min(3, i + 1)]; }
+
+// =====================================================================
+//  MODIFIER LINEUP (4B) — WAJIB bisa MEMBALIK read (bukan catatan tempel).
+//  Status lineup = FAKTA (dari paste); DAMPAK ke read = INFERENSI. Menurunkan grade
+//  saat lineup bertentangan dgn arah odds, dengan ALASAN terbaca (tak diam-diam).
+// =====================================================================
+function applyLineup(match) {
+  const lu = match.lineup;
+  if (!lu || !(lu.favKeyOut || lu.dogStarIn || lu.dogPark)) return;
+  const ou = match.markets.ou, oul = ou && ou.line && ou.line.now;
+  const honest = (match.honest || []).map(h => h.key);
+  const underLean = (oul != null && oul <= 2.25) || honest.includes('controlled_game') || honest.includes('ht_low_scoring') || honest.includes('ht_draw_cheap');
+  const overLean = (oul != null && oul >= 3.25) || (ou && ou.direction && ou.direction.side === 'home');
+  const changes = []; let down = 0;
+  if (lu.favKeyOut) {
+    changes.push('Striker kunci favorit CADANGAN → keyakinan voor besar (margin) & Over DITEKAN: favorit kurang tajam, cover voor besar makin ragu.');
+    down += 1;
+  }
+  if (lu.dogStarIn) {
+    if (underLean) { changes.push('Odds condong Under/laga ketat, TAPI bintang serang underdog STARTER → underdog hidup & Over lebih mungkin: keyakinan Under DITURUNKAN.'); down += 2; }
+    else changes.push('Bintang serang underdog STARTER → underdog hidup, Over lebih mungkin (sejalan dgn odds).');
+  }
+  if (lu.dogPark) {
+    if (overLean) { changes.push('Odds condong Over, TAPI underdog PARKIR/bertahan → laga bisa lebih tertutup: keyakinan Over diturunkan, Under didukung.'); down += 1; }
+    else changes.push('Underdog PARKIR/bertahan → dukung Under & margin tipis (sejalan dgn odds).');
+  }
+  const before = match.grade.grade;
+  let after = before;
+  for (let i = 0; i < down; i++) after = lowerGrade(after);
+  if (after !== before) { match.grade.grade = after; match.grade.meaning = gradeMeaning(after) + ' — DITURUNKAN oleh lineup'; }
+  match.grade.drivers.push('Lineup → ' + changes.join(' '));
+  match.lineupRead = { applied: true, oddsLean: underLean ? 'under' : overLean ? 'over' : 'none', changes, gradeBefore: before, gradeAfter: after, flip: after !== before };
 }
 
 // =====================================================================
@@ -525,6 +561,7 @@ function buildReport(match) {
   [['ah', 'AH gol'], ['ou', 'O/U gol'], ['ahHT', 'AH babak 1'], ['ouHT', 'O/U babak 1'], ['corner', 'Corner'], ['cornerHT', 'Corner B1']]
     .forEach(([k, nm]) => { const f = factLine(m[k], nm); if (f) fakta.push(f); });
   if (match.win && match.win.home != null) fakta.push(`1X2 de-vig: ${match.home} ${pct(match.win.home)}% / Seri ${pct(match.win.draw)}% / ${match.away} ${pct(match.win.away)}% (pendukung)`);
+  if (match.lineup) { const ls = [match.lineup.favKeyOut ? 'striker favorit cadangan' : null, match.lineup.dogStarIn ? 'bintang serang underdog starter' : null, match.lineup.dogPark ? 'underdog parkir/bertahan' : null].filter(Boolean).join('; '); if (ls) fakta.push(`Lineup (status, fakta): ${ls}`); }
   // INFERENSI — arah dari pergerakan + pola terdeteksi + bidak jujur (penguat).
   const inferensi = [];
   if (match.guidance && match.guidance.moved) inferensi.push(`Arah bandar: ke ${match.guidance.primary} (${match.guidance.confidence}) — ${match.guidance.narrative}`);
@@ -533,6 +570,7 @@ function buildReport(match) {
     if (h.label === 'fakta') fakta.push(`[bidak jujur · harga langsung] ${h.alasan}`);
     else inferensi.push(`[bidak jujur · inferensi] ${h.alasan}`);
   }
+  if (match.lineupRead && match.lineupRead.changes.length) for (const c of match.lineupRead.changes) inferensi.push('[lineup→read] ' + c);
   if (!inferensi.length) inferensi.push('Belum ada arah yang bisa dibaca — garis & harga relatif diam.');
   // SPEKULASI — motif bandar (jelas dilabeli sebagai dugaan).
   const pancing = match.conclusion && match.conclusion.trapped ? match.conclusion.headline.replace('Pemasang lagi dipancing ke: ', '') : null;
@@ -557,7 +595,12 @@ function buildReport(match) {
   const tahanUangDi = pancing ? pancing
     : topDet ? topDet.key.replace(/_/g, ' ')
       : (g.grade === 'D' ? 'tidak ada sisi jelas (laga bising/sepi) — jangan paksa' : 'margin dua sisi (laga wajar)');
-  return { grade: g.grade, meaning: g.meaning, fakta, inferensi, spekulasi, bandarPancing: pancing, bandarPegang, confirms, invalidates, tahanUangDi };
+  const lineupChange = match.lineupRead
+    ? (match.lineupRead.flip
+      ? `Read BERUBAH karena lineup: grade ${match.lineupRead.gradeBefore}→${match.lineupRead.gradeAfter}. ${match.lineupRead.changes.join(' ')}`
+      : `Lineup tercatat (tak membalik arah): ${match.lineupRead.changes.join(' ')}`)
+    : null;
+  return { grade: g.grade, meaning: g.meaning, fakta, inferensi, spekulasi, bandarPancing: pancing, bandarPegang, confirms, invalidates, tahanUangDi, lineupChange };
 }
 
 // Ringkasan papan (dipakai Node & Worker) — termasuk distribusi grade.
@@ -707,6 +750,8 @@ function analyzeMatch(raw, hist, isLive, ctx) {
   out.honest = honestSignals(out);
   out.detectors = runDetectors(out, ctx || { nowMs: Date.now() });
   out.grade = gradeMatch(out);
+  out.lineup = raw.lineup || null;
+  applyLineup(out);                 // 4B: bisa menurunkan/membalik grade (set out.lineupRead)
   out.report = buildReport(out);
   if (hist) out.history = updateHist(entry, out);
   return out;
@@ -824,6 +869,16 @@ function parseManual(text) {
       const p = l.split(/\s*(?:\bvs\b|\bv\b|melawan|–|—|\s-\s)\s*/i).filter(Boolean);
       if (p.length === 2) { raw.home = p[0].trim(); raw.away = p[1].trim(); continue; }
     }
+    // LINEUP (status pemain) — FAKTA; dampak ke read dihitung di applyLineup (INFERENSI).
+    if (/(favorit|fav\b|jagoan|unggulan)/i.test(l) && /(cadangan|bench|absen|cedera|istirahat|\bout\b|rotasi|diistirahatkan)/i.test(l)) {
+      const lu = raw.lineup || (raw.lineup = { favKeyOut: false, dogStarIn: false, dogPark: false, notes: [] }); lu.favKeyOut = true; lu.notes.push(l); continue;
+    }
+    if (/(underdog|undrdog|kuda hitam|tim lemah|non.?favorit)/i.test(l) && /(starter|\bstart\b|\bmain\b|turun|fit|comeback)/i.test(l)) {
+      const lu = raw.lineup || (raw.lineup = { favKeyOut: false, dogStarIn: false, dogPark: false, notes: [] }); lu.dogStarIn = true; lu.notes.push(l); continue;
+    }
+    if (/(underdog|undrdog|tim lemah)/i.test(l) && /(parkir|bertahan|defensif|defensive|\bpark\b|5-?4-?1|4-?5-?1|5-?3-?2|low.?block|grebek)/i.test(l)) {
+      const lu = raw.lineup || (raw.lineup = { favKeyOut: false, dogStarIn: false, dogPark: false, notes: [] }); lu.dogPark = true; lu.notes.push(l); continue;
+    }
     if (/(1\s*x\s*2|\bml\b|match\s*win|menang)/i.test(l) && !/hand|spread|voor|over|under|total|corner|card|kartu|draw|seri/i.test(l)) {
       if (n.length >= 3) raw.win = noVig3(n[0], n[1], n[2]); else warnings.push(`1X2 perlu 3 angka: "${l}"`);
     } else if (/(draw|seri)/i.test(l) && ht) {
@@ -846,6 +901,7 @@ function parseManual(text) {
     fmtMk('corner', 'Corner'), fmtMk('cornerHT', 'Corner B1'), fmtMk('card', 'Kartu'),
     raw.win ? `1X2 de-vig: ${pct(raw.win.home)}/${pct(raw.win.draw)}/${pct(raw.win.away)}` : null,
     raw.drawHT != null ? `Harga Draw HT ASLI: ${raw.drawHT} → GANTIKAN proxy inferensi` : null,
+    raw.lineup ? `Lineup (fakta): ${[raw.lineup.favKeyOut ? 'striker favorit cadangan' : null, raw.lineup.dogStarIn ? 'bintang underdog starter' : null, raw.lineup.dogPark ? 'underdog parkir/bertahan' : null].filter(Boolean).join('; ')}` : null,
   ].filter(Boolean);
   return { ok: have.length > 0, raw, parsedView, warnings };
 }

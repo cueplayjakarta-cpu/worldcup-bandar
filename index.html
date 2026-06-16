@@ -128,6 +128,9 @@
   .mverify{margin:0 13px 8px;background:#0c1f16;border:1px solid #1d5b43;border-radius:9px;padding:8px 11px;font-size:11.5px;color:#bdf0d6}
   .mverify ul{margin:5px 0 0;padding-left:16px} .mverify li{margin:2px 0}
   .mwarn{margin:0 13px 8px;background:#2a1620;border:1px solid #7a2438;border-radius:9px;padding:8px 11px;font-size:11.5px;color:#ffc9d2}
+  /* read berubah karena lineup */
+  .lineupchg{margin:0 14px 10px;padding:9px 12px;border-radius:10px;font-size:12px;line-height:1.55;background:#1a2238;border:1px solid #33486f;color:#cbd8f5}
+  .lineupchg.flip{background:#241528;border-color:#8a4a9a;color:#f0d6ff;font-weight:600}
   /* conclusion = HERO */
   .concl{margin:0 14px 10px;padding:13px 14px;border-radius:13px;background:linear-gradient(180deg,#2a1020,#1c0d18);border:1px solid #8a2f48;box-shadow:0 6px 22px #e0143c14}
   .concl.clean{background:linear-gradient(180deg,#102219,#0e1a15);border-color:#1d5b43;box-shadow:none}
@@ -387,6 +390,7 @@
         gradeBadge(m)+
       '</div>'+
       gradeStrip(m)+
+      (m.report&&m.report.lineupChange?'<div class="lineupchg'+(m.lineupRead&&m.lineupRead.flip?' flip':'')+'">🧩 '+esc(m.report.lineupChange)+'</div>':'')+
       conclBlock(m.conclusion)+
       mvHero(m)+
       arahBlock(m)+

@@ -117,6 +117,17 @@
   .rep .ci .lab{font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px}
   .rep .ci .cf .lab{color:#5be29b} .rep .ci .cv .lab{color:#ef7d8d}
   .rep .ci ul{padding-left:14px}
+  /* INGEST MANUAL (paste papan) */
+  .manual{margin:0 0 14px;border:1px solid #2b3c63;border-radius:13px;overflow:hidden;background:#0e1830}
+  .manual summary{cursor:pointer;padding:11px 13px;font-size:12.5px;font-weight:700;color:#9db4ee;list-style:none}
+  .manual summary::-webkit-details-marker{display:none}
+  .manual .mhelp{padding:0 13px 8px;font-size:11px;color:var(--dim);line-height:1.7}
+  .manual .mhelp code{background:#0c1424;border:1px solid #25345a;border-radius:5px;padding:1px 5px;font-family:var(--mono);color:#cfe0ff}
+  .manual textarea{display:block;width:calc(100% - 26px);margin:0 13px;min-height:150px;background:#0a1120;border:1px solid #25345a;border-radius:9px;color:#eaf0ff;font-family:var(--mono);font-size:13px;padding:9px;resize:vertical}
+  .manual .mbtn{margin:9px 13px 12px;background:var(--accent);color:#06122e;border:none;border-radius:9px;padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer}
+  .mverify{margin:0 13px 8px;background:#0c1f16;border:1px solid #1d5b43;border-radius:9px;padding:8px 11px;font-size:11.5px;color:#bdf0d6}
+  .mverify ul{margin:5px 0 0;padding-left:16px} .mverify li{margin:2px 0}
+  .mwarn{margin:0 13px 8px;background:#2a1620;border:1px solid #7a2438;border-radius:9px;padding:8px 11px;font-size:11.5px;color:#ffc9d2}
   /* conclusion = HERO */
   .concl{margin:0 14px 10px;padding:13px 14px;border-radius:13px;background:linear-gradient(180deg,#2a1020,#1c0d18);border:1px solid #8a2f48;box-shadow:0 6px 22px #e0143c14}
   .concl.clean{background:linear-gradient(180deg,#102219,#0e1a15);border-color:#1d5b43;box-shadow:none}
@@ -191,6 +202,14 @@
     <button id="f-live" onclick="setFilter('live')">🔴 Live</button>
     <button id="f-watch" onclick="setFilter('watch')">⭐ Sinyal A/B</button>
   </div>
+
+  <details class="manual">
+    <summary>✍️ Analisa MANUAL — paste papan SBOBET (FT + HT + corner + 1X2 + draw-HT)</summary>
+    <div class="mhelp">1 market per baris. Contoh: <code>AH -3.5 1.90 2.10</code> · <code>OU HT 1.0 1.90 2.00</code> · <code>1X2 1.04 11 26</code> · <code>Draw HT 2.05</code> · <code>Corner 10.5 1.9 1.9</code>. Harga boleh desimal (1.90) atau HK (0.90). <b>Draw-HT asli akan menggantikan proxy inferensi.</b></div>
+    <textarea id="mtext" placeholder="Germany vs Curacao&#10;AH -3.5 1.90 2.10&#10;OU 4.5 1.95 1.95&#10;AH HT -1 1.95 1.95&#10;OU HT 1.0 1.90 2.00&#10;1X2 1.04 11 26&#10;Draw HT 2.05&#10;Corner 10.5 1.9 1.9"></textarea>
+    <button class="mbtn" onclick="doManual()">Parse &amp; Analisa</button>
+    <div id="mout"></div>
+  </details>
 
   <div id="list"></div>
 
@@ -352,6 +371,31 @@
     return '<div class="arahmini idle"><span class="aml">PERGERAKAN</span> belum ada — muncul saat garis mulai bergeser (terutama saat laga berjalan).</div>';
   }
 
+  function cardHtml(m){
+    var liveB=m.live?'<span class="livebadge">● LIVE</span>':'';
+    var mid=(m.live&&m.score)?('<span class="score">'+m.score.home+'<span class="dash">–</span>'+m.score.away+'</span>'):'<span class="sep">vs</span>';
+    var when=m.live?'sedang berlangsung':fmtKick(m.kickoff);
+    var minute=(m.live&&m.minute)?(' · '+m.minute):'';
+    var moves=m.history?(' · garis bergerak '+m.history.moves+'×'):'';
+    var src=m.source==='manual'?' · <b style="color:#9db4ee">input manual</b>':'';
+    return '<div class="card'+(m.live?' islive':'')+'">'+
+      '<div class="ctop">'+
+        '<div class="teams">'+
+          '<div class="vs">'+liveB+esc(m.home)+mid+esc(m.away)+'</div>'+
+          '<div class="meta">'+(m.group?esc(m.group)+' · ':'')+when+minute+moves+src+'</div>'+
+        '</div>'+
+        gradeBadge(m)+
+      '</div>'+
+      gradeStrip(m)+
+      conclBlock(m.conclusion)+
+      mvHero(m)+
+      arahBlock(m)+
+      reportBlock(m)+
+      '<div class="mkts">'+MKT_ORDER.map(function(k){return mkBlock(k,m.markets[k],m);}).join('')+'</div>'+
+      winBar(m)+
+    '</div>';
+  }
+
   function render(){
     var list=document.getElementById('list');
     if(!DATA){ list.innerHTML='<div class="empty">Data belum termuat. Jalankan <b>start.command</b> lalu buka ulang.</div>'; return; }
@@ -372,32 +416,24 @@
       if(FILTER==='live')return m.live; if(FILTER==='watch')return (m.grade&&(m.grade.grade==='A'||m.grade.grade==='B'));return true;});
     if(!ms.length){ list.innerHTML='<div class="empty">Tidak ada laga di filter ini.</div>'; return; }
 
-    list.innerHTML=ms.map(function(m){
-      var v=m.verdict||{light:m.overallLight||'green',text:''};
-      var liveB=m.live?'<span class="livebadge">● LIVE</span>':'';
-      var mid=(m.live&&m.score)?('<span class="score">'+m.score.home+'<span class="dash">–</span>'+m.score.away+'</span>'):'<span class="sep">vs</span>';
-      var when=m.live?'sedang berlangsung':fmtKick(m.kickoff);
-      var minute=(m.live&&m.minute)?(' · '+m.minute):'';
-      var moves=m.history?(' · garis bergerak '+m.history.moves+'×'):'';
-      return '<div class="card'+(m.live?' islive':'')+'">'+
-        '<div class="ctop">'+
-          '<div class="teams">'+
-            '<div class="vs">'+liveB+m.home+mid+m.away+'</div>'+
-            '<div class="meta">'+(m.group?m.group+' · ':'')+when+minute+moves+'</div>'+
-          '</div>'+
-          gradeBadge(m)+
-        '</div>'+
-        gradeStrip(m)+
-        conclBlock(m.conclusion)+
-        mvHero(m)+
-        arahBlock(m)+
-        reportBlock(m)+
-        '<div class="mkts">'+MKT_ORDER.map(function(k){return mkBlock(k,m.markets[k],m);}).join('')+'</div>'+
-        winBar(m)+
-      '</div>';
-    }).join('');
+    list.innerHTML=ms.map(cardHtml).join('');
   }
 
+  // Ingest manual: kirim teks papan ke Worker → tampilkan HASIL PARSE (verifikasi) lalu kartu analisa.
+  function doManual(){
+    var t=(document.getElementById('mtext').value||''), out=document.getElementById('mout');
+    if(!t.trim()){ out.innerHTML='<div class="mwarn">Tempel papan SBOBET dulu.</div>'; return; }
+    out.innerHTML='<div class="mverify">Memproses…</div>';
+    fetch(WORKER+'?manual=1',{method:'POST',headers:{'Content-Type':'text/plain'},body:t})
+      .then(function(r){return r.json();})
+      .then(function(j){
+        var head='';
+        if(j.parsedView&&j.parsedView.length) head+='<div class="mverify"><b>📥 Hasil parse (verifikasi sebelum dipakai):</b><ul>'+j.parsedView.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul></div>';
+        if(j.warnings&&j.warnings.length) head+='<div class="mwarn">⚠️ '+j.warnings.map(esc).join('<br>⚠️ ')+'</div>';
+        out.innerHTML=head+((j.ok&&j.match)?cardHtml(j.match):'<div class="mwarn">Data kurang untuk dianalisa — cek format.</div>');
+      })
+      .catch(function(e){ out.innerHTML='<div class="mwarn">Gagal menghubungi Worker: '+esc(String(e))+'</div>'; });
+  }
   function tog(b){ var n=b.nextElementSibling; var o=n.classList.toggle('open'); b.textContent=o?'angka mentah ▴':'angka mentah ▾'; }
   function setFilter(f){ FILTER=f;
     ['all','live','watch'].forEach(function(x){document.getElementById('f-'+x).classList.toggle('active',x===f);});

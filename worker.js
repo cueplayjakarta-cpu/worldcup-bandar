@@ -12,7 +12,7 @@
 
 // ---- mesin analisis tunggal (di-bundle oleh wrangler/esbuild) ----
 import E from './engine/index.js';
-const { analyzeMatch, normalizeOddsApiIo, parseScore } = E;
+const { analyzeMatch, normalizeOddsApiIo, parseScore, parseManual } = E;
 
 const ODDS_BASE = 'https://api.odds-api.io/v3';
 const TTL_MS = 60000;          // segar ulang tiap ~60 detik
@@ -124,12 +124,24 @@ async function handleTelegram(request, env, ctx){
   return new Response('ok');
 }
 
+// Ingest MANUAL: terima teks papan → parse → (tampilkan hasil parse) → analisa. Tanpa history.
+async function handleManual(request){
+  let text=''; try{ text=await request.text(); }catch(e){}
+  const p=parseManual(text);
+  if(!p.ok) return new Response(JSON.stringify({ok:false,parsedView:p.parsedView,warnings:p.warnings}),{headers:CORS});
+  let match=null; try{ match=analyzeMatch(p.raw,null,false); }catch(e){ return new Response(JSON.stringify({ok:false,warnings:['Gagal analisa: '+String(e)]}),{headers:CORS}); }
+  return new Response(JSON.stringify({ok:true,parsedView:p.parsedView,warnings:p.warnings,match}),{headers:CORS});
+}
+
 export default {
   // Permintaan halaman: SELALU sajikan cache (cron yang me-refresh). Hanya cold-start
   // yang menarik API — biar konsumsi kuota terikat ke cron, bukan jumlah pengunjung.
   async fetch(request, env, ctx){
     if(request.method==='OPTIONS') return new Response(null,{headers:CORS});
-    if(request.method==='POST') return handleTelegram(request, env, ctx);   // webhook Telegram
+    if(request.method==='POST'){
+      if(new URL(request.url).searchParams.get('manual')) return handleManual(request);   // ingest manual (paste papan)
+      return handleTelegram(request, env, ctx);                                            // webhook Telegram
+    }
     if(!env.ODDS_API_IO_KEY) return new Response(JSON.stringify({error:'ODDS_API_IO_KEY belum diset (Settings → Variables → Secret)'}),{status:500,headers:CORS});
     const cached=await readCache();
     if(cached) return new Response(JSON.stringify(cached),{headers:CORS});

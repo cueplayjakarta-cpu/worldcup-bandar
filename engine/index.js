@@ -339,16 +339,21 @@ function honestSignals(match) {
   const ouHTl = m.ouHT && m.ouHT.line && m.ouHT.line.now;
   const ahHTl = m.ahHT && m.ahHT.line && m.ahHT.line.now;
   const cornL = m.corner && m.corner.line && m.corner.line.now;
-  // Babak 1 ketat & skor rendah (proxy "draw-HT murah"): total HT rendah (+ voor HT ~imbang).
-  if (ouHTl != null && ouHTl <= 1.0) {
+  const dDec = match.drawHT != null ? hkToDecimal(match.drawHT) : null;
+  const drawImpl = dDec ? 1 / dDec : null;
+  if (drawImpl != null && drawImpl >= 0.42) {
+    // FAKTA: harga draw-HT LANGSUNG (jauh lebih kuat) → MENGGANTIKAN proxy inferensi.
+    sig.push({ key: 'ht_draw_cheap', label: 'fakta', aktif: true, kekuatan: 3,
+      alasan: `Harga DRAW babak 1 murah (${match.drawHT} ≈ ${pct(drawImpl)}% implied) — bandar terang-terangan menilai babak 1 imbang/skor rendah. Ini harga LANGSUNG (fakta), keyakinan asli bandar di market sepi.` });
+  } else if (ouHTl != null && ouHTl <= 1.0) {
+    // INFERENSI (proxy) — hanya bila TIDAK ada harga draw-HT asli.
     const tight = ahHTl == null || Math.abs(ahHTl) <= 0.5;
-    sig.push({ key: 'ht_low_scoring', aktif: true, kekuatan: tight ? 2 : 1,
-      alasan: `Total gol babak 1 dipatok rendah (${ouHTl})${ahHTl != null && tight ? ` + voor HT ~imbang (${indoHandicap(ahHTl)})` : ''} — pasar diam-diam menilai babak 1 ketat/skor rendah (≈ draw-HT murah). Market HT sepi, jarang dipancing publik → keyakinan asli bandar.` });
+    sig.push({ key: 'ht_low_scoring', label: 'inferensi', aktif: true, kekuatan: tight ? 2 : 1,
+      alasan: `Total gol babak 1 dipatok rendah (${ouHTl})${ahHTl != null && tight ? ` + voor HT ~imbang (${indoHandicap(ahHTl)})` : ''} — pasar diam-diam menilai babak 1 ketat/skor rendah (≈ draw-HT murah; INFERENSI dari total HT, bukan harga draw langsung). Market HT sepi → keyakinan asli bandar.` });
   }
-  // Laga terkontrol: corner moderat + total HT rendah (bukan dibikin rame).
   if (cornL != null && cornL >= 8 && cornL <= 11 && ouHTl != null && ouHTl <= 1.25) {
-    sig.push({ key: 'controlled_game', aktif: true, kekuatan: 2,
-      alasan: `Corner moderat (${cornL}) + total HT rendah (${ouHTl}) — tanda laga tempo terkontrol, bukan dipancing ke Over. Market sepi yang jujur → menguatkan baca arah.` });
+    sig.push({ key: 'controlled_game', label: 'inferensi', aktif: true, kekuatan: 2,
+      alasan: `Corner moderat (${cornL}) + total HT rendah (${ouHTl}) — laga tempo terkontrol, bukan dipancing ke Over. Market sepi yang jujur → menguatkan baca arah.` });
   }
   return sig;
 }
@@ -524,7 +529,10 @@ function buildReport(match) {
   const inferensi = [];
   if (match.guidance && match.guidance.moved) inferensi.push(`Arah bandar: ke ${match.guidance.primary} (${match.guidance.confidence}) — ${match.guidance.narrative}`);
   for (const d of (match.detectors || [])) inferensi.push(`[${d.key}] ${d.alasan}`);
-  for (const h of (match.honest || [])) inferensi.push(`[bidak jujur] ${h.alasan}`);
+  for (const h of (match.honest || [])) {
+    if (h.label === 'fakta') fakta.push(`[bidak jujur · harga langsung] ${h.alasan}`);
+    else inferensi.push(`[bidak jujur · inferensi] ${h.alasan}`);
+  }
   if (!inferensi.length) inferensi.push('Belum ada arah yang bisa dibaca — garis & harga relatif diam.');
   // SPEKULASI — motif bandar (jelas dilabeli sebagai dugaan).
   const pancing = match.conclusion && match.conclusion.trapped ? match.conclusion.headline.replace('Pemasang lagi dipancing ke: ', '') : null;
@@ -692,7 +700,8 @@ function analyzeMatch(raw, hist, isLive, ctx) {
   const status = raw.status || 'pending';
   const out = { id: raw.id, home: raw.home, away: raw.away, group: raw.group || null, kickoff: raw.kickoff,
     status, live: String(status).toLowerCase() === 'live', score: raw.score || null, minute: raw.minute || null,
-    win: raw.win || null, overallLight: verdict.light, verdict, markets };
+    win: raw.win || null, drawHT: raw.drawHT != null ? raw.drawHT : null, source: raw.source || null,
+    overallLight: verdict.light, verdict, markets };
   out.conclusion = deriveConclusion(out);
   out.guidance = matchGuidance(markets, raw.home, raw.away);
   out.honest = honestSignals(out);
@@ -792,6 +801,55 @@ function normalizeOddsApiIo(events) {
   return out;
 }
 
+// =====================================================================
+//  INGEST MANUAL (4A) — paste 1 papan SBOBET. Sumber SETARA odds-api.io (bukan satu-satunya).
+//  Format toleran: 1 market/baris, kata-kunci + angka. Harga boleh desimal (1.90) atau HK (0.90).
+//    "Germany vs Curacao"            (baris tim)
+//    "AH -3.5 1.90 2.10"  "OU 4.5 1.95 1.95"
+//    "AH HT -1 1.95 1.95" "OU HT 1.5 1.90 2.00"
+//    "1X2 1.04 11 26"     "Draw HT 2.05"     ← harga draw-HT ASLI → ganti proxy inferensi
+//    "Corner 10.5 1.9 1.9" "Corner HT 4.5 1.95 1.95" "Card 4 1.9 1.9"
+//  Mengembalikan {ok, raw, parsedView, warnings} — parsedView ditampilkan utk verifikasi user.
+function parseManual(text) {
+  if (!text || !String(text).trim()) return { ok: false, raw: null, parsedView: [], warnings: ['Input kosong.'] };
+  const warnings = [];
+  const raw = { id: 'manual', home: 'Tim A', away: 'Tim B', status: 'pending', source: 'manual', kickoff: null };
+  const lines = String(text).split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const nums = l => (l.match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+  const mk = n => (n.length >= 3 ? { line: { open: n[0], now: n[0] }, openHome: n[1], openAway: n[2], nowHome: n[1], nowAway: n[2], pub: null } : null);
+  const isHT = l => /\b(ht|h1|babak\s*1|paruh|1st)\b/i.test(l);
+  for (const l of lines) {
+    const n = nums(l), ht = isHT(l);
+    if (n.length <= 1 && /(\bvs\b|\bv\b|melawan|–|—|\s-\s)/i.test(l)) {
+      const p = l.split(/\s*(?:\bvs\b|\bv\b|melawan|–|—|\s-\s)\s*/i).filter(Boolean);
+      if (p.length === 2) { raw.home = p[0].trim(); raw.away = p[1].trim(); continue; }
+    }
+    if (/(1\s*x\s*2|\bml\b|match\s*win|menang)/i.test(l) && !/hand|spread|voor|over|under|total|corner|card|kartu|draw|seri/i.test(l)) {
+      if (n.length >= 3) raw.win = noVig3(n[0], n[1], n[2]); else warnings.push(`1X2 perlu 3 angka: "${l}"`);
+    } else if (/(draw|seri)/i.test(l) && ht) {
+      if (n.length) raw.drawHT = n[n.length - 1]; else warnings.push(`Draw HT perlu 1 angka: "${l}"`);
+    } else if (/(asian\s*hand|handicap|spread|\bah\b|voor)/i.test(l)) {
+      const m = mk(n); if (m) raw[ht ? 'ahHT' : 'ah'] = m; else warnings.push(`AH${ht ? ' HT' : ''} perlu garis+2 harga: "${l}"`);
+    } else if (/(over|under|total|\bo\/?u\b|\bou\b)/i.test(l) && !/corner/i.test(l)) {
+      const m = mk(n); if (m) raw[ht ? 'ouHT' : 'ou'] = m; else warnings.push(`OU${ht ? ' HT' : ''} perlu garis+2 harga: "${l}"`);
+    } else if (/(corner|pojok)/i.test(l)) {
+      const m = mk(n); if (m) raw[ht ? 'cornerHT' : 'corner'] = m; else warnings.push(`Corner perlu garis+2 harga: "${l}"`);
+    } else if (/(card|kartu|booking)/i.test(l)) {
+      const m = mk(n); if (m) raw.card = m;
+    }
+  }
+  const have = ['ah', 'ou', 'ahHT', 'ouHT', 'corner', 'cornerHT', 'card'].filter(k => raw[k]);
+  if (!raw.ah && !raw.ou) warnings.push('Tidak menemukan AH/OU utama — cek format baris.');
+  const fmtMk = (k, nm) => raw[k] ? `${nm}: garis ${raw[k].line.now}, harga ${raw[k].nowHome} / ${raw[k].nowAway}` : null;
+  const parsedView = [`Laga: ${raw.home} vs ${raw.away}`,
+    fmtMk('ah', 'AH gol'), fmtMk('ou', 'O/U gol'), fmtMk('ahHT', 'AH babak 1'), fmtMk('ouHT', 'O/U babak 1'),
+    fmtMk('corner', 'Corner'), fmtMk('cornerHT', 'Corner B1'), fmtMk('card', 'Kartu'),
+    raw.win ? `1X2 de-vig: ${pct(raw.win.home)}/${pct(raw.win.draw)}/${pct(raw.win.away)}` : null,
+    raw.drawHT != null ? `Harga Draw HT ASLI: ${raw.drawHT} → GANTIKAN proxy inferensi` : null,
+  ].filter(Boolean);
+  return { ok: have.length > 0, raw, parsedView, warnings };
+}
+
 module.exports = {
   // matematika & settlement
   hkToDecimal, num, pct, pick, parseScore, twoWayMargin, isQuarter, settleAH, settleOU, noVigProb, noVig3, movement,
@@ -801,4 +859,5 @@ module.exports = {
   honestSignals, runDetectors, crossMarket, gradeMatch, buildReport, summarize, adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
   // normalisasi sumber
   bookArr, marketEntries, entryLine, entrySides, pickMainLine, pickAtLine, emptyMarket, buildLiveMarket, normalizeOddsApiIo,
+  parseManual,
 };

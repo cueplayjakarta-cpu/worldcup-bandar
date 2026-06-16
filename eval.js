@@ -336,6 +336,35 @@ console.log('\n── 16. Output template + label FAKTA/INFERENSI/SPEKULASI (3E)
   check('summarize bawa gradeA..D + total', sm.total === 2 && ('gradeA' in sm) && ('gradeD' in sm), JSON.stringify(sm));
 }
 
+console.log('\n── 17. Ingest manual (4A) — parser toleran + draw-HT asli ganti proxy ──');
+{
+  const board = [
+    'Germany vs Curacao',
+    'AH  -3.5   1.90  2.10',
+    'OU 4.5 1.95 1.95',
+    'AH HT -1 1.95 1.95',
+    'OU HT 1.0 1.90 2.00',
+    '1X2 1.04 11 26',
+    'Draw HT 1.95',
+    'Corner 10.5 1.9 1.9',
+    'Card 4 1.9 1.9',
+  ].join('\n');
+  const p = A.parseManual(board);
+  check('parse ok + tim kebaca', p.ok && p.raw.home === 'Germany' && p.raw.away === 'Curacao', JSON.stringify({ h: p.raw && p.raw.home, a: p.raw && p.raw.away }));
+  check('AH gol -3.5 + harga 1.90/2.10', p.raw.ah && p.raw.ah.line.now === -3.5 && p.raw.ah.nowHome === 1.90, JSON.stringify(p.raw.ah && p.raw.ah.line));
+  check('AH HT -1 terbaca', p.raw.ahHT && p.raw.ahHT.line.now === -1, String(p.raw.ahHT && p.raw.ahHT.line.now));
+  check('OU HT 1.0 terbaca', !!(p.raw.ouHT && p.raw.ouHT.line.now === 1.0));
+  check('draw-HT asli terbaca (1.95)', p.raw.drawHT === 1.95, String(p.raw.drawHT));
+  check('parsedView untuk verifikasi (>=5 baris)', p.parsedView.length >= 5, String(p.parsedView.length));
+  const am = A.analyzeMatch(p.raw, null, false);
+  const hk = (am.honest || []).map(h => h.key);
+  check('honest pakai ht_draw_cheap (FAKTA), BUKAN proxy ht_low_scoring', hk.indexOf('ht_draw_cheap') >= 0 && hk.indexOf('ht_low_scoring') < 0, JSON.stringify(hk));
+  check('report taruh draw-HT murah di bagian FAKTA', am.report.fakta.some(f => /draw babak 1 murah/i.test(f)), JSON.stringify(am.report.fakta.filter(f => /draw/i.test(f))));
+  // Toleran format beda (lowercase, pemisah "-", kata "handicap/total").
+  const p2 = A.parseManual('spanyol - jepang\nhandicap -0.5 0.95 0.95\ntotal 2.5 0.9 1.0');
+  check('toleran: pemisah "-" + lowercase + kata handicap/total', p2.ok && p2.raw.home === 'spanyol' && !!p2.raw.ah && !!p2.raw.ou, JSON.stringify({ h: p2.raw && p2.raw.home, ah: !!p2.raw.ah, ou: !!p2.raw.ou }));
+}
+
 function within(x, lo, hi) { return x != null && x >= lo && x <= hi; }
 
 console.log('\n────────────────────────────');

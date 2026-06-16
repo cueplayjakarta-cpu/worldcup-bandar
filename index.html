@@ -232,7 +232,7 @@
     <p><b>Peluang menang (1X2)</b> = kemungkinan tim menang / seri, dihitung dari odds. Ini yang menjawab "siapa lebih jago".</p>
     <p><b>➜ ARAH BANDAR</b> = ke mana taruhan & harga sedang bergeser. Panah menunjuk sisi yang lagi diramaikan. <b>Keyakinan Kuat/Sedang/Lemah</b> = seberapa banyak tanda yang sepakat.</p>
     <p><b>⚖️ Kesimpulan</b> = sisi yang pemasang lagi <b>dipancing</b> ke sana. Di sisi rame itu harganya jelek &amp; bandar paling untung — jadi hati-hati ikut arus.</p>
-    <p><b>Istilah:</b> <i>"bayaran dikecilkan"</i> = bandar mengurangi hadiah di satu sisi karena uang menumpuk ke sana. <i>"garis/handicap"</i> = voor; makin besar voor, makin dijagokan. <i>"potongan bandar"</i> = jatah bandar dari tiap taruhan.</p>
+    <p><b>Istilah:</b> <i>VOOR</i> = nilai handicap Asian (makin besar = makin unggul). <i>TOTAL</i> = nilai Over/Under gol. <i>"Bandar nyaman menampung"</i> = sisi yang publik digiring ke sana (bandar perkirakan KALAH). <i>"Bandar jagokan diam-diam"</i> = sisi yang bandar perkirakan MENANG. <i>"potongan bandar"</i> = jatah bandar dari tiap taruhan.</p>
     <p class="warn">⚠️ Alat ini bantu kalian <b>tidak terjebak</b>, bukan menjamin menang. Bandar selalu punya keunggulan. Main lebih sedikit, lebih sadar.</p>
   </div>
 
@@ -391,7 +391,7 @@
       return '<div class="arahmini'+(g.insight?' hot':'')+'"><span class="aml">PERGERAKAN</span> <span class="amar">➜</span> <b>'+g.primary+'</b> '+
         '<span class="amconf '+g.confidence+'">'+g.confidence+'</span><div class="amn">'+g.narrative+'</div>'+ins+'</div>';
     }
-    return '<div class="arahmini idle"><span class="aml">PERGERAKAN</span> belum ada — muncul saat garis mulai bergeser (terutama saat laga berjalan).</div>';
+    return '<div class="arahmini idle"><span class="aml">PERGERAKAN</span> belum ada — penguat opsional; muncul saat VOOR/TOTAL mulai bergeser (terutama saat laga berjalan).</div>';
   }
 
   function cardHtml(m){
@@ -399,7 +399,7 @@
     var mid=(m.live&&m.score)?('<span class="score">'+m.score.home+'<span class="dash">–</span>'+m.score.away+'</span>'):'<span class="sep">vs</span>';
     var when=m.live?'sedang berlangsung':fmtKick(m.kickoff);
     var minute=(m.live&&m.minute)?(' · '+m.minute):'';
-    var moves=m.history?(' · garis bergerak '+m.history.moves+'×'):'';
+    var moves=m.history?(' · gerak '+m.history.moves+'×'):'';
     var src=m.source==='manual'?' · <b style="color:#9db4ee">input manual</b>':'';
     return '<div class="card'+(m.live?' islive':'')+'">'+
       '<div class="ctop">'+

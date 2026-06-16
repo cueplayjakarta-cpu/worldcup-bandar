@@ -289,7 +289,7 @@ function deriveConclusion(match) {
   const favName = favSide === 'home' ? match.home : (favSide === 'away' ? match.away : null);
   const annotateAh = (side) => {
     const nm = side === 'home' ? match.home : match.away;
-    return side === favSide ? `${nm} (favorit, garis ${indoHandicap(L)})` : nm;
+    return side === favSide ? `${nm} (favorit, voor ${indoHandicap(L)})` : nm;
   };
   const lab = (type, side, mk) => type === 'ah' ? annotateAh(side) : sideLabel(type, side, match.home, match.away, mk);
   const labShort = (type, side, mk) => type === 'ah' ? (side === 'home' ? match.home : match.away) : sideLabel(type, side, match.home, match.away, mk);
@@ -438,7 +438,7 @@ function detFakeFavorite(match) {
   return { key: 'fake_favorite', aktif: true, kekuatan: (hardening && divFav) ? 3 : 2,
     alasan: `${favN} kelihatan jagoan tapi voor cuma ${indoHandicap(L)} (laga sebenarnya ketat)` +
       (hardening ? `, bayaran ${favN} dikecilkan` : '') + (divFav ? `, Bet365 mengumpan ke ${favN}` : '') +
-      ` — pemasang ditarik nekat taruh besar ke favorit padahal garis kecil.` };
+      ` — pemasang ditarik nekat taruh besar ke favorit padahal voor kecil.` };
 }
 // margin_trap: voor BESAR tapi de-vig cover ~koin → "menang bola ≠ menang voor".
 function detMarginTrap(match) {
@@ -473,7 +473,7 @@ function detLineFreeze(match, ctx) {
   const flatA = !ah.waterMoveAway || Math.abs(ah.waterMoveAway.delta) < 0.03;
   if (!(flatLine && flatH && flatA)) return _off('line_freeze');
   return { key: 'line_freeze', aktif: true, kekuatan: mins <= 15 ? 2 : 1,
-    alasan: `line_freeze: ${Math.round(mins)} menit ke kickoff tapi voor (${ah.line.now}) & harga DIAM total — bandar membekukan garis: nyaman dgn posisi & tak mau kasih sinyal ke pasar.` };
+    alasan: `line_freeze: ${Math.round(mins)} menit ke kickoff tapi voor (${ah.line.now}) & harga DIAM total — bandar membekukan voor: nyaman dgn posisi & tak mau kasih sinyal ke pasar.` };
 }
 // late_steam: pergerakan TAJAM di <30mnt ke KO → uang tajam menit akhir.
 function detLateSteam(match, ctx) {
@@ -495,7 +495,7 @@ function detValueCompression(match) {
   const openGap = Math.abs(ah.openHome - ah.openAway), nowGap = Math.abs(ah.nowHome - ah.nowAway);
   if (!(lineSame && openGap - nowGap >= 0.06)) return _off('value_compression');
   return { key: 'value_compression', aktif: true, kekuatan: (openGap - nowGap) >= 0.12 ? 2 : 1,
-    alasan: `value_compression: di garis sama (${ah.line.now}), selisih harga dua sisi menyempit ${openGap.toFixed(2)}→${nowGap.toFixed(2)} — pasar mengetat, sisa nilai buat pemasang menipis (harga makin "pas"/efisien).` };
+    alasan: `value_compression: di voor sama (${ah.line.now}), selisih harga dua sisi menyempit ${openGap.toFixed(2)}→${nowGap.toFixed(2)} — pasar mengetat, sisa nilai buat pemasang menipis (harga makin "pas"/efisien).` };
 }
 // reverse_line_movement: garis bergerak MELAWAN sisi publik (umpan Bet365 / favorit pembukaan).
 function detReverseLineMovement(match) {
@@ -620,7 +620,7 @@ function buildReport(match) {
   const factLine = (mk, name) => {
     if (!mk || mk.lineDisplay == null) return null;
     const moved = mk.lineMove && mk.lineMove.dir !== 'flat';
-    return `${name}: garis ${moved ? mk.line.open + '→' + mk.line.now : mk.line.now + ' (tetap)'}` +
+    return `${name}: ${moved ? mk.line.open + '→' + mk.line.now : mk.line.now + ' (statis)'}` +
       `, harga ${fmt(mk.openHome)}→${fmt(mk.nowHome)} / ${fmt(mk.openAway)}→${fmt(mk.nowAway)}` +
       `${mk.margin != null ? `, margin ${mk.margin.toFixed(1)}%` : ''}`;
   };
@@ -639,7 +639,7 @@ function buildReport(match) {
     else inferensi.push(`[bidak jujur · inferensi] ${h.alasan}`);
   }
   if (match.lineupRead && match.lineupRead.changes.length) for (const c of match.lineupRead.changes) inferensi.push('[lineup→read] ' + c);
-  if (!inferensi.length) inferensi.push('Belum ada arah yang bisa dibaca — garis & harga relatif diam.');
+  if (!inferensi.length) inferensi.push('Belum ada arah yang bisa dibaca — VOOR/TOTAL & harga relatif diam.');
   // SPEKULASI — motif bandar (jelas dilabeli sebagai dugaan).
   const pancing = match.conclusion && match.conclusion.trapped ? match.conclusion.headline.replace('Pemasang lagi dipancing ke: ', '') : null;
   const spekulasi = [];

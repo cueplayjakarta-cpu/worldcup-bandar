@@ -105,7 +105,7 @@ console.log('\n── 8. Kesimpulan "keuntungan bandar terkonsentrasi di sini" �
     mkt(2.5, 0.93, 0.97, 0.93, 0.97));
   check('laga jebakan → conclusion.trapped = true', trap.conclusion.trapped === true);
   check('headline tunjuk sisi untung bandar (Portugal)', /Portugal/.test(trap.conclusion.headline), trap.conclusion.headline);
-  check('headline beri anotasi favorit + garis', /favorit, garis −1\/4/.test(trap.conclusion.headline), trap.conclusion.headline);
+  check('headline beri anotasi favorit + voor', /favorit, voor −1\/4/.test(trap.conclusion.headline), trap.conclusion.headline);
 
   const clean = match('T8b', 'Kanada', 'Maroko',
     mkt(0.5, 0.93, 0.97, 0.93, 0.97, { line: 0.5, home: 0.93, away: 0.97 }),

@@ -100,10 +100,20 @@
   .grade.gB{background:#16273e;color:#7fb0ff;border:1px solid #2f5f9e}
   .grade.gC{background:#352b0c;color:#f0c860;border:1px solid #7a6320}
   .grade.gD{background:#2a1620;color:#ef7d8d;border:1px solid #7a2438}
-  .gstrip{margin:0 14px 10px;font-size:12px;color:#cbd8f5;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
+  .gstrip{margin:0 14px 11px;font-size:12px;color:#cbd8f5;display:flex;flex-wrap:wrap;gap:7px;align-items:baseline}
   .gstrip .gm{color:var(--dim)}
-  .gstrip .tahan{width:100%;margin-top:5px;font-size:12.5px;color:#ffd9b0;background:#231427;border:1px solid #5a2f48;border-radius:9px;padding:7px 10px}
-  .gstrip .tahan b{color:#ffe6c0}
+  .gstrip .gw{font-weight:800;padding:2px 9px;border-radius:999px;font-size:11.5px}
+  .gw.gA{background:#10311f;color:#5be29b} .gw.gB{background:#16273e;color:#7fb0ff} .gw.gC{background:#352b0c;color:#f0c860} .gw.gD{background:#2a1620;color:#ef7d8d}
+  /* SKENARIO BANDAR — hero tiap kartu */
+  .scen{margin:12px 14px 9px;padding:12px 14px;border-radius:13px;background:linear-gradient(180deg,#1a2440,#121b30);border:1px solid #34507f}
+  .scen.bal{background:linear-gradient(180deg,#141d30,#0f1726);border-color:#283755}
+  .scen .scen1{font-size:15.5px;font-weight:800;color:#eaf3ff;line-height:1.35}
+  .scen .scen2{font-size:13px;color:#cdddff;line-height:1.6;margin-top:6px}
+  .scen.bal .scen2{color:var(--muted)}
+  /* legenda grade di header */
+  .glegend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px;font-size:10px}
+  .glegend span{padding:2px 8px;border-radius:999px;font-weight:700}
+  .glegend .lA{background:#10311f;color:#5be29b} .glegend .lB{background:#16273e;color:#7fb0ff} .glegend .lC{background:#352b0c;color:#f0c860} .glegend .lD{background:#2a1620;color:#ef7d8d}
   /* LAPORAN lengkap (template) */
   .rep{margin:0 14px 11px;border:1px solid #233152;border-radius:11px;overflow:hidden}
   .rep summary{cursor:pointer;padding:9px 12px;font-size:11.5px;font-weight:700;color:#9db4ee;background:#0e1830;list-style:none}
@@ -199,6 +209,7 @@
 
   <div id="demo" class="demo" style="display:none"></div>
   <div id="summary" class="sum"></div>
+  <div class="glegend"><span class="lA">A KUAT</span><span class="lB">B LUMAYAN</span><span class="lC">C ADEM</span><span class="lD">D HINDARI</span></div>
 
   <div class="filter">
     <button id="f-all" class="active" onclick="setFilter('all')">Semua</button>
@@ -300,32 +311,40 @@
 
   function fmtNum(v){ return v==null?'—':v; }
   // Satu baris pergerakan market: GARIS (buka→kini, delta+panah) dan HARGA (juice) DIPISAH jelas.
-  function mvRow(m,k,name){
+  function mvRow(m,k,name,unit){
     var x=m.markets[k]; if(!x||x.lineDisplay==null) return '';
     var lm=x.lineMove||{dir:'flat',delta:0};
-    var garis=(lm.dir!=='flat')
+    var nilai=(lm.dir!=='flat')
       ? '<span class="mv-from">'+fmtNum(x.line.open)+'</span> '+arrow(lm)+' <span class="mv-to">'+x.lineDisplay+'</span> <span class="mv-d">'+(lm.delta>0?'+':'')+lm.delta+'</span>'
-      : '<span class="mv-to">'+x.lineDisplay+'</span> <span class="mv-flat">tetap</span>';
+      : '<span class="mv-to">'+x.lineDisplay+'</span> <span class="mv-flat">statis</span>';
     var harga=fmtO(x.openHome)+' '+arrow(x.waterMoveHome)+' '+fmtO(x.nowHome)+' <span class="mv-sl">/</span> '+fmtO(x.openAway)+' '+arrow(x.waterMoveAway)+' '+fmtO(x.nowAway);
     return '<div class="mv-row"><span class="mv-k">'+name+'</span><div class="mv-cells">'+
-      '<div class="mv-cell"><span class="mv-cl">garis</span>'+garis+'</div>'+
+      '<div class="mv-cell"><span class="mv-cl">'+unit+'</span>'+nilai+'</div>'+
       '<div class="mv-cell"><span class="mv-cl">harga</span>'+harga+'</div>'+
     '</div></div>';
   }
-  // HERO tiap kartu: pergerakan AH & O/U (garis vs harga). Inti baca arah bandar.
+  // VOOR & TOTAL: nilai (statis) vs harga. Pergerakan = penguat opsional, bukan syarat.
   function mvHero(m){
-    var ah=mvRow(m,'ah','AH'), ou=mvRow(m,'ou','O/U');
+    var ah=mvRow(m,'ah','VOOR','voor'), ou=mvRow(m,'ou','TOTAL','total');
     if(!ah&&!ou) return '';
-    return '<div class="mvhero"><div class="mv-lab">Pergerakan pasar — garis vs harga (buka → kini)</div>'+ah+ou+'</div>';
+    return '<div class="mvhero"><div class="mv-lab">VOOR &amp; TOTAL — nilai vs harga (pergerakan = penguat opsional)</div>'+ah+ou+'</div>';
   }
 
   function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function ul(arr){ return '<ul>'+(arr||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>'; }
   function gradeBadge(m){ var g=(m.grade&&m.grade.grade)||'D'; return '<span class="grade g'+g+'" title="'+esc(m.grade&&m.grade.meaning||'')+'">'+g+'</span>'; }
+  function gradeWord(g){ return g==='A'?'KUAT':g==='B'?'LUMAYAN':g==='C'?'ADEM':'HINDARI'; }
   function gradeStrip(m){
-    var g=m.grade||{}, r=m.report||{};
-    return '<div class="gstrip"><b>Grade '+(g.grade||'?')+'</b><span class="gm">· '+esc(g.meaning||'')+'</span>'+
-      '<div class="tahan">🏦 Bandar paling suka <b>tahan uang di '+esc(r.tahanUangDi||'—')+'</b></div></div>';
+    var g=m.grade||{};
+    return '<div class="gstrip"><b class="gw g'+(g.grade||'D')+'">Grade '+(g.grade||'?')+' · '+gradeWord(g.grade)+'</b><span class="gm">· '+esc(g.meaning||'')+'</span></div>';
+  }
+  // HERO: 2 kalimat skenario bandar (ganti "AMAN/jebakan").
+  function scenarioBlock(m){
+    var r=m.report||{}; if(!r.scenarioS1) return '';
+    return '<div class="scen'+(r.balanced?' bal':'')+'">'+
+      '<div class="scen1">🎬 '+esc(r.scenarioS1)+'</div>'+
+      '<div class="scen2">'+esc(r.scenarioS2)+'</div>'+
+    '</div>';
   }
   // LAPORAN lengkap = template wajib (FAKTA/INFERENSI/SPEKULASI + confirm/invalidate).
   function reportBlock(m){
@@ -389,9 +408,9 @@
         '</div>'+
         gradeBadge(m)+
       '</div>'+
+      scenarioBlock(m)+
       gradeStrip(m)+
       (m.report&&m.report.lineupChange?'<div class="lineupchg'+(m.lineupRead&&m.lineupRead.flip?' flip':'')+'">🧩 '+esc(m.report.lineupChange)+'</div>':'')+
-      conclBlock(m.conclusion)+
       mvHero(m)+
       arahBlock(m)+
       reportBlock(m)+

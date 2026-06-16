@@ -93,7 +93,7 @@ console.log('\n── 7. "Statistik bandar" tertulis jelas ──');
 {
   const m = match('T7', 'Argentina', 'Korea',
     mkt(-1.0, 0.90, 1.00, 0.90, 1.00), mkt(2.5, 0.95, 0.95, 0.95, 0.95));
-  check('AH berisi "Bandar pegang"', /Bandar pegang/.test(m.markets.ah.read.holds));
+  check('AH berisi "Bandar jagokan"', /Bandar jagokan/.test(m.markets.ah.read.holds));
   check('AH sebut peluang %', /%/.test(m.markets.ah.read.holds));
   check('OU sebut perkiraan gol', /perkiraan ~2.5 gol/.test(m.markets.ou.read.holds), m.markets.ou.read.holds);
 }
@@ -144,9 +144,9 @@ console.log('\n── 9. Parser format resmi odds-api.io (Sbobet + Bet365) ─�
   check('AH publik Bet365 terbaca', r.ah.pub && r.ah.pub.home === 2.02);
   check('O/U max→line, over/under terbaca', r.ou.line.now === 2.5 && r.ou.nowHome === 1.90 && r.ou.nowAway === 1.90);
   check('corner/kartu kosong (free tier)', r.corner.nowHome === null && r.card.nowHome === null);
-  // Pastikan tembus sampai analisis (kalimat "Bandar pegang" + divergence Bet365 lebih bagus di home).
+  // Pastikan tembus sampai analisis (kalimat "Bandar jagokan" + divergence Bet365 lebih bagus di home).
   const am = A.analyzeMatch(r, null, false);
-  check('analisis hasilkan "Bandar pegang"', /Bandar pegang/.test(am.markets.ah.read.holds), am.markets.ah.read.holds);
+  check('analisis hasilkan "Bandar jagokan"', /Bandar jagokan/.test(am.markets.ah.read.holds), am.markets.ah.read.holds);
   check('divergence menandai umpan publik di Man Utd', am.markets.ah.divergence && am.markets.ah.divergence.side === 'home');
 }
 
@@ -302,8 +302,8 @@ console.log('\n── 15. Grade A/B/C/D + cross-market (3D) ──');
   check('bentrok → grade turun ke C/D', conflict.grade.grade === 'C' || conflict.grade.grade === 'D', conflict.grade.grade);
   // QUIET → grade D (jangan paksa baca).
   const quiet = A.analyzeMatch(mkRaw({ ah: mkt(-0.5, 0.95, 0.95, 0.95, 0.95) }), null, true);
-  check('laga sepi tanpa sinyal → grade D', quiet.grade.grade === 'D', quiet.grade.grade);
-  check('grade D bermakna bising/hindari', /bising|hindari/.test(quiet.grade.meaning), quiet.grade.meaning);
+  check('laga ketat/sepi → grade C (ADEM, bukan D)', quiet.grade.grade === 'C', quiet.grade.grade);
+  check('laga ketat → skenario seimbang', !!(quiet.scenario && quiet.scenario.balanced), JSON.stringify(quiet.scenario && { bal: quiet.scenario.balanced, label: quiet.scenario.label }));
   // BIDAK JUJUR (bobot tinggi) = BONUS yg mengangkat read nyata; SENDIRIAN tak cukup untuk A.
   const honestOnly = A.analyzeMatch(mkRaw({
     ah: mkt(-1, 0.95, 0.95, 0.95, 0.95), ahHT: mkt(-0.5, 0.95, 0.95, 0.95, 0.95),
@@ -315,8 +315,11 @@ console.log('\n── 15. Grade A/B/C/D + cross-market (3D) ──');
     ah: mkt(-2.5, 1.95, 1.95, 1.95, 1.95), ahHT: mkt(-0.5, 0.95, 0.95, 0.95, 0.95),
     ouHT: mkt(1.0, 0.95, 0.95, 0.95, 0.95), corner: mkt(9.5, 0.9, 0.9, 0.9, 0.9),
   }), null, true);
-  check('read kuat (margin_trap) + bidak jujur → grade A', readHonest.grade.grade === 'A', readHonest.grade.grade + ' score=' + readHonest.grade.score);
+  check('read kuat (margin_trap, readPower≥6.5) → grade A', readHonest.grade.grade === 'A', readHonest.grade.grade + ' rp=' + readHonest.grade.readPower);
   check('grade drivers berisi alasan', readHonest.grade.drivers.length > 0 && readHonest.grade.drivers.every(x => x && x.length > 10));
+  // KUNCI: bidak jujur TIDAK boleh melompatkan grade (read nyata B → tetap B walau banyak bidak jujur).
+  const noJump = A.analyzeMatch(A.parseManual('A vs B\nAH -1.75 1.95 1.95\nOU 3 0.95 0.95\nAH HT -0.5 0.95 0.95\nOU HT 1.0 0.95 0.95\nCorner 9.5 1.9 1.9').raw, null, false);
+  check('bidak jujur TIDAK melompatkan B→A (read nyata penentu)', noJump.grade.grade === 'B' && noJump.honest.length > 0, noJump.grade.grade + ' rp=' + noJump.grade.readPower + ' honest=' + noJump.honest.length);
 }
 
 console.log('\n── 16. Output template + label FAKTA/INFERENSI/SPEKULASI (3E) ──');
@@ -330,7 +333,7 @@ console.log('\n── 16. Output template + label FAKTA/INFERENSI/SPEKULASI (3E)
   check('INFERENSI berisi pola/arah', r.inferensi.length > 0 && r.inferensi.join(' ').length > 20);
   check('SPEKULASI dilabeli "Dugaan motif"', r.spekulasi.some(s => /Dugaan motif/.test(s)), JSON.stringify(r.spekulasi).slice(0, 80));
   check('what-confirms & what-invalidates ada', r.confirms.length > 0 && r.invalidates.length > 0);
-  check('one-liner "bandar tahan uang di __" terisi', !!(r.tahanUangDi && r.tahanUangDi.length > 2), r.tahanUangDi);
+  check('skenario: 2 kalimat (s1 + s2) terisi', !!(r.scenarioS1 && r.scenarioS2), JSON.stringify({ s1: r.scenarioS1, s2: r.scenarioS2 }).slice(0, 100));
   check('invalidates sebut lineup (untuk Fase 4)', r.invalidates.some(s => /lineup/i.test(s)));
   const sm = A.summarize([am, am]);
   check('summarize bawa gradeA..D + total', sm.total === 2 && ('gradeA' in sm) && ('gradeD' in sm), JSON.stringify(sm));
@@ -385,6 +388,32 @@ console.log('\n── 18. Lineup modifier (4B) — bisa MEMBALIK read + validasi
   // Rule 3: odds Over tapi underdog parkir → Under didukung (read berubah).
   const over = A.analyzeMatch(A.parseManual('A vs B\nAH 0 0.95 0.95\nOU 3.5 0.95 0.95\nunderdog parkir bertahan').raw, null, false);
   check('underdog parkir + odds Over → Under didukung', !!(over.lineupRead && over.lineupRead.changes.some(c => /Over.*diturunkan|Under didukung/i.test(c))), JSON.stringify(over.lineupRead && over.lineupRead.changes));
+}
+
+console.log('\n── 19. Skenario bandar STATIS (misi baru: baca struktur, bukan pergerakan) ──');
+{
+  const k = (v, t) => A.scenario(v, t).key;
+  check('voor 3.5 × total 4.5 → rout pesta gol', k(-3.5, 4.5) === 'rout_pesta');
+  check('voor 3.0 × total 2.5 → menang besar clean', k(-3.0, 2.5) === 'besar_clean');
+  check('voor 1.25 × total 2.25 → menang tipis mampet', k(-1.25, 2.25) === 'tipis_mampet');
+  check('voor 0.5 → laga ketat', k(-0.5, 2.5) === 'ketat');
+  const m = A.analyzeMatch(A.parseManual('Germany vs Curacao\nAH -3.5 1.90 2.10\nOU 4.5 1.95 1.95').raw, null, false);
+  check('skenario rout + 2 kalimat', /rout pesta gol/.test(m.scenario.s1) && !!m.scenario.s2, m.scenario.s2);
+  check('menampung = Curacao (digiring via juice plus)', /Curacao/.test(m.scenario.menampung || ''), m.scenario.menampung);
+  check('jagokan = Germany (sisi bandar)', /Germany/.test(m.scenario.jagokan || ''), m.scenario.jagokan);
+  check('TIADA "margin dua sisi"/"AMAN" di output', !/margin dua sisi|AMAN — belum/i.test(JSON.stringify(m.report) + m.scenario.s2));
+  check('voor jelas (statis) → grade B', m.grade.grade === 'B', m.grade.grade + ' rp=' + m.grade.readPower);
+  const t = A.analyzeMatch(A.parseManual('A vs B\nAH -0.25 1.95 1.95\nOU 2.5 1.95 1.95').raw, null, false);
+  check('voor tipis → seimbang + tetap ada kalimat', t.scenario.balanced === true && /seimbang/i.test(t.scenario.s2));
+  // voor tipis dgn JUICE TIMPANG → tetap SEIMBANG (jangan dipaksa kasih sisi).
+  const ketat = A.analyzeMatch(A.parseManual('A vs B\nAH -0.5 1.85 2.15\nOU 2.5 1.95 1.95').raw, null, false);
+  check('voor ≤0.75 + juice timpang → tetap SEIMBANG (tak dipaksa sisi)', ketat.scenario.balanced === true && !ketat.scenario.menampung && /seimbang/i.test(ketat.scenario.s2), JSON.stringify({ bal: ketat.scenario.balanced, menampung: ketat.scenario.menampung }));
+  check('voor 1.75 → label "unggul jelas" (bukan "sedang")', /unggul jelas/.test(A.scenario(-1.75, 3.0).label), A.scenario(-1.75, 3.0).label);
+  // MONOTONIK: voor lebih besar tak boleh grade lebih rendah (ceteris paribus).
+  const gO = { A: 4, B: 3, C: 2, D: 1 };
+  const one = (vl) => A.analyzeMatch({ id: 'x', home: 'H', away: 'Aw', ah: mkt(vl, 1.95, 1.95, 1.95, 1.95), ou: mkt(2.5, 0.95, 0.95, 0.95, 0.95), corner: cleanCorner, card: cleanCard }, null, false).grade.grade;
+  const gBig = one(-2.5), gMid = one(-1.75), gSmall = one(-1.0);
+  check('grade monotonik voor: 2.5 ≥ 1.75 ≥ 1.0 (ceteris paribus)', gO[gBig] >= gO[gMid] && gO[gMid] >= gO[gSmall], `voor2.5=${gBig} 1.75=${gMid} 1.0=${gSmall}`);
 }
 
 function within(x, lo, hi) { return x != null && x >= lo && x <= hi; }

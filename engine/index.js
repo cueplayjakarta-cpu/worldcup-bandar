@@ -233,7 +233,7 @@ function generateRead(type, m, home, away) {
     holds = `Bandar pegang: perkiraan ~${L} kartu.` + (pOver != null ? ` Peluang Over ${L} ~${pct(pOver)}%.` : '');
   }
   let signal;
-  if (!m.flags || !m.flags.length) signal = 'Aman — belum ada tanda menjebak.';
+  if (!m.flags || !m.flags.length) signal = '';   // tak ada flag → tak ada baris "AMAN" (skenario sudah jadi headline)
   else signal = '⚠️ ' + m.flags.join('; ') + '.';
   if (type === 'ah' && m.light !== 'green' && Math.abs(L || 0) > 0 && Math.abs(L || 0) < 0.5) {
     signal += ' Garisnya kecil padahal favorit — di sinilah orang gampang nekat taruh besar, dan itu yang dimau bandar.';

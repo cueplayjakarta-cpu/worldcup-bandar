@@ -43,7 +43,7 @@ console.log('\n── 2. Laga bersih (tenang, simetris, tanpa gerakan) ──');
     mkt(0.5, 0.93, 0.97, 0.93, 0.97, { line: 0.5, home: 0.93, away: 0.97 }),
     mkt(2.25, 0.94, 0.96, 0.94, 0.96, { line: 2.25, home: 0.94, away: 0.96 }));
   check('verdict = HIJAU', m.verdict.light === 'green', m.verdict.light);
-  check('AH aman', /Aman/i.test(m.markets.ah.read.signal));
+  check('AH tak ada alarm (signal kosong, bukan "AMAN")', m.markets.ah.read.signal === '');
   check('tidak ada false-alarm divergence', m.markets.ah.divergence === null);
 }
 

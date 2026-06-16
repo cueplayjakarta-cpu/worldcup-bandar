@@ -274,9 +274,10 @@
       '<div class="R" style="width:'+(100-lw)+'%">'+pa+'% '+n[1]+'</div>'+
     '</div><div class="barcap">'+cap+'</div>';
   }
-  function numsHtml(x){
+  function numsHtml(x,k){
     var t=(x.tech&&x.tech.length)?('<br>catatan: '+x.tech.join('; ')):'';
-    return 'garis '+(x.lineDisplay!=null?x.lineDisplay:'—')+
+    var unit=(k==='ah'||k==='ahHT')?'voor':'total';
+    return unit+' '+(x.lineDisplay!=null?x.lineDisplay:'—')+
       (x.lineMove&&x.lineMove.dir!=='flat'?' ('+arrow(x.lineMove)+Math.abs(x.lineMove.delta)+')':'')+'<br>'+
       'bayaran: '+fmtO(x.openHome)+' '+arrow(x.waterMoveHome)+' '+fmtO(x.nowHome)+
       '  ·  '+fmtO(x.openAway)+' '+arrow(x.waterMoveAway)+' '+fmtO(x.nowAway)+'<br>'+
@@ -305,7 +306,7 @@
       '<div class="mk-read">'+emph(x.read&&x.read.holds)+'</div>'+
       (sig?'<div class="mk-sig '+sigC+'">'+sig+'</div>':'')+
       '<button class="numtog" onclick="tog(this)">angka mentah ▾</button>'+
-      '<div class="nums">'+numsHtml(x)+'</div>'+
+      '<div class="nums">'+numsHtml(x,k)+'</div>'+
     '</div>';
   }
 

@@ -32,11 +32,11 @@
   .sub{color:var(--muted);font-size:11.5px;line-height:1.5;margin-bottom:10px}
   .demo{background:var(--yellow-d);border:1px solid #b8902f;color:#ffe6a6;padding:8px 11px;border-radius:10px;font-size:12px;margin-bottom:10px;line-height:1.5}
   /* summary chips */
-  .sum{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}
-  .sum .s{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:9px 5px;text-align:center}
-  .sum .s b{display:block;font-size:18px;line-height:1.1;font-family:var(--mono)}
-  .sum .s span{font-size:9.5px;color:var(--dim);letter-spacing:.3px}
-  .sum .s.live b{color:var(--red)} .sum .s.red b{color:var(--red)} .sum .s.green b{color:var(--green)} .sum .s.yel b{color:var(--yellow)}
+  .sum{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:12px}
+  .sum .s{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 3px;text-align:center}
+  .sum .s b{display:block;font-size:16px;line-height:1.1;font-family:var(--mono)}
+  .sum .s span{font-size:8.5px;color:var(--dim);letter-spacing:.2px}
+  .sum .s.live b{color:var(--red)} .sum .s.gA b{color:#5be29b} .sum .s.gB b{color:#7fb0ff} .sum .s.gC b{color:#f0c860} .sum .s.gD b{color:#ef7d8d}
   /* filter */
   .filter{display:flex;gap:7px;margin-bottom:12px}
   .filter button{flex:1;background:var(--bg2);color:var(--muted);border:1px solid var(--line);padding:9px;border-radius:10px;font-size:12.5px;cursor:pointer;font-weight:600}
@@ -94,6 +94,29 @@
   .mv-from{color:#8aa0cc} .mv-to{color:#fff;font-weight:800} .mv-d{color:#f0c860;font-size:11px}
   .mv-flat{color:var(--dim);font-size:11px;font-weight:600} .mv-sl{color:var(--dim)}
   .arrow-up{color:#5be29b;font-weight:800} .arrow-down{color:#ef5d6d;font-weight:800} .arrow-flat{color:var(--dim)}
+  /* GRADE A/B/C/D (ganti lampu lama) */
+  .grade{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;font-weight:900;font-size:16px;font-family:var(--mono);flex:0 0 auto;box-shadow:0 0 0 4px #ffffff08}
+  .grade.gA{background:#10311f;color:#5be29b;border:1px solid #1f6b43}
+  .grade.gB{background:#16273e;color:#7fb0ff;border:1px solid #2f5f9e}
+  .grade.gC{background:#352b0c;color:#f0c860;border:1px solid #7a6320}
+  .grade.gD{background:#2a1620;color:#ef7d8d;border:1px solid #7a2438}
+  .gstrip{margin:0 14px 10px;font-size:12px;color:#cbd8f5;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
+  .gstrip .gm{color:var(--dim)}
+  .gstrip .tahan{width:100%;margin-top:5px;font-size:12.5px;color:#ffd9b0;background:#231427;border:1px solid #5a2f48;border-radius:9px;padding:7px 10px}
+  .gstrip .tahan b{color:#ffe6c0}
+  /* LAPORAN lengkap (template) */
+  .rep{margin:0 14px 11px;border:1px solid #233152;border-radius:11px;overflow:hidden}
+  .rep summary{cursor:pointer;padding:9px 12px;font-size:11.5px;font-weight:700;color:#9db4ee;background:#0e1830;list-style:none}
+  .rep summary::-webkit-details-marker{display:none}
+  .rep .rbody{padding:2px 12px 11px;font-size:11.5px;line-height:1.55}
+  .rep h5{margin:10px 0 4px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+  .rep h5.f{color:#5be29b} .rep h5.i{color:#7fb0ff} .rep h5.s{color:#f0c860}
+  .rep ul{margin:0;padding-left:16px;color:#bcd0f5} .rep li{margin:3px 0}
+  .rep .ci{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .rep .ci > div{flex:1;min-width:150px;background:#0c1424;border:1px solid #1d2942;border-radius:8px;padding:7px 9px}
+  .rep .ci .lab{font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px}
+  .rep .ci .cf .lab{color:#5be29b} .rep .ci .cv .lab{color:#ef7d8d}
+  .rep .ci ul{padding-left:14px}
   /* conclusion = HERO */
   .concl{margin:0 14px 10px;padding:13px 14px;border-radius:13px;background:linear-gradient(180deg,#2a1020,#1c0d18);border:1px solid #8a2f48;box-shadow:0 6px 22px #e0143c14}
   .concl.clean{background:linear-gradient(180deg,#102219,#0e1a15);border-color:#1d5b43;box-shadow:none}
@@ -166,7 +189,7 @@
   <div class="filter">
     <button id="f-all" class="active" onclick="setFilter('all')">Semua</button>
     <button id="f-live" onclick="setFilter('live')">🔴 Live</button>
-    <button id="f-watch" onclick="setFilter('watch')">Perlu hati-hati</button>
+    <button id="f-watch" onclick="setFilter('watch')">⭐ Sinyal A/B</button>
   </div>
 
   <div id="list"></div>
@@ -274,6 +297,26 @@
     return '<div class="mvhero"><div class="mv-lab">Pergerakan pasar — garis vs harga (buka → kini)</div>'+ah+ou+'</div>';
   }
 
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function ul(arr){ return '<ul>'+(arr||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>'; }
+  function gradeBadge(m){ var g=(m.grade&&m.grade.grade)||'D'; return '<span class="grade g'+g+'" title="'+esc(m.grade&&m.grade.meaning||'')+'">'+g+'</span>'; }
+  function gradeStrip(m){
+    var g=m.grade||{}, r=m.report||{};
+    return '<div class="gstrip"><b>Grade '+(g.grade||'?')+'</b><span class="gm">· '+esc(g.meaning||'')+'</span>'+
+      '<div class="tahan">🏦 Bandar paling suka <b>tahan uang di '+esc(r.tahanUangDi||'—')+'</b></div></div>';
+  }
+  // LAPORAN lengkap = template wajib (FAKTA/INFERENSI/SPEKULASI + confirm/invalidate).
+  function reportBlock(m){
+    var r=m.report; if(!r) return '';
+    return '<details class="rep"><summary>📋 Laporan lengkap — FAKTA · INFERENSI · SPEKULASI</summary><div class="rbody">'+
+      '<h5 class="f">Fakta (angka odds)</h5>'+ul(r.fakta)+
+      '<h5 class="i">Inferensi (arah dari pergerakan)</h5>'+ul(r.inferensi)+
+      '<h5 class="s">Spekulasi (motif bandar — dugaan)</h5>'+ul(r.spekulasi)+
+      '<div class="ci"><div class="cf"><div class="lab">✅ Memperkuat baca</div>'+ul(r.confirms)+'</div>'+
+      '<div class="cv"><div class="lab">⚠️ Membatalkan baca</div>'+ul(r.invalidates)+'</div></div>'+
+      '</div></details>';
+  }
+
   function winBar(m){
     var w=m.win; if(!w||w.home==null) return '';
     var h=Math.round(w.home*100), d=Math.round(w.draw*100), a=100-h-d;
@@ -320,12 +363,13 @@
     document.getElementById('summary').innerHTML=
       '<div class="s"><b>'+(sm.total||DATA.matches.length)+'</b><span>LAGA</span></div>'+
       '<div class="s live"><b>'+(sm.live||0)+'</b><span>LIVE</span></div>'+
-      '<div class="s red"><b>'+(sm.trapped||0)+'</b><span>JEBAKAN</span></div>'+
-      '<div class="s yel"><b>'+(sm.favoriteTraps||0)+'</b><span>FAVORIT</span></div>'+
-      '<div class="s green"><b>'+(sm.clean||0)+'</b><span>TENANG</span></div>';
+      '<div class="s gA"><b>'+(sm.gradeA||0)+'</b><span>GRADE A</span></div>'+
+      '<div class="s gB"><b>'+(sm.gradeB||0)+'</b><span>GRADE B</span></div>'+
+      '<div class="s gC"><b>'+(sm.gradeC||0)+'</b><span>GRADE C</span></div>'+
+      '<div class="s gD"><b>'+(sm.gradeD||0)+'</b><span>GRADE D</span></div>';
 
     var ms=DATA.matches.filter(function(m){
-      if(FILTER==='live')return m.live; if(FILTER==='watch')return (m.verdict&&m.verdict.light!=='green');return true;});
+      if(FILTER==='live')return m.live; if(FILTER==='watch')return (m.grade&&(m.grade.grade==='A'||m.grade.grade==='B'));return true;});
     if(!ms.length){ list.innerHTML='<div class="empty">Tidak ada laga di filter ini.</div>'; return; }
 
     list.innerHTML=ms.map(function(m){
@@ -341,11 +385,13 @@
             '<div class="vs">'+liveB+m.home+mid+m.away+'</div>'+
             '<div class="meta">'+(m.group?m.group+' · ':'')+when+minute+moves+'</div>'+
           '</div>'+
-          '<span class="bigdot '+v.light+'"></span>'+
+          gradeBadge(m)+
         '</div>'+
+        gradeStrip(m)+
         conclBlock(m.conclusion)+
         mvHero(m)+
         arahBlock(m)+
+        reportBlock(m)+
         '<div class="mkts">'+MKT_ORDER.map(function(k){return mkBlock(k,m.markets[k],m);}).join('')+'</div>'+
         winBar(m)+
       '</div>';

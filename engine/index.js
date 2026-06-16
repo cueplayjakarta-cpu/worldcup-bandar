@@ -354,6 +354,216 @@ function honestSignals(match) {
 }
 
 // =====================================================================
+//  DETEKTOR POLA BERLABEL (3C) — tiap fungsi MURNI: (match, ctx) → {key, aktif, kekuatan, alasan}.
+//  ctx = { nowMs } untuk pola berbasis waktu. `alasan` WAJIB berisi & spesifik (bukan "true").
+// =====================================================================
+function _minsToKO(match, ctx) {
+  const t = match && match.kickoff ? Date.parse(match.kickoff) : NaN;
+  const now = (ctx && ctx.nowMs) || Date.now();
+  return isNaN(t) ? null : (t - now) / 60000;
+}
+function _favAH(ah) { const L = ah && ah.line && ah.line.now; if (L == null) return null; return L < 0 ? 'home' : L > 0 ? 'away' : null; }
+function _nm(match, side) { return side === 'home' ? match.home : match.away; }
+function _off(key) { return { key, aktif: false, kekuatan: 0, alasan: '' }; }
+
+// fake_favorite: favorit kelihatan jagoan tapi voor KECIL + tekanan publik ke favorit.
+function detFakeFavorite(match) {
+  const ah = match.markets.ah, L = ah.line && ah.line.now, absL = Math.abs(L || 0);
+  if (!(absL > 0 && absL < 0.6)) return _off('fake_favorite');
+  const favSide = _favAH(ah);
+  const hard = favSide === 'home' ? ah.waterMoveHome : ah.waterMoveAway;
+  const hardening = hard && hard.dir === 'down' && Math.abs(hard.delta) >= 0.06;
+  const divFav = ah.divergence && ah.divergence.side === favSide;
+  if (!hardening && !divFav) return _off('fake_favorite');
+  const favN = _nm(match, favSide);
+  return { key: 'fake_favorite', aktif: true, kekuatan: (hardening && divFav) ? 3 : 2,
+    alasan: `${favN} kelihatan jagoan tapi voor cuma ${indoHandicap(L)} (laga sebenarnya ketat)` +
+      (hardening ? `, bayaran ${favN} dikecilkan` : '') + (divFav ? `, Bet365 mengumpan ke ${favN}` : '') +
+      ` — pemasang ditarik nekat taruh besar ke favorit padahal garis kecil.` };
+}
+// margin_trap: voor BESAR tapi de-vig cover ~koin → "menang bola ≠ menang voor".
+function detMarginTrap(match) {
+  const ah = match.markets.ah, L = ah.line && ah.line.now, absL = Math.abs(L || 0);
+  if (absL < 1.75) return _off('margin_trap');
+  const favSide = _favAH(ah);
+  const coverP = favSide === 'home' ? ah.probHome : ah.probAway;
+  if (coverP == null || coverP > 0.55) return _off('margin_trap');
+  const favN = _nm(match, favSide), needGoals = Math.floor(absL) + 1;
+  return { key: 'margin_trap', aktif: true, kekuatan: coverP <= 0.5 ? 3 : 2,
+    alasan: `margin_trap: voor ${favN} ${indoHandicap(L)} (besar) padahal de-vig peluang COVER cuma ${pct(coverP)}% (≈ koin). ` +
+      `Butuh ${favN} menang ≥${needGoals} gol; skor modal (menang tipis 1–2 gol) bikin GAGAL cover — pemasang "${favN} pasti menang besar" kejebak.` };
+}
+// total_trap: total digeser / bayaran satu sisi dikecilkan → memancing Over/Under.
+function detTotalTrap(match) {
+  const ou = match.markets.ou; if (!ou || ou.line.now == null) return _off('total_trap');
+  const moved = ou.lineMove && ou.lineMove.dir !== 'flat';
+  const overHard = ou.waterMoveHome && ou.waterMoveHome.dir === 'down' && Math.abs(ou.waterMoveHome.delta) >= 0.06;
+  const underHard = ou.waterMoveAway && ou.waterMoveAway.dir === 'down' && Math.abs(ou.waterMoveAway.delta) >= 0.06;
+  if (!moved && !overHard && !underHard) return _off('total_trap');
+  const side = overHard ? 'Over' : underHard ? 'Under' : (ou.lineMove.delta > 0 ? 'Over' : 'Under');
+  return { key: 'total_trap', aktif: true, kekuatan: (moved && (overHard || underHard)) ? 3 : 2,
+    alasan: `total_trap: ${moved ? `total digeser ${ou.line.open}→${ou.line.now}` : `total ${ou.line.now}`}` +
+      `${(overHard || underHard) ? `, bayaran ${side} dikecilkan` : ''} — arus pemasang dipancing ke ${side} ${ou.line.now} gol.` };
+}
+// line_freeze: <30mnt ke KO tapi garis & harga DIAM total → bandar membekukan.
+function detLineFreeze(match, ctx) {
+  const mins = _minsToKO(match, ctx); if (mins == null || mins > 30 || mins < -5) return _off('line_freeze');
+  const ah = match.markets.ah; if (!ah || ah.line.now == null) return _off('line_freeze');
+  const flatLine = !ah.lineMove || ah.lineMove.dir === 'flat';
+  const flatH = !ah.waterMoveHome || Math.abs(ah.waterMoveHome.delta) < 0.03;
+  const flatA = !ah.waterMoveAway || Math.abs(ah.waterMoveAway.delta) < 0.03;
+  if (!(flatLine && flatH && flatA)) return _off('line_freeze');
+  return { key: 'line_freeze', aktif: true, kekuatan: mins <= 15 ? 2 : 1,
+    alasan: `line_freeze: ${Math.round(mins)} menit ke kickoff tapi voor (${ah.line.now}) & harga DIAM total — bandar membekukan garis: nyaman dgn posisi & tak mau kasih sinyal ke pasar.` };
+}
+// late_steam: pergerakan TAJAM di <30mnt ke KO → uang tajam menit akhir.
+function detLateSteam(match, ctx) {
+  const mins = _minsToKO(match, ctx); if (mins == null || mins > 30 || mins < -5) return _off('late_steam');
+  const ah = match.markets.ah; if (!ah || ah.line.now == null) return _off('late_steam');
+  const lineJump = ah.lineMove && ah.lineMove.dir !== 'flat' && Math.abs(ah.lineMove.delta) >= 0.25;
+  const waterJump = (ah.waterMoveHome && ah.waterMoveHome.dir === 'down' && Math.abs(ah.waterMoveHome.delta) >= 0.08) ||
+    (ah.waterMoveAway && ah.waterMoveAway.dir === 'down' && Math.abs(ah.waterMoveAway.delta) >= 0.08);
+  if (!lineJump && !waterJump) return _off('late_steam');
+  const toN = lineJump ? (ah.lineMove.delta < 0 ? match.home : match.away) : null;
+  return { key: 'late_steam', aktif: true, kekuatan: lineJump ? 3 : 2,
+    alasan: `late_steam: ${Math.round(mins)} menit ke kickoff` +
+      `${lineJump ? `, voor bergerak ${indoHandicap(ah.line.open)}→${indoHandicap(ah.line.now)} ke ${toN}` : ', harga mengeras tajam'} — uang tajam masuk di menit-menit akhir.` };
+}
+// value_compression: garis sama tapi selisih harga dua sisi MENYEMPIT → value terkuras.
+function detValueCompression(match) {
+  const ah = match.markets.ah; if (!ah || ah.nowHome == null || ah.openHome == null) return _off('value_compression');
+  const lineSame = !ah.lineMove || ah.lineMove.dir === 'flat';
+  const openGap = Math.abs(ah.openHome - ah.openAway), nowGap = Math.abs(ah.nowHome - ah.nowAway);
+  if (!(lineSame && openGap - nowGap >= 0.06)) return _off('value_compression');
+  return { key: 'value_compression', aktif: true, kekuatan: (openGap - nowGap) >= 0.12 ? 2 : 1,
+    alasan: `value_compression: di garis sama (${ah.line.now}), selisih harga dua sisi menyempit ${openGap.toFixed(2)}→${nowGap.toFixed(2)} — pasar mengetat, sisa nilai buat pemasang menipis (harga makin "pas"/efisien).` };
+}
+// reverse_line_movement: garis bergerak MELAWAN sisi publik (umpan Bet365 / favorit pembukaan).
+function detReverseLineMovement(match) {
+  const ah = match.markets.ah; if (!ah || ah.line.now == null) return _off('reverse_line_movement');
+  const lm = ah.lineMove; if (!lm || lm.dir === 'flat' || Math.abs(lm.delta) < 0.25) return _off('reverse_line_movement');
+  const favOpen = ah.line.open != null ? (ah.line.open < 0 ? 'home' : ah.line.open > 0 ? 'away' : null) : _favAH(ah);
+  const pubSide = (ah.divergence && ah.divergence.side) || favOpen;
+  if (!pubSide) return _off('reverse_line_movement');
+  const lineToward = lm.delta < 0 ? 'home' : 'away';
+  if (lineToward === pubSide) return _off('reverse_line_movement');
+  return { key: 'reverse_line_movement', aktif: true, kekuatan: 3,
+    alasan: `reverse_line_movement: publik condong ke ${_nm(match, pubSide)} (${ah.divergence ? 'umpan Bet365' : 'favorit pembukaan'}), TAPI voor malah bergerak ${indoHandicap(ah.line.open)}→${indoHandicap(ah.line.now)} ke ${_nm(match, lineToward)} — uang tajam melawan arah publik.` };
+}
+const DETECTORS = [detFakeFavorite, detMarginTrap, detTotalTrap, detLineFreeze, detLateSteam, detValueCompression, detReverseLineMovement];
+function runDetectors(match, ctx) { return DETECTORS.map(fn => fn(match, ctx)).filter(d => d.aktif); }
+
+// =====================================================================
+//  GRADE A/B/C/D + CROSS-MARKET (3D) — gabung sinyal; bentrok → TURUNKAN grade + jelaskan.
+//  Bidak jujur (market sepi) diberi BOBOT LEBIH TINGGI. D dipakai sungguhan saat bising/lemah.
+// =====================================================================
+function crossMarket(match) {
+  const m = match.markets;
+  // Sinyal tempo: O/U + corner + HT (+1 = lean Over/ramai, -1 = lean Under/sepi).
+  const tempo = [];
+  for (const k of ['ou', 'ouHT', 'corner', 'cornerHT']) {
+    const mk = m[k]; if (!mk || !mk.direction || !mk.direction.side) continue;
+    tempo.push({ k, v: mk.direction.side === 'home' ? 1 : -1 });
+  }
+  const over = tempo.filter(t => t.v > 0).map(t => t.k), under = tempo.filter(t => t.v < 0).map(t => t.k);
+  let agree = false, conflict = false, note = '';
+  if (tempo.length >= 2) {
+    if (over.length && under.length) {
+      conflict = true;
+      note = `Sinyal tempo BENTROK: ${over.join('+')} mengarah Over/ramai tapi ${under.join('+')} mengarah Under/sepi — pasar tak satu suara, baca jadi bising.`;
+    } else { agree = true; note = `Sinyal tempo SEARAH (${tempo.map(t => t.k).join('+')} → ${over.length ? 'Over/ramai' : 'Under/sepi'}) — saling menguatkan.`; }
+  }
+  // Konsistensi sisi: AH FT vs AH babak-1.
+  const ahd = m.ah && m.ah.direction && m.ah.direction.side, ahHTd = m.ahHT && m.ahHT.direction && m.ahHT.direction.side;
+  if (ahd && ahHTd && ahd !== ahHTd) { conflict = true; note += (note ? ' ' : '') + `Arah AH penuh (${_nm(match, ahd)}) BENTROK dgn AH babak-1 (${_nm(match, ahHTd)}).`; }
+  else if (ahd && ahHTd && ahd === ahHTd) agree = true;
+  return { agree, conflict, note };
+}
+function gradeMatch(match) {
+  const detPower = (match.detectors || []).reduce((s, d) => s + (d.kekuatan || 0), 0);
+  const dirPower = match.guidance && match.guidance.moved ? (match.guidance.strength || 0) : 0;
+  const honestPower = (match.honest || []).reduce((s, h) => s + (h.kekuatan || 0), 0) * 2; // BIDAK JUJUR: bobot ×2
+  const cm = crossMarket(match);
+  const base = +(detPower + dirPower + honestPower + (cm.agree ? 2 : 0) - (cm.conflict ? 3 : 0)).toFixed(1);
+  let grade;
+  if (cm.conflict) grade = base >= 5 ? 'C' : 'D';        // bentrok → turunkan; lemah+bentrok = D
+  else if (base >= 8) grade = 'A';
+  else if (base >= 4) grade = 'B';
+  else if (base >= 1.5) grade = 'C';
+  else grade = 'D';                                       // nyaris tanpa sinyal → jangan paksa baca
+  const drivers = [];
+  for (const d of (match.detectors || [])) drivers.push(d.alasan);
+  for (const h of (match.honest || [])) drivers.push('Bidak jujur (bobot tinggi): ' + h.alasan);
+  if (cm.note) drivers.push(cm.note);
+  const meaning = grade === 'A' ? 'sinyal kuat & konsisten' : grade === 'B' ? 'sinyal lumayan'
+    : grade === 'C' ? 'campur/lemah — hati-hati' : 'bising/hindari — data tak cukup untuk dibaca, jangan paksa';
+  return { grade, score: base, conflict: cm.conflict, agree: cm.agree, crossNote: cm.note, drivers, meaning };
+}
+
+// =====================================================================
+//  OUTPUT TEMPLATE + LABEL FAKTA/INFERENSI/SPEKULASI (3E).
+//  FAKTA = angka odds/garis (harga pasar). INFERENSI = arah dari pergerakan.
+//  SPEKULASI = motif bandar (paling lemah, wajib dilabeli). Lineup = Fase 4.
+// =====================================================================
+function buildReport(match) {
+  const m = match.markets, g = match.grade || {}, fmt = v => (v == null ? '—' : v);
+  const factLine = (mk, name) => {
+    if (!mk || mk.lineDisplay == null) return null;
+    const moved = mk.lineMove && mk.lineMove.dir !== 'flat';
+    return `${name}: garis ${moved ? mk.line.open + '→' + mk.line.now : mk.line.now + ' (tetap)'}` +
+      `, harga ${fmt(mk.openHome)}→${fmt(mk.nowHome)} / ${fmt(mk.openAway)}→${fmt(mk.nowAway)}` +
+      `${mk.margin != null ? `, margin ${mk.margin.toFixed(1)}%` : ''}`;
+  };
+  // FAKTA — angka odds (tak ada tafsir).
+  const fakta = [];
+  [['ah', 'AH gol'], ['ou', 'O/U gol'], ['ahHT', 'AH babak 1'], ['ouHT', 'O/U babak 1'], ['corner', 'Corner'], ['cornerHT', 'Corner B1']]
+    .forEach(([k, nm]) => { const f = factLine(m[k], nm); if (f) fakta.push(f); });
+  if (match.win && match.win.home != null) fakta.push(`1X2 de-vig: ${match.home} ${pct(match.win.home)}% / Seri ${pct(match.win.draw)}% / ${match.away} ${pct(match.win.away)}% (pendukung)`);
+  // INFERENSI — arah dari pergerakan + pola terdeteksi + bidak jujur (penguat).
+  const inferensi = [];
+  if (match.guidance && match.guidance.moved) inferensi.push(`Arah bandar: ke ${match.guidance.primary} (${match.guidance.confidence}) — ${match.guidance.narrative}`);
+  for (const d of (match.detectors || [])) inferensi.push(`[${d.key}] ${d.alasan}`);
+  for (const h of (match.honest || [])) inferensi.push(`[bidak jujur] ${h.alasan}`);
+  if (!inferensi.length) inferensi.push('Belum ada arah yang bisa dibaca — garis & harga relatif diam.');
+  // SPEKULASI — motif bandar (jelas dilabeli sebagai dugaan).
+  const pancing = match.conclusion && match.conclusion.trapped ? match.conclusion.headline.replace('Pemasang lagi dipancing ke: ', '') : null;
+  const spekulasi = [];
+  if (pancing) spekulasi.push(`Dugaan motif: bandar memancing pemasang ke ${pancing}; margin terkonsentrasi di sisi ramai itu.`);
+  else spekulasi.push('Dugaan motif: belum ada sisi yang jelas dipancing — kemungkinan bandar menampung dua sisi (main wajar).');
+  // BANDAR PANCING / PEGANG
+  const ahDir = m.ah && m.ah.direction && m.ah.direction.side;
+  const bandarPegang = ahDir ? _nm(match, ahDir) : (match.guidance && match.guidance.primary) || null;
+  // WHAT CONFIRMS / INVALIDATES (pemicu 30 menit → kickoff)
+  const confirms = [], invalidates = [];
+  if (match.guidance && match.guidance.moved) {
+    confirms.push(`Garis lanjut bergerak ke ${match.guidance.primary} mendekati kickoff (late steam searah).`);
+    invalidates.push('Garis berbalik arah / late steam ke sisi sebaliknya menjelang kickoff.');
+  }
+  if ((match.honest || []).length) confirms.push('Total HT tetap rendah & corner tetap moderat sampai kickoff (laga terkontrol).');
+  if ((match.detectors || []).some(d => d.key === 'line_freeze')) confirms.push('Garis tetap beku sampai kickoff (bandar nyaman dgn posisi).');
+  invalidates.push('Berita lineup (XI/absensi pemain kunci) yang mengubah kekuatan — bisa membalik baca (lihat Fase 4 / kirim manual).');
+  if (!confirms.length) confirms.push('Muncul pergerakan jelas menjelang kickoff yang membentuk arah.');
+  // "BANDAR PALING SUKA TAHAN UANG DI __"
+  const topDet = (match.detectors || []).slice().sort((a, b) => b.kekuatan - a.kekuatan)[0];
+  const tahanUangDi = pancing ? pancing
+    : topDet ? topDet.key.replace(/_/g, ' ')
+      : (g.grade === 'D' ? 'tidak ada sisi jelas (laga bising/sepi) — jangan paksa' : 'margin dua sisi (laga wajar)');
+  return { grade: g.grade, meaning: g.meaning, fakta, inferensi, spekulasi, bandarPancing: pancing, bandarPegang, confirms, invalidates, tahanUangDi };
+}
+
+// Ringkasan papan (dipakai Node & Worker) — termasuk distribusi grade.
+function summarize(matches) {
+  const gc = { A: 0, B: 0, C: 0, D: 0 };
+  for (const mt of matches) { const gr = mt.grade && mt.grade.grade; if (gc[gr] != null) gc[gr]++; }
+  return {
+    total: matches.length,
+    live: matches.filter(mt => mt.live).length,
+    trapped: matches.filter(mt => mt.conclusion && mt.conclusion.trapped).length,
+    gradeA: gc.A, gradeB: gc.B, gradeC: gc.C, gradeD: gc.D,
+  };
+}
+
+// =====================================================================
 //  HISTORY v2 (perjalanan garis antar-waktu) — murni: terima objek hist, tak baca file.
 //  Schema entry per laga: { v:2, open:<snap|null>, snaps:[<snap>...≤60], hl:{ [market]:{lineLo,lineHi} } }
 //  Snapshot generik PER MARKET: { t, [market]:{l,h,a} }  (l=garis, h=juice home/over, a=juice away/under)
@@ -442,7 +652,7 @@ function updateHist(entry, match) {
 // =====================================================================
 //  RANGKAI SATU LAGA
 // =====================================================================
-function analyzeMatch(raw, hist, isLive) {
+function analyzeMatch(raw, hist, isLive, ctx) {
   // Migrasi entry history (format lama→baru) lalu pakai OPEN beku sebagai baseline pergerakan.
   let entry = null;
   if (hist) entry = hist[raw.id] = adaptEntry(hist[raw.id]);
@@ -485,6 +695,9 @@ function analyzeMatch(raw, hist, isLive) {
   out.conclusion = deriveConclusion(out);
   out.guidance = matchGuidance(markets, raw.home, raw.away);
   out.honest = honestSignals(out);
+  out.detectors = runDetectors(out, ctx || { nowMs: Date.now() });
+  out.grade = gradeMatch(out);
+  out.report = buildReport(out);
   if (hist) out.history = updateHist(entry, out);
   return out;
 }
@@ -584,7 +797,7 @@ module.exports = {
   // analisis
   NORMAL_MARGIN, gradeMarket, computeDivergence, buildMarket, computeDirection, movePhrase, matchGuidance,
   indoHandicap, strengthWord, generateRead, matchVerdict, sideLabel, hardenSide, deriveConclusion,
-  honestSignals, adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
+  honestSignals, runDetectors, crossMarket, gradeMatch, buildReport, summarize, adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
   // normalisasi sumber
   bookArr, marketEntries, entryLine, entrySides, pickMainLine, pickAtLine, emptyMarket, buildLiveMarket, normalizeOddsApiIo,
 };

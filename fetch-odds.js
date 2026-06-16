@@ -231,13 +231,7 @@ async function runOnce() {
   const matches = raw.map(m => analyzeMatch(m, hist, isLive));
   matches.sort((a, b) => { if (a.live !== b.live) return a.live ? -1 : 1; return new Date(a.kickoff || 0) - new Date(b.kickoff || 0); });
   const hasCorner = matches.some(m => m.markets.corner.lineDisplay != null);
-  const summary = {
-    total: matches.length,
-    live: matches.filter(m => m.live).length,
-    trapped: matches.filter(m => m.conclusion && m.conclusion.trapped).length,
-    favoriteTraps: matches.filter(m => m.verdict && /Jebakan favorit/i.test(m.verdict.text)).length,
-    clean: matches.filter(m => m.verdict && m.verdict.light === 'green').length,
-  };
+  const summary = E.summarize(matches);
   const out = {
     generatedAt: new Date().toISOString(), source, isDemo: source === 'DEMO',
     reference: 'SBOBET', compare: 'Bet365 (publik)', markets: ['Handicap', 'Over/Under', 'Corner FT', 'Corner B1', 'Kartu'],

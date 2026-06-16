@@ -261,6 +261,75 @@ console.log('\n── 13. History v2: migrasi back-compat + open + high/low ─�
   check('snapFromMatch rekam ah+ou+corner', !!(snap.ah && snap.ou && snap.corner), Object.keys(snap).join(','));
 }
 
+console.log('\n── 14. Detektor berlabel (3C) — tiap pola aktif + alasan BERISI ──');
+{
+  const KO = '2026-12-01T00:00:00Z', near = { nowMs: Date.parse(KO) - 10 * 60000 };
+  const base = (ah, ou, extra) => Object.assign({ id: 'X', home: 'Argentina', away: 'Aljazair', ah, ou: ou || mkt(2.5, 0.95, 0.95, 0.95, 0.95), corner: cleanCorner, card: cleanCard }, extra || {});
+  const dets = (raw, ctx) => (A.analyzeMatch(raw, null, true, ctx).detectors || []);
+  const has = (ds, key) => ds.find(d => d.key === key);
+
+  let d = has(dets(base(mkt(-0.25, 0.95, 0.95, 0.84, 1.06, { line: -0.25, home: 0.97, away: 0.93 }))), 'fake_favorite');
+  check('fake_favorite aktif + alasan berisi', !!(d && d.alasan.length > 25), JSON.stringify(d && d.alasan.slice(0, 70)));
+
+  d = has(dets(base(mkt(-2.5, 1.95, 1.95, 1.95, 1.95))), 'margin_trap');
+  check('margin_trap aktif + alasan sebut COVER%/skor modal', !!(d && /COVER|cover/.test(d.alasan) && /gol/.test(d.alasan)), JSON.stringify(d && d.alasan.slice(0, 80)));
+
+  d = has(dets(base(mkt(0, 0.95, 0.95, 0.95, 0.95), mktMove(2.5, 2.75, 0.95, 0.95, 0.86, 1.04))), 'total_trap');
+  check('total_trap aktif + alasan sebut Over', !!(d && /Over/.test(d.alasan)), JSON.stringify(d && d.alasan.slice(0, 70)));
+
+  d = has(dets(base(mkt(-1, 0.95, 0.95, 0.95, 0.95), null, { kickoff: KO }), near), 'line_freeze');
+  check('line_freeze aktif (<30mnt, garis diam)', !!(d && /membekukan/.test(d.alasan)), JSON.stringify(d && d.alasan.slice(0, 70)));
+
+  d = has(dets(base(mktMove(-1, -1.25, 0.95, 0.95, 0.95, 0.95), null, { kickoff: KO }), near), 'late_steam');
+  check('late_steam aktif (<30mnt, voor lompat)', !!(d && /menit akhir/.test(d.alasan)), JSON.stringify(d && d.alasan.slice(0, 70)));
+
+  d = has(dets(base(mktMove(-1, -1, 0.85, 1.05, 0.93, 0.97))), 'value_compression');
+  check('value_compression aktif (selisih harga menyempit)', !!(d && /menyempit/.test(d.alasan)), JSON.stringify(d && d.alasan.slice(0, 70)));
+
+  d = has(dets(base(mktMove(-1, -0.5, 0.90, 1.00, 0.90, 1.00))), 'reverse_line_movement');
+  check('reverse_line_movement aktif + alasan "melawan arah publik"', !!(d && /melawan arah publik/.test(d.alasan)), JSON.stringify(d && d.alasan.slice(0, 90)));
+}
+
+console.log('\n── 15. Grade A/B/C/D + cross-market (3D) ──');
+{
+  const mkRaw = (o) => Object.assign({ id: 'G', home: 'Brasil', away: 'Serbia', corner: cleanCorner, card: cleanCard, ou: mkt(2.5, 0.95, 0.95, 0.95, 0.95), ah: mkt(0, 0.95, 0.95, 0.95, 0.95) }, o);
+  // BENTROK tempo: O/U → Over, Corner → Under.
+  const conflict = A.analyzeMatch(mkRaw({
+    ou: mktMove(2.5, 2.75, 0.95, 0.95, 0.86, 1.04),
+    corner: mktMove(9, 9, 0.90, 0.90, 0.95, 0.83),
+  }), null, true);
+  check('cross-market BENTROK terdeteksi + dijelaskan', conflict.grade.conflict === true && /BENTROK/.test(conflict.grade.crossNote), JSON.stringify(conflict.grade.crossNote));
+  check('bentrok → grade turun ke C/D', conflict.grade.grade === 'C' || conflict.grade.grade === 'D', conflict.grade.grade);
+  // QUIET → grade D (jangan paksa baca).
+  const quiet = A.analyzeMatch(mkRaw({ ah: mkt(-0.5, 0.95, 0.95, 0.95, 0.95) }), null, true);
+  check('laga sepi tanpa sinyal → grade D', quiet.grade.grade === 'D', quiet.grade.grade);
+  check('grade D bermakna bising/hindari', /bising|hindari/.test(quiet.grade.meaning), quiet.grade.meaning);
+  // BIDAK JUJUR (bobot ×2) mengangkat grade.
+  const honest = A.analyzeMatch(mkRaw({
+    ah: mkt(-1, 0.95, 0.95, 0.95, 0.95), ahHT: mkt(-0.5, 0.95, 0.95, 0.95, 0.95),
+    ouHT: mkt(1.0, 0.95, 0.95, 0.95, 0.95), corner: mkt(9.5, 0.9, 0.9, 0.9, 0.9),
+  }), null, true);
+  check('bidak jujur (HT rendah + corner moderat) → grade A', honest.grade.grade === 'A', honest.grade.grade + ' score=' + honest.grade.score);
+  check('grade drivers berisi alasan', honest.grade.drivers.length > 0 && honest.grade.drivers.every(x => x && x.length > 10));
+}
+
+console.log('\n── 16. Output template + label FAKTA/INFERENSI/SPEKULASI (3E) ──');
+{
+  const am = A.analyzeMatch({ id: 'R', home: 'Portugal', away: 'Belanda',
+    ah: mkt(-0.25, 0.95, 0.95, 0.84, 1.06, { line: -0.25, home: 0.97, away: 0.93 }),
+    ou: mkt(2.5, 0.95, 0.95, 0.95, 0.95), corner: cleanCorner, card: cleanCard }, null, true);
+  const r = am.report;
+  check('report ada (grade + 3 label)', !!(r && r.fakta && r.inferensi && r.spekulasi), Object.keys(r || {}).join(','));
+  check('FAKTA = angka odds (garis/harga)', r.fakta.length > 0 && /garis|harga/.test(r.fakta.join(' ')));
+  check('INFERENSI berisi pola/arah', r.inferensi.length > 0 && r.inferensi.join(' ').length > 20);
+  check('SPEKULASI dilabeli "Dugaan motif"', r.spekulasi.some(s => /Dugaan motif/.test(s)), JSON.stringify(r.spekulasi).slice(0, 80));
+  check('what-confirms & what-invalidates ada', r.confirms.length > 0 && r.invalidates.length > 0);
+  check('one-liner "bandar tahan uang di __" terisi', !!(r.tahanUangDi && r.tahanUangDi.length > 2), r.tahanUangDi);
+  check('invalidates sebut lineup (untuk Fase 4)', r.invalidates.some(s => /lineup/i.test(s)));
+  const sm = A.summarize([am, am]);
+  check('summarize bawa gradeA..D + total', sm.total === 2 && ('gradeA' in sm) && ('gradeD' in sm), JSON.stringify(sm));
+}
+
 function within(x, lo, hi) { return x != null && x >= lo && x <= hi; }
 
 console.log('\n────────────────────────────');

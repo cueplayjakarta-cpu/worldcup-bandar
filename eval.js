@@ -227,6 +227,14 @@ console.log('\n── 13. History v2: migrasi back-compat + open + high/low ─�
   const e2 = A.adaptEntry(oldM2);
   check('OPEN tolak snap racun -6 (pilih -3.5)', e2.open && e2.open.ah.l === -3.5, JSON.stringify(e2.open && e2.open.ah));
 
+  // 3A: voor BESAR dengan harga IMBANG harus LOLOS sbg open (jangan di-skip karena gap kecil).
+  // Snap pembukaan -3.5 @1.95/1.95 (imbang) lalu -3.25 @1.80/2.20 — open HARUS -3.5, bukan -3.25.
+  const e3 = A.adaptEntry([
+    { t: 1, ahLine: -3.5, ahH: 1.95, ahA: 1.95, ouLine: 2.5, ouO: 0.95, ouU: 0.95 },
+    { t: 2, ahLine: -3.25, ahH: 1.80, ahA: 2.20, ouLine: 2.5, ouO: 0.95, ouU: 0.95 },
+  ]);
+  check('voor besar imbang -3.5 @1.95/1.95 LOLOS sbg open (bukan di-skip ke -3.25)', e3.open && e3.open.ah.l === -3.5, JSON.stringify(e3.open && e3.open.ah));
+
   // analyzeMatch pakai hist LAMA → baseline open benar, TANPA pergerakan palsu, + migrasi in-place.
   const hist = { M2: JSON.parse(JSON.stringify(oldM2)) };
   const raw = { id: 'M2', home: 'A', away: 'B',

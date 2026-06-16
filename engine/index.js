@@ -338,10 +338,12 @@ function deriveConclusion(match) {
 // =====================================================================
 const HIST_MARKETS = ['ah', 'ou', 'corner', 'cornerHT', 'card'];
 
-// Snapshot waras untuk dipakai sebagai OPEN (garis besar tak mungkin imbang; tak loncat jauh dari now).
+// Snapshot SAH sebagai OPEN bila garisnya dekat main-line sekarang (now = hasil pickMainLine
+// median-window, sudah anti-outlier → garis sampah -6 otomatis JAUH dari now dan ditolak).
+// JANGAN tolak berbasis gap harga: voor BESAR SAH berharga ~imbang (mis. -3.5 @ 1.95/1.95) —
+// justru di laga voor besar harga imbang itulah margin-trap & reverse-line-movement bekerja.
 function snapSaneAh(snap, nowL) {
   const a = snap && snap.ah; if (!a || a.l == null || a.h == null || a.a == null) return false;
-  if (Math.abs(a.l) >= 1.5 && Math.abs(a.h - a.a) < 0.2) return false;
   return nowL == null || Math.abs(a.l - nowL) <= 1.5;
 }
 // Adapter: snapshot format LAMA → baru. (Sudah baru → dikembalikan apa adanya.)

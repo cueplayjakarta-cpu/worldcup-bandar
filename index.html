@@ -29,6 +29,8 @@
   .hd h1{font-size:18px;margin:0;letter-spacing:.3px;font-weight:800}
   .hd .live-ind{margin-left:auto;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
   .hd .live-ind .pip{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+  .hd .live-ind.stale{color:#ffc24d;font-weight:600}
+  .hd .live-ind.stale .pip{background:var(--red);box-shadow:0 0 8px var(--red);animation:pulse 1.2s infinite}
   .sub{color:var(--muted);font-size:11.5px;line-height:1.5;margin-bottom:10px}
   .demo{background:var(--yellow-d);border:1px solid #b8902f;color:#ffe6a6;padding:8px 11px;border-radius:10px;font-size:12px;margin-bottom:10px;line-height:1.5}
   /* summary chips */
@@ -463,25 +465,42 @@
     ['all','live','watch'].forEach(function(x){document.getElementById('f-'+x).classList.toggle('active',x===f);});
     render(); }
 
-  function tickFresh(){ if(DATA&&DATA.generatedAt) document.getElementById('freshness').textContent='diperbarui '+rel(DATA.generatedAt); }
+  function tickFresh(){
+    var el=document.getElementById('freshness'); if(!el) return;
+    if(!DATA||!DATA.generatedAt){ el.textContent='memuat…'; return; }
+    var ageMin=(Date.now()-genTime(DATA))/60000;
+    var li=document.getElementById('liveInd');
+    if(ageMin>10){ el.innerHTML='⚠️ gagal refresh — data '+rel(DATA.generatedAt)+' (bukan real-time)'; if(li) li.classList.add('stale'); }
+    else { el.textContent='diperbarui '+rel(DATA.generatedAt); if(li) li.classList.remove('stale'); }
+  }
 
   // Cadangan: muat file statis data/matches.js (dipakai kalau Worker gagal/diem).
+  var lastOkAt=0;   // kapan terakhir BERHASIL menampilkan data segar
+  function genTime(d){ try{ return d&&d.generatedAt ? new Date(d.generatedAt).getTime() : 0; }catch(e){ return 0; } }
+  // ATURAN KERAS: terapkan data hanya bila valid & TIDAK lebih tua dari yang sedang tampil (anti-mundur).
+  function applyData(j){
+    if(!j || !j.matches || !j.matches.length || j.isDemo) return false;
+    if(DATA && genTime(j) < genTime(DATA)) return false;   // tolak data lebih TUA dari yang tampil
+    DATA=j; lastOkAt=Date.now(); render(); tickFresh(); return true;
+  }
+  // Cadangan statis HANYA dipakai first-load (belum ada data sama sekali). Tetap lewat applyData (anti-mundur).
   function loadStatic(){
     var s=document.createElement('script'); s.src='data/matches.js?t='+Date.now();
-    s.onload=function(){ if(window.__BANDAR_DATA__){DATA=window.__BANDAR_DATA__; render(); tickFresh();} s.remove(); };
+    s.onload=function(){ if(window.__BANDAR_DATA__) applyData(window.__BANDAR_DATA__); s.remove(); };
     s.onerror=function(){ s.remove(); };
     document.body.appendChild(s);
   }
-  // Auto-refresh: utamakan Worker LIVE (cron Cloudflare 2 mnt). Tolak demo/kosong → jatuh ke statis.
+  // Auto-refresh: utamakan Worker LIVE. Kalau GAGAL/lebih-tua → PERTAHANKAN data segar terakhir (jangan mundur ke arsip).
   function reload(){
     fetch(WORKER, { cache:'no-store' })
       .then(function(r){ if(!r.ok) throw 0; return r.json(); })
-      .then(function(j){ if(j && j.matches && j.matches.length && !j.isDemo){ DATA=j; render(); tickFresh(); } else { throw 0; } })
-      .catch(function(){ loadStatic(); });
+      .then(function(j){ applyData(j); })              // gagal-validasi / lebih-tua → no-op → tampilan TIDAK berubah
+      .catch(function(){ if(!DATA) loadStatic(); });   // statis HANYA bila belum punya data apa pun
   }
 
-  render(); tickFresh();   // tampil instan dari bootstrap statis
-  reload();                // langsung upgrade ke data LIVE Worker
+  if(DATA) lastOkAt=Date.now();   // bootstrap statis = baseline first-load (akan diganti yg lebih baru)
+  render(); tickFresh();
+  reload();                        // langsung upgrade ke Worker
   setInterval(tickFresh,1000);
   setInterval(reload,30000);
 </script>

@@ -70,7 +70,7 @@ function gradeMarket(m, normalMargin) {
     if (m.margin > normalMargin + 2.5) tech.push(`Jatah bandar besar (${m.margin.toFixed(1)}%)`);
     else if (m.margin > normalMargin + 1) tech.push(`Jatah bandar agak besar (${m.margin.toFixed(1)}%)`);
   }
-  if (m.lineMove && m.lineMove.dir !== 'flat') tech.push('Garis bergeser');
+  if (m.lineMove && m.lineMove.dir !== 'flat') tech.push('Nilai bergeser');
   if (m.waterMoveHome && m.waterMoveHome.dir === 'down' && Math.abs(m.waterMoveHome.delta) >= 0.10) { score += 1; flags.push('Bayaran tuan rumah dikecilkan — pemasang menumpuk ke sana'); }
   if (m.waterMoveAway && m.waterMoveAway.dir === 'down' && Math.abs(m.waterMoveAway.delta) >= 0.10) { score += 1; flags.push('Bayaran tim tamu dikecilkan — pemasang menumpuk ke sana'); }
   if (m.divergence) { score += m.divergence.strong ? 2 : 1; flags.push(m.divergence.flag); }
@@ -236,7 +236,7 @@ function generateRead(type, m, home, away) {
   if (!m.flags || !m.flags.length) signal = '';   // tak ada flag → tak ada baris "AMAN" (skenario sudah jadi headline)
   else signal = '⚠️ ' + m.flags.join('; ') + '.';
   if (type === 'ah' && m.light !== 'green' && Math.abs(L || 0) > 0 && Math.abs(L || 0) < 0.5) {
-    signal += ' Garisnya kecil padahal favorit — di sinilah orang gampang nekat taruh besar, dan itu yang dimau bandar.';
+    signal += ' Voornya kecil padahal favorit — di sinilah orang gampang nekat taruh besar, dan itu yang dimau bandar.';
   }
   return { holds, signal };
 }
@@ -254,7 +254,7 @@ function matchVerdict(markets, home, away) {
   const hardening = waterHardFav && waterHardFav.dir === 'down' && Math.abs(waterHardFav.delta) >= 0.10;
   const divBaitFav = ah.divergence && ah.divergence.side === favSide;
   if (absL > 0 && absL < 0.6 && (hardening || divBaitFav)) {
-    return { light: 'red', text: `Jebakan favorit: banyak orang taruh ke ${favName} karena kelihatan jagoan, padahal garisnya cuma ${indoHandicap(L)} — sebenarnya laganya jauh lebih ketat. Hati-hati ikut ramai.` };
+    return { light: 'red', text: `Jebakan favorit: banyak orang taruh ke ${favName} karena kelihatan jagoan, padahal voornya cuma ${indoHandicap(L)} — sebenarnya laganya jauh lebih ketat. Hati-hati ikut ramai.` };
   }
   const order = { green: 0, yellow: 1, red: 2 };
   let worst = 'green';
@@ -294,7 +294,7 @@ function deriveConclusion(match) {
   const lab = (type, side, mk) => type === 'ah' ? annotateAh(side) : sideLabel(type, side, match.home, match.away, mk);
   const labShort = (type, side, mk) => type === 'ah' ? (side === 'home' ? match.home : match.away) : sideLabel(type, side, match.home, match.away, mk);
   if (match.verdict && /Jebakan favorit/i.test(match.verdict.text) && favName) {
-    cands.push({ label: annotateAh(favSide), weight: 5, pick: { market: 'ah', side: favSide, line: L }, why: `${favName} kelihatan favorit jelas tapi garisnya cuma ${indoHandicap(L)}, jadi orang gampang nekat taruh besar ke situ` });
+    cands.push({ label: annotateAh(favSide), weight: 5, pick: { market: 'ah', side: favSide, line: L }, why: `${favName} kelihatan favorit jelas tapi voornya cuma ${indoHandicap(L)}, jadi orang gampang nekat taruh besar ke situ` });
   }
   ['ah', 'ou'].forEach(k => {
     const mk = m[k];
@@ -651,11 +651,11 @@ function buildReport(match) {
   // WHAT CONFIRMS / INVALIDATES (pemicu 30 menit → kickoff)
   const confirms = [], invalidates = [];
   if (match.guidance && match.guidance.moved) {
-    confirms.push(`Garis lanjut bergerak ke ${match.guidance.primary} mendekati kickoff (late steam searah).`);
-    invalidates.push('Garis berbalik arah / late steam ke sisi sebaliknya menjelang kickoff.');
+    confirms.push(`VOOR/TOTAL lanjut bergerak ke ${match.guidance.primary} mendekati kickoff (late steam searah).`);
+    invalidates.push('VOOR/TOTAL berbalik arah / late steam ke sisi sebaliknya menjelang kickoff.');
   }
   if ((match.honest || []).length) confirms.push('Total HT tetap rendah & corner tetap moderat sampai kickoff (laga terkontrol).');
-  if ((match.detectors || []).some(d => d.key === 'line_freeze')) confirms.push('Garis tetap beku sampai kickoff (bandar nyaman dgn posisi).');
+  if ((match.detectors || []).some(d => d.key === 'line_freeze')) confirms.push('VOOR/TOTAL tetap beku sampai kickoff (bandar nyaman dgn posisi).');
   invalidates.push('Berita lineup (XI/absensi pemain kunci) yang mengubah kekuatan — bisa membalik baca (lihat Fase 4 / kirim manual).');
   if (!confirms.length) confirms.push('Muncul pergerakan jelas menjelang kickoff yang membentuk arah.');
   const sc = match.scenario || {};
@@ -962,7 +962,7 @@ function parseManual(text) {
   }
   const have = ['ah', 'ou', 'ahHT', 'ouHT', 'corner', 'cornerHT', 'card'].filter(k => raw[k]);
   if (!raw.ah && !raw.ou) warnings.push('Tidak menemukan AH/OU utama — cek format baris.');
-  const fmtMk = (k, nm) => raw[k] ? `${nm}: garis ${raw[k].line.now}, harga ${raw[k].nowHome} / ${raw[k].nowAway}` : null;
+  const fmtMk = (k, nm) => raw[k] ? `${nm}: ${raw[k].line.now}, harga ${raw[k].nowHome} / ${raw[k].nowAway}` : null;
   const parsedView = [`Laga: ${raw.home} vs ${raw.away}`,
     fmtMk('ah', 'AH gol'), fmtMk('ou', 'O/U gol'), fmtMk('ahHT', 'AH babak 1'), fmtMk('ouHT', 'O/U babak 1'),
     fmtMk('corner', 'Corner'), fmtMk('cornerHT', 'Corner B1'), fmtMk('card', 'Kartu'),

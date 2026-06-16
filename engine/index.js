@@ -372,7 +372,13 @@ function scenario(v, t) {
     if (t <= 2.75) return { key: 'besar_clean', label: 'menang besar tapi clean (≤3 gol)' };
     return { key: 'besar', label: 'menang besar' };
   }
-  // voor menengah (0.75 < v < 2.5)
+  // unggul JELAS (1.75 ≤ v < 2.5) — bukan "sedang"
+  if (v >= 1.75) {
+    if (t >= 3.25) return { key: 'unggul_jelas_rame', label: 'unggul jelas + laga rame' };
+    if (t <= 2.5) return { key: 'unggul_jelas_mampet', label: 'unggul jelas tapi mampet' };
+    return { key: 'unggul_jelas', label: 'unggul jelas' };
+  }
+  // unggul menengah (0.75 < v < 1.75)
   if (v <= 1.5 && t <= 2.5) return { key: 'tipis_mampet', label: 'menang tipis mampet' };
   if (t >= 3.25) return { key: 'unggul_rame', label: 'unggul + laga rame' };
   if (t <= 2.5) return { key: 'unggul_mampet', label: 'unggul tapi cenderung mampet' };
@@ -383,30 +389,27 @@ function scenarioRead(match) {
   const v = ah && ah.line && ah.line.now != null ? ah.line.now : null;
   const t = ou && ou.line && ou.line.now != null ? ou.line.now : null;
   const sc = scenario(v, t);
-  const favSide = v == null ? null : v < 0 ? 'home' : v > 0 ? 'away' : null;
-  const sideLbl = (side) => {
-    if (side == null) return '—';
-    const team = side === 'home' ? match.home : match.away;
-    const sv = side === 'home' ? v : (v == null ? null : -v);
-    return sv == null ? team : `${team} ${indoHandicap(sv)}`;
-  };
-  // SISI GIRINGAN (menampung): prioritas divergence Bet365 (sinyal utama), lalu juice (dibayar plus).
+  // LAGA KETAT (voor ≤0.75) atau data kurang → SEIMBANG. Jangan paksa sisi (anti maksa kesimpulan).
+  if (sc.key === 'ketat' || sc.key === 'tak_jelas') {
+    return { key: sc.key, label: sc.label, voor: v, total: t, balanced: true, menampung: null, jagokan: null,
+      basis: 'voor tipis — bandar tak condong kuat ke mana-mana',
+      s1: `Skenario bandar: ${sc.label}`, s2: 'Laga seimbang — bandar tak condong kuat ke mana-mana.' };
+  }
+  // VOOR JELAS (>0.75) → tentukan sisi giringan (menampung) vs sisi bandar (jagokan).
+  const favSide = v < 0 ? 'home' : 'away';
+  const sideLbl = (side) => { const team = side === 'home' ? match.home : match.away; const sv = side === 'home' ? v : -v; return `${team} ${indoHandicap(sv)}`; };
   let menampungSide = null, basis = '';
   if (ah && ah.divergence && ah.divergence.side) { menampungSide = ah.divergence.side; basis = 'Bet365 bayar lebih besar di sini → digiring ke publik'; }
   else if (ah && ah.nowHome != null && ah.nowAway != null) {
     const dh = hkToDecimal(ah.nowHome), da = hkToDecimal(ah.nowAway);
     if (dh != null && da != null && Math.abs(dh - da) >= 0.03) { menampungSide = dh > da ? 'home' : 'away'; basis = 'sisi ini dibayar plus (juice lebih tinggi) → digiring'; }
   }
-  const balanced = (v != null && Math.abs(v) <= 0.75 && !menampungSide);
-  let jagokanSide = null;
-  if (menampungSide) jagokanSide = menampungSide === 'home' ? 'away' : 'home';
-  else if (!balanced && favSide) { jagokanSide = favSide; menampungSide = favSide === 'home' ? 'away' : 'home'; basis = 'voor jelas, juice rata → bandar diam-diam di sisi favorit'; }
-  const s1 = `Skenario bandar: ${sc.label}`;
-  const s2 = balanced
-    ? 'Laga seimbang — bandar tak condong kuat ke mana-mana.'
-    : `Bandar nyaman menampung: ${sideLbl(menampungSide)}  ·  Bandar jagokan diam-diam: ${sideLbl(jagokanSide)}`;
-  return { key: sc.key, label: sc.label, voor: v, total: t, balanced,
-    menampung: balanced ? null : sideLbl(menampungSide), jagokan: balanced ? null : sideLbl(jagokanSide), basis, s1, s2 };
+  if (!menampungSide) { menampungSide = favSide === 'home' ? 'away' : 'home'; basis = 'voor jelas, juice rata → bandar diam-diam di sisi favorit'; }
+  const jagokanSide = menampungSide === 'home' ? 'away' : 'home';
+  return { key: sc.key, label: sc.label, voor: v, total: t, balanced: false,
+    menampung: sideLbl(menampungSide), jagokan: sideLbl(jagokanSide), basis,
+    s1: `Skenario bandar: ${sc.label}`,
+    s2: `Bandar nyaman menampung: ${sideLbl(menampungSide)}  ·  Bandar jagokan diam-diam: ${sideLbl(jagokanSide)}` };
 }
 
 // =====================================================================
@@ -542,9 +545,10 @@ function gradeMatch(match) {
   const sc = match.scenario || {};
   const ahL = match.markets.ah && match.markets.ah.line ? match.markets.ah.line.now : null;
   const v = ahL != null ? Math.abs(ahL) : 0;
-  let structural = v >= 2.5 ? 2 : v >= 1.5 ? 1.5 : v >= 0.75 ? 0.8 : 0;
-  if (match.markets.ah && match.markets.ah.divergence) structural += 2;       // divergence = sinyal giringan UTAMA
-  else if (!sc.balanced && sc.menampung) structural += 0.8;                    // sisi giringan dari juice
+  // VOOR = driver utama (monotonik: makin besar voor, makin jelas skenario → power ≥).
+  let structural = v >= 2.5 ? 3.5 : v >= 1.75 ? 2.5 : v >= 1.5 ? 2.0 : v >= 1.0 ? 1.3 : v >= 0.75 ? 0.6 : 0;
+  if (match.markets.ah && match.markets.ah.divergence) structural += 1.5;      // divergence = giringan UTAMA (bonus di atas voor)
+  else if (!sc.balanced && sc.menampung) structural += 0.6;                    // giringan dari juice (bonus kecil)
   const readPower = +(detPower + dirPower + structural).toFixed(1);            // pergerakan = penguat OPSIONAL
   const honestBonus = (match.honest || []).reduce((s, h) => s + (h.kekuatan || 0), 0) * 1.5;
   const cm = crossMarket(match);

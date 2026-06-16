@@ -402,6 +402,15 @@ console.log('\n── 19. Skenario bandar STATIS (misi baru: baca struktur, buka
   check('voor jelas (statis) → grade B', m.grade.grade === 'B', m.grade.grade + ' rp=' + m.grade.readPower);
   const t = A.analyzeMatch(A.parseManual('A vs B\nAH -0.25 1.95 1.95\nOU 2.5 1.95 1.95').raw, null, false);
   check('voor tipis → seimbang + tetap ada kalimat', t.scenario.balanced === true && /seimbang/i.test(t.scenario.s2));
+  // voor tipis dgn JUICE TIMPANG → tetap SEIMBANG (jangan dipaksa kasih sisi).
+  const ketat = A.analyzeMatch(A.parseManual('A vs B\nAH -0.5 1.85 2.15\nOU 2.5 1.95 1.95').raw, null, false);
+  check('voor ≤0.75 + juice timpang → tetap SEIMBANG (tak dipaksa sisi)', ketat.scenario.balanced === true && !ketat.scenario.menampung && /seimbang/i.test(ketat.scenario.s2), JSON.stringify({ bal: ketat.scenario.balanced, menampung: ketat.scenario.menampung }));
+  check('voor 1.75 → label "unggul jelas" (bukan "sedang")', /unggul jelas/.test(A.scenario(-1.75, 3.0).label), A.scenario(-1.75, 3.0).label);
+  // MONOTONIK: voor lebih besar tak boleh grade lebih rendah (ceteris paribus).
+  const gO = { A: 4, B: 3, C: 2, D: 1 };
+  const one = (vl) => A.analyzeMatch({ id: 'x', home: 'H', away: 'Aw', ah: mkt(vl, 1.95, 1.95, 1.95, 1.95), ou: mkt(2.5, 0.95, 0.95, 0.95, 0.95), corner: cleanCorner, card: cleanCard }, null, false).grade.grade;
+  const gBig = one(-2.5), gMid = one(-1.75), gSmall = one(-1.0);
+  check('grade monotonik voor: 2.5 ≥ 1.75 ≥ 1.0 (ceteris paribus)', gO[gBig] >= gO[gMid] && gO[gMid] >= gO[gSmall], `voor2.5=${gBig} 1.75=${gMid} 1.0=${gSmall}`);
 }
 
 function within(x, lo, hi) { return x != null && x >= lo && x <= hi; }

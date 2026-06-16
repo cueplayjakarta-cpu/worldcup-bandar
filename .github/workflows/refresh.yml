@@ -1,12 +1,12 @@
-name: Refresh odds
+name: Refresh odds (cadangan)
 
-# GitHub men-drop cron rapat (*/5) karena prioritas terendah → bisa diam berjam-jam.
-# Cron PER-JAM jauh lebih dihormati. Tiap run lalu LOOPING ~54 menit di dalamnya:
-# padat (2 mnt) saat ada laga live / kickoff <90 mnt, santai (10 mnt) saat sepi.
-# Hasil: update nyaris non-stop, tanpa butuh infra eksternal.
+# Sumber UTAMA situs = Cloudflare Worker (cron */2, andal & tepat waktu).
+# Action ini cuma menjaga file STATIS (data/matches.js) tetap cukup segar sebagai
+# CADANGAN bila Worker down. Sengaja ringan (1x tarik per jam) agar tidak menghabiskan
+# kuota free tier odds-api.io yang juga dipakai Worker.
 on:
   schedule:
-    - cron: '7 * * * *'        # tiap jam (menit :07, hindari kemacetan :00)
+    - cron: '17 * * * *'      # tiap jam (menit :17)
   workflow_dispatch:
 
 permissions:
@@ -14,52 +14,32 @@ permissions:
 
 concurrency:
   group: refresh-odds
-  cancel-in-progress: true       # run jam berikutnya menggantikan yang masih nyangkut
+  cancel-in-progress: true
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Loop refresh ~54 menit (padat jelang kickoff)
+      - name: Tarik odds & simpan bila REAL (jangan pernah commit demo)
         env:
           ODDS_API_IO_KEY: ${{ secrets.ODDS_API_IO_KEY }}
         run: |
           git config user.name "lensa-bandar-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          END=$(( $(date +%s) + 54*60 ))
-          while [ "$(date +%s)" -lt "$END" ]; do
-            node fetch-odds.js || true
-            # JANGAN pernah commit demo. Kalau API kosong/gagal (isDemo), buang hasilnya
-            # dan pertahankan data REAL terakhir yang sudah live.
-            if node -e 'const d=JSON.parse(require("fs").readFileSync("data/matches.js","utf8").replace(/^window\.__BANDAR_DATA__\s*=\s*/,"").replace(/;\s*$/,"")); process.exit(d.isDemo?1:0)'; then
-              git add data/matches.js data/matches.json data/history.json data/archive.json 2>/dev/null || true
-              if ! git diff --cached --quiet; then
-                git commit -q -m "auto: refresh odds $(date -u +%FT%TZ) [skip ci]" || true
-                git pull --rebase -q origin main || true
-                git push -q || true
-              fi
-            else
-              echo "API kosong → pertahankan data REAL terakhir, skip commit"
-              git checkout -- data/ 2>/dev/null || true
+          node fetch-odds.js || true
+          if node -e 'const d=JSON.parse(require("fs").readFileSync("data/matches.js","utf8").replace(/^window\.__BANDAR_DATA__\s*=\s*/,"").replace(/;\s*$/,"")); process.exit(d.isDemo?1:0)'; then
+            git add data/matches.js data/matches.json data/history.json data/archive.json 2>/dev/null || true
+            if ! git diff --cached --quiet; then
+              git commit -q -m "auto: refresh odds (cadangan) $(date -u +%FT%TZ) [skip ci]" || true
+              git pull --rebase -q origin main || true
+              git push -q || true
             fi
-            SLEEP=$(node -e '
-              try{
-                const fs=require("fs");
-                const d=JSON.parse(fs.readFileSync("data/matches.js","utf8").replace(/^window\.__BANDAR_DATA__\s*=\s*/,"").replace(/;\s*$/,""));
-                const now=Date.now(); let mins=Infinity, live=false;
-                for(const m of d.matches){ if(m.live) live=true;
-                  if(m.kickoff){ const dm=(new Date(m.kickoff).getTime()-now)/60000; if(dm>-15&&dm<mins) mins=dm; } }
-                process.stdout.write((live || mins<=90) ? "120" : "600");
-              }catch(e){ process.stdout.write("300"); }
-            ')
-            REMAIN=$(( END - $(date +%s) )); [ "$REMAIN" -le 0 ] && break
-            [ "${SLEEP:-300}" -gt "$REMAIN" ] && SLEEP="$REMAIN"
-            sleep "${SLEEP:-300}"
-          done
-          echo "Loop selesai $(date -u +%FT%TZ)"
+          else
+            echo "API kosong → pertahankan data REAL terakhir, skip commit"
+          fi

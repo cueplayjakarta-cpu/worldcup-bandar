@@ -17,9 +17,9 @@ const { analyzeMatch, normalizeOddsApiIo, parseScore } = E;
 const ODDS_BASE = 'https://api.odds-api.io/v3';
 const TTL_MS = 60000;          // segar ulang tiap ~60 detik
 const LIMIT = 24;              // batasi jumlah laga (hemat CPU free-tier)
-const CACHE_KEY = 'https://lensa-bandar.cache/matches';
-const HIST_KEY = 'https://lensa-bandar.cache/history';
-const META_KEY = 'https://lensa-bandar.cache/meta';   // {lastFetchAt, backoffUntil, lastError}
+const CACHE_KEY = 'https://lensa-bandar.cache/matches-v3e';  // bump → cold-start fresh dgn grade/report
+const HIST_KEY = 'https://lensa-bandar.cache/history';       // TETAP (jangan hilangkan baseline)
+const META_KEY = 'https://lensa-bandar.cache/meta-v3e';
 
 // Sisa kuota dari header API terakhir (untuk guard backoff).
 let LAST_RL = { remaining: null, reset: null };

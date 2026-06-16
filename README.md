@@ -1,8 +1,10 @@
 # Lensa Bandar — Piala Dunia 2026
 
-Web app sederhana untuk **membaca pergerakan odds SBOBET** (Handicap, Over/Under, Corner, Kartu) dan menandai posisi bandar lewat **lampu hijau/kuning/merah**.
+Web app untuk **membaca pergerakan odds SBOBET** (AH/voor, Over/Under, **HT babak-1**, Corner, Kartu) dan menilai arah bandar lewat **grade A/B/C/D** + 7 detektor pola berlabel, bidak jujur, dan lineup modifier.
 
-**Prinsip:** alat informasi, acuan **SBOBET**. **Nol pelacakan taruhan** — tidak menyimpan taruhan siapa pun. **Bukan jaminan untung.**
+**Prinsip:** AH/O-U di atas 1X2. Alat informasi, acuan **SBOBET**. **Nol pelacakan taruhan**. **Bukan jaminan untung.**
+
+> 📖 **Cara kerja & alasan tiap keputusan: [docs/METODOLOGI.md](docs/METODOLOGI.md)** — detektor, sistem grade, bidak jujur (FAKTA vs inferensi), lineup modifier, ingest manual, arsitektur. Baca ini dulu biar metodologi tidak luntur.
 
 ---
 

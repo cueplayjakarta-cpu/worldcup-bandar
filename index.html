@@ -172,6 +172,7 @@
 <script src="data/matches.js"></script>
 <script>
   var DATA = window.__BANDAR_DATA__ || null;
+  var WORKER = 'https://lensa-bandar.cueplayjakarta.workers.dev'; // sumber LIVE (cron Cloudflare tiap 2 mnt)
   var FILTER = 'all';
   var MKT_ORDER = ['ah','ou','corner','cornerHT','card'];
 
@@ -319,15 +320,23 @@
 
   function tickFresh(){ if(DATA&&DATA.generatedAt) document.getElementById('freshness').textContent='diperbarui '+rel(DATA.generatedAt); }
 
-  // Auto-refresh: muat ulang data/matches.js (cache-bust) lalu render — mengikuti laga berjalan.
-  function reload(){
+  // Cadangan: muat file statis data/matches.js (dipakai kalau Worker gagal/diem).
+  function loadStatic(){
     var s=document.createElement('script'); s.src='data/matches.js?t='+Date.now();
     s.onload=function(){ if(window.__BANDAR_DATA__){DATA=window.__BANDAR_DATA__; render(); tickFresh();} s.remove(); };
     s.onerror=function(){ s.remove(); };
     document.body.appendChild(s);
   }
+  // Auto-refresh: utamakan Worker LIVE (cron Cloudflare 2 mnt). Tolak demo/kosong → jatuh ke statis.
+  function reload(){
+    fetch(WORKER, { cache:'no-store' })
+      .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(j){ if(j && j.matches && j.matches.length && !j.isDemo){ DATA=j; render(); tickFresh(); } else { throw 0; } })
+      .catch(function(){ loadStatic(); });
+  }
 
-  render(); tickFresh();
+  render(); tickFresh();   // tampil instan dari bootstrap statis
+  reload();                // langsung upgrade ke data LIVE Worker
   setInterval(tickFresh,1000);
   setInterval(reload,30000);
 </script>

@@ -34,6 +34,7 @@ function loadArchive() { try { return JSON.parse(fs.readFileSync(ARCH_FILE, 'utf
 function updateArchive(arch, matches) {
   const now = Date.now();
   for (const m of matches) {
+    if (/^D\d/.test(String(m.id || ''))) continue;   // guard: jangan arsip laga DEMO (id D1..) → cegah kontaminasi backtest
     const fin = /settled|finished|ended|^ft$/i.test(String(m.status || ''));
     const e = arch[m.id] || (arch[m.id] = { id: m.id, home: m.home, away: m.away, kickoff: m.kickoff });
     if (!e.final) {
@@ -244,8 +245,12 @@ async function runOnce() {
   fs.writeFileSync(path.join(OUT_DIR, 'matches.js'), 'window.__BANDAR_DATA__ = ' + JSON.stringify(out) + ';\n');
   fs.writeFileSync(HIST_FILE, JSON.stringify(hist));
   const arch = loadArchive();
-  if (isLive && process.env.ODDS_API_IO_KEY) { try { const n = await checkResults(arch, process.env.ODDS_API_IO_KEY); if (n) console.log(`  · cek hasil: ${n} laga lewat diperiksa`); } catch (e) {} }
-  updateArchive(arch, matches); fs.writeFileSync(ARCH_FILE, JSON.stringify(arch, null, 2));
+  if (isLive) {
+    if (process.env.ODDS_API_IO_KEY) { try { const n = await checkResults(arch, process.env.ODDS_API_IO_KEY); if (n) console.log(`  · cek hasil: ${n} laga lewat diperiksa`); } catch (e) {} }
+    updateArchive(arch, matches); fs.writeFileSync(ARCH_FILE, JSON.stringify(arch, null, 2));
+  } else {
+    console.log('  · sumber DEMO — arsip tidak disentuh (cegah kontaminasi backtest)');
+  }
   console.log(`✓ ${matches.length} laga · sumber: ${source} · ${new Date().toLocaleTimeString('id-ID')}`);
 }
 

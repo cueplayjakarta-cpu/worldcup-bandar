@@ -63,6 +63,12 @@ function movement(open, now) { if (open == null || now == null) return { dir: 'f
 // =====================================================================
 const NORMAL_MARGIN = { ah: 2.5, ou: 2.5, corner: 5.5, cornerHT: 5.5, card: 8 };
 
+// KALIBRASI (Fase 2 multi-liga): ambang skenario & grade jadi parameter.
+// Default = nilai WC 2026 yang tervalidasi backtest — TANPA kalibrasi eksplisit,
+// semua fungsi berperilaku PERSIS seperti sebelum parameterisasi (zero regression).
+// Liga lain meng-override lewat config/leagues.js → ctx.kalibrasi di analyzeMatch.
+const DEFAULT_KAL = { ambangRout: 2.5, ambangKetat: 0.75, readPowerFloor: 6.5 };
+
 // Lampu HANYA dari tanda jebakan nyata. Hal teknis (potongan, garis geser) → `tech` (cuma di angka mentah).
 function gradeMarket(m, normalMargin) {
   const flags = [], tech = []; let score = 0;
@@ -363,11 +369,12 @@ function honestSignals(match) {
 //  Klasifikasi VOOR (|handicap|) × TOTAL (garis O/U gol), lalu tentukan sisi giringan
 //  (Bandar nyaman MENAMPUNG) vs sisi bandar (Bandar JAGOKAN diam-diam).
 // =====================================================================
-function scenario(v, t) {
+function scenario(v, t, kal) {
+  const K = kal || DEFAULT_KAL;   // tanpa kal → ambang WC (perilaku lama persis)
   if (v == null || t == null) return { key: 'tak_jelas', label: 'data kurang' };
   v = Math.abs(v);
-  if (v <= 0.75) return { key: 'ketat', label: 'laga ketat / koin-flip' };
-  if (v >= 2.5) {
+  if (v <= K.ambangKetat) return { key: 'ketat', label: 'laga ketat / koin-flip' };
+  if (v >= K.ambangRout) {
     if (t >= 3.25) return { key: 'rout_pesta', label: 'rout pesta gol' };
     if (t <= 2.75) return { key: 'besar_clean', label: 'menang besar tapi clean (≤3 gol)' };
     return { key: 'besar', label: 'menang besar' };
@@ -384,11 +391,11 @@ function scenario(v, t) {
   if (t <= 2.5) return { key: 'unggul_mampet', label: 'unggul tapi cenderung mampet' };
   return { key: 'unggul', label: 'unggul sedang' };
 }
-function scenarioRead(match) {
+function scenarioRead(match, kal) {
   const ah = match.markets.ah, ou = match.markets.ou;
   const v = ah && ah.line && ah.line.now != null ? ah.line.now : null;
   const t = ou && ou.line && ou.line.now != null ? ou.line.now : null;
-  const sc = scenario(v, t);
+  const sc = scenario(v, t, kal);
   // LAGA KETAT (voor ≤0.75) atau data kurang → SEIMBANG. Jangan paksa sisi (anti maksa kesimpulan).
   if (sc.key === 'ketat' || sc.key === 'tak_jelas') {
     return { key: sc.key, label: sc.label, voor: v, total: t, balanced: true, menampung: null, jagokan: null,
@@ -538,7 +545,8 @@ function crossMarket(match) {
   else if (ahd && ahHTd && ahd === ahHTd) agree = true;
   return { agree, conflict, note };
 }
-function gradeMatch(match) {
+function gradeMatch(match, kal) {
+  const K = kal || DEFAULT_KAL;   // tanpa kal → ambang WC (perilaku lama persis)
   const detPower = (match.detectors || []).reduce((s, d) => s + (d.kekuatan || 0), 0);
   const dirPower = match.guidance && match.guidance.moved ? (match.guidance.strength || 0) : 0;
   // STRUKTURAL (statis, tanpa pergerakan): kejelasan skenario dari VOOR + sinyal giringan.
@@ -546,7 +554,7 @@ function gradeMatch(match) {
   const ahL = match.markets.ah && match.markets.ah.line ? match.markets.ah.line.now : null;
   const v = ahL != null ? Math.abs(ahL) : 0;
   // VOOR = driver utama (monotonik: makin besar voor, makin jelas skenario → power ≥).
-  let structural = v >= 2.5 ? 3.5 : v >= 1.75 ? 2.5 : v >= 1.5 ? 2.0 : v >= 1.0 ? 1.3 : v >= 0.75 ? 0.6 : 0;
+  let structural = v >= K.ambangRout ? 3.5 : v >= 1.75 ? 2.5 : v >= 1.5 ? 2.0 : v >= 1.0 ? 1.3 : v >= K.ambangKetat ? 0.6 : 0;
   if (match.markets.ah && match.markets.ah.divergence) structural += 1.5;      // divergence = giringan UTAMA (bonus di atas voor)
   else if (!sc.balanced && sc.menampung) structural += 0.6;                    // giringan dari juice (bonus kecil)
   // READ NYATA = structural(voor+giringan) + detektor + arah. INI yang menentukan HURUF grade.
@@ -556,7 +564,7 @@ function gradeMatch(match) {
   const eff = +(readPower + (cm.agree ? 1.5 : 0) - (cm.conflict ? 3 : 0)).toFixed(1);
   const scenarioValid = sc.key && sc.key !== 'tak_jelas';
   let grade;
-  if (eff >= 6.5) grade = 'A';                            // A WAJIB read nyata kuat (skenario besar + TWIST: margin_trap/divergence)
+  if (eff >= K.readPowerFloor) grade = 'A';               // A WAJIB read nyata kuat (skenario besar + TWIST: margin_trap/divergence)
   else if (eff >= 3.5) grade = 'B';                       // voor besar saja (tanpa twist) → B
   else if (scenarioValid) grade = cm.conflict ? 'D' : 'C'; // bentrok+lemah → D (hindari); selain itu C (adem)
   else grade = 'D';
@@ -815,8 +823,10 @@ function analyzeMatch(raw, hist, isLive, ctx) {
   out.guidance = matchGuidance(markets, raw.home, raw.away);
   out.honest = honestSignals(out);
   out.detectors = runDetectors(out, ctx || { nowMs: Date.now() });
-  out.scenario = scenarioRead(out);
-  out.grade = gradeMatch(out);
+  // Kalibrasi per liga via ctx.kalibrasi (config/leagues.js); tanpa ctx → ambang WC.
+  const kal = Object.assign({}, DEFAULT_KAL, (ctx && ctx.kalibrasi) || {});
+  out.scenario = scenarioRead(out, kal);
+  out.grade = gradeMatch(out, kal);
   out.lineup = raw.lineup || null;
   applyLineup(out);                 // 4B: bisa menurunkan/membalik grade (set out.lineupRead)
   out.report = buildReport(out);
@@ -977,7 +987,7 @@ module.exports = {
   // matematika & settlement
   hkToDecimal, num, pct, pick, parseScore, twoWayMargin, isQuarter, settleAH, settleOU, noVigProb, noVig3, movement,
   // analisis
-  NORMAL_MARGIN, gradeMarket, computeDivergence, buildMarket, computeDirection, movePhrase, matchGuidance,
+  NORMAL_MARGIN, DEFAULT_KAL, gradeMarket, computeDivergence, buildMarket, computeDirection, movePhrase, matchGuidance,
   indoHandicap, strengthWord, generateRead, matchVerdict, sideLabel, hardenSide, deriveConclusion,
   honestSignals, scenario, scenarioRead, runDetectors, crossMarket, gradeMatch, buildReport, summarize, adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
   // normalisasi sumber

@@ -164,3 +164,42 @@ keduanya `import`/`require` engine yang sama → satu sumber kebenaran, **tak ad
 `node eval.js` (113 test: detektor, grade, bidak jujur, parser, lineup) & `node accuracy.js`
 (rumus settlement + backtest). **Update test tiap ubah logika** — jangan biarkan test lama hijau
 padahal logika berubah.
+
+## Multi-liga (Fase 2) — registry, gate data, kalibrasi & kuota
+
+### Registry liga (`config/leagues.js`)
+Satu sumber kebenaran: filter event (dulu regex `isWC` DUPLIKAT di `fetch-odds.js` + `worker.js` —
+titik drift, kini satu fungsi `buildEventFilter` dipakai keduanya), kalibrasi ambang per liga, mode
+(`league`/`knockout`/`hybrid` — fitur khusus gugur di-gate mode), dan cadence polling.
+WC 2026 = entri pertama & default; perilaku sekarang identik (eval.js 127/127 + eval-registry.js).
+
+### Gate data (2a-PRA) — `scripts/verify-league-coverage.js`
+Liga non-WC berstatus **UNVERIFIED** dan TIDAK aktif sampai terbukti odds **Sbobet+Bet365 terisi**
+untuk liga itu di paket API sekarang. Jalankan skrip gate dengan key (env `ODDS_API_KEY` / `key.txt`;
+key tak pernah tampil di output), tempel hasil, baru naikkan `dataStatus` per liga.
+
+### KEJUJURAN KALIBRASI — grade non-WC BELUM DIVALIDASI
+Ambang skenario/grade (`ambangRout` 2.5, `ambangKetat` 0.75, `readPowerFloor` 6.5) **tervalidasi
+hanya untuk WC 2026** (backtest `accuracy-full.js`, 52 laga). Liga reguler memakai placeholder =
+nilai WC dengan tanda `// BELUM DIKALIBRASI` — di liga reguler favorit besar (voor ≥2.5) adalah
+rutinitas mingguan, jadi distribusi grade PASTI bergeser. **Jangan mengklaim akurasi grade untuk
+liga mana pun sebelum ada backtest liga itu** (pakai pola `accuracy.js` pada arsip liga tsb).
+Dan ingat verdict backtest WC: sinyal "jebakan" = 47% / +0.00 unit — **alat baca pasar, bukan edge**;
+menambah liga TIDAK mengubah fakta ini.
+
+### Cadence sadar-jadwal & matematika kuota (cap odds-api.io = 100 req/jam)
+Biaya per fetch = 1 (`events`) + 1 (`events/live`) + ceil(N/10) (`odds/multi`), N = laga di papan.
+
+| Skenario | N (cap) | Call/fetch | Cadence HOT | Fetch/jam | Req/jam | Vs cap 100 |
+|---|---|---|---|---|---|---|
+| WC sekarang (1 liga) | ≤24 | ≤5 | 3 mnt | 20 | ≤100 | pas — ditolong backoff |
+| Weekend 6 liga serentak | 24 (LIMIT) | 5 | 3 mnt | 20 | **100** | **TEMBUS margin nol** |
+| Weekend 6 liga, hotMin=4 | 24 | 5 | 4 mnt | 15 | 75 | aman |
+| Weekend 6 liga, hotMin=5 | 24 | 5 | 5 mnt | 12 | 60 | aman |
+
+Mitigasi terpasang: (1) **prioritas** `prioritizeEvents` live > kickoff <3 jam > sisanya — saat papan
+melewati cap, laga penting tak terpotong; (2) **quiet-skip**: mode `league` berhenti polling saat tak
+ada laga dalam `quietSkipHours` (hari kosong liga ≈ 5–6 hari/minggu → hemat ±1.500 call/minggu);
+(3) guard kuota lama tetap: baca `x-ratelimit-remaining`, backoff <12 & saat 429.
+**Aturan operasional:** bila >2 liga VERIFIED aktif bersamaan, naikkan `hotMin` ke ≥4 di registry
+ATAU upgrade paket API — jangan biarkan 100/jam pas-pasan.

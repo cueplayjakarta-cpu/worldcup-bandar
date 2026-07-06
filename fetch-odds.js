@@ -21,6 +21,7 @@ const http = require('http');
 
 // ---- mesin analisis tunggal ----
 const E = require('./engine');
+const R = require('./config/leagues.js');   // registry liga (filter + kalibrasi + cadence)
 const { num, parseScore, normalizeOddsApiIo, analyzeMatch } = E;
 
 const OUT_DIR = path.join(__dirname, 'data');
@@ -89,11 +90,14 @@ async function fetchFromOddsApiIo(apiKey) {
   try { const lv = await httpGet(`${ODDS_BASE}/events/live?apiKey=${k}`); live = Array.isArray(lv) ? lv : (lv.events || lv.data || []); } catch (e) {}
   const seen = new Set(); const merged = [];
   for (const e of [...live, ...upcoming]) { const id = e.id || e.eventId; if (id == null || seen.has(id)) continue; seen.add(id); merged.push(e); }
-  const isWC = e => /world[ -]?cup|piala dunia|fifa world/i.test(JSON.stringify(e.league || e.leagueName || e.competition || ''));
+  // Filter liga TUNGGAL dari registry (config/leagues.js) — dipakai juga worker.js.
+  // Menggantikan regex isWC yang dulu DUPLIKAT di dua file (titik drift, audit H1/H2).
+  const inLeague = R.buildEventFilter(R.activeLeagues());
   const notDone = e => { const s = String(e.status || '').toLowerCase(); return s !== 'settled' && s !== 'finished' && s !== 'cancelled' && s !== 'ft'; };
-  let wc = merged.filter(e => isWC(e) && notDone(e));
+  let wc = merged.filter(e => inLeague(e) && notDone(e));
   if (!wc.length) wc = merged.filter(notDone).slice(0, 30);
-  const ids = wc.map(e => e.id || e.eventId).filter(Boolean).slice(0, 40);
+  // Prioritas saat papan melewati cap: live > kickoff <3 jam > sisanya (audit 2e).
+  const ids = R.prioritizeEvents(wc, Date.now(), 40).map(e => e.id || e.eventId).filter(Boolean);
   if (!ids.length) return [];
   const all = [];
   for (let i = 0; i < ids.length; i += 10) {
@@ -229,7 +233,8 @@ async function runOnce() {
 
   const hist = loadHistory();
   const isLive = source !== 'DEMO';
-  const matches = raw.map(m => analyzeMatch(m, hist, isLive));
+  // Kalibrasi ambang per liga (m.group = nama liga dari feed); WC/liga tak dikenal → default WC.
+  const matches = raw.map(m => analyzeMatch(m, hist, isLive, { nowMs: Date.now(), kalibrasi: R.kalibrasiFor(R.leagueOfName(m.group)) }));
   matches.sort((a, b) => { if (a.live !== b.live) return a.live ? -1 : 1; return new Date(a.kickoff || 0) - new Date(b.kickoff || 0); });
   const hasCorner = matches.some(m => m.markets.corner.lineDisplay != null);
   const summary = E.summarize(matches);

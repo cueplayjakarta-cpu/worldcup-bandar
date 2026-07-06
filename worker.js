@@ -12,6 +12,7 @@
 
 // ---- mesin analisis tunggal (di-bundle oleh wrangler/esbuild) ----
 import E from './engine/index.js';
+import R from './config/leagues.js';   // registry liga — filter/kalibrasi/cadence SAMA dgn fetch-odds.js
 const { analyzeMatch, normalizeOddsApiIo, parseScore, parseManual } = E;
 
 const ODDS_BASE = 'https://api.odds-api.io/v3';
@@ -33,15 +34,9 @@ async function writeMeta(meta){ try{ await caches.default.put(META_KEY,new Respo
 async function readCache(){ try{ const c=await caches.default.match(CACHE_KEY); if(c) return await c.json(); }catch(e){} return null; }
 async function writeCache(out){ try{ await caches.default.put(CACHE_KEY,new Response(JSON.stringify(out),{headers:{'Cache-Control':'max-age=600'}})); }catch(e){} }
 
-// Jarak (menit) ke kickoff terdekat; 0 kalau ada laga live.
-function minutesToNextKO(matches){
-  if(!Array.isArray(matches)) return Infinity;
-  const now=Date.now(); let mins=Infinity;
-  for(const m of matches){ if(m.live) return 0; if(m.kickoff){ const dm=(new Date(m.kickoff).getTime()-now)/60000; if(dm>-15 && dm<mins) mins=dm; } }
-  return mins;
-}
-// Cadence ADAPTIF: HOT 3mnt (<60mnt/live), MED 10mnt (<3jam), SEPI 20mnt.
-function cadenceMs(matches){ const m=minutesToNextKO(matches); if(m<=60) return 3*60000; if(m<=180) return 10*60000; return 20*60000; }
+// Cadence ADAPTIF kini dari registry (config/leagues.js) — sadar-jadwal:
+// HOT/MED/SEPI per liga aktif; null = SKIP (mode 'league' tanpa laga dekat).
+// Untuk WC (hybrid) hasil identik dgn cadenceMs lama: 3/10/20 menit, tak pernah skip.
 
 // ===================== AMBIL DATA (Worker fetch) =====================
 async function jget(url){
@@ -58,11 +53,11 @@ async function fetchLive(key){
   const upcoming=Array.isArray(evRes)?evRes:(evRes.events||evRes.data||[]);
   let live=[]; try{ const lv=await jget(`${ODDS_BASE}/events/live?apiKey=${k}`); live=Array.isArray(lv)?lv:(lv.events||lv.data||[]); }catch(e){}
   const seen=new Set(),merged=[]; for(const e of [...live,...upcoming]){ const id=e.id||e.eventId; if(id==null||seen.has(id)) continue; seen.add(id); merged.push(e); }
-  const isWC=e=>/world[ -]?cup|piala dunia|fifa world/i.test(JSON.stringify(e.league||e.leagueName||e.competition||''));
+  // Filter liga TUNGGAL dari registry — fungsi yang SAMA dgn fetch-odds.js (tutup titik drift).
+  const inLeague=R.buildEventFilter(R.activeLeagues());
   const notDone=e=>{ const s=String(e.status||'').toLowerCase(); return s!=='settled'&&s!=='finished'&&s!=='cancelled'&&s!=='ft'; };
-  let wc=merged.filter(e=>isWC(e)&&notDone(e)); if(!wc.length) wc=merged.filter(notDone);
-  wc.sort((a,b)=>{ const la=/live/i.test(a.status||'')?0:1,lb=/live/i.test(b.status||'')?0:1; if(la!==lb) return la-lb; return new Date(a.date||a.commenceTime||0)-new Date(b.date||b.commenceTime||0); });
-  wc=wc.slice(0,LIMIT);
+  let wc=merged.filter(e=>inLeague(e)&&notDone(e)); if(!wc.length) wc=merged.filter(notDone);
+  wc=R.prioritizeEvents(wc, Date.now(), LIMIT);   // live > <3 jam > sisanya (identik sort lama utk papan WC)
   const meta={}; for(const e of [...live,...upcoming]){ const id=e.id||e.eventId; if(id==null) continue; meta[String(id)]={status:e.status,scores:e.scores||e.score||e.result||e.ss||null,time:e.time||e.minute||e.clock||e.timer||null}; }
   const ids=wc.map(e=>e.id||e.eventId).filter(Boolean); if(!ids.length) return [];
   const all=[]; for(let i=0;i<ids.length;i+=10){ const batch=ids.slice(i,i+10).join(','); const od=await jget(`${ODDS_BASE}/odds/multi?apiKey=${k}&eventIds=${batch}&bookmakers=Sbobet,Bet365`); const arr=Array.isArray(od)?od:(od.data||od.events||[]); all.push(...arr); }
@@ -74,7 +69,7 @@ async function buildOutput(env){
   const cache=caches.default;
   let hist={}; try{ const h=await cache.match(HIST_KEY); if(h) hist=await h.json(); }catch(e){}
   const raw=await fetchLive(env.ODDS_API_IO_KEY);
-  const matches=raw.map(m=>analyzeMatch(m,hist,true));
+  const matches=raw.map(m=>analyzeMatch(m,hist,true,{nowMs:Date.now(),kalibrasi:R.kalibrasiFor(R.leagueOfName(m.group))}));
   matches.sort((a,b)=>{ if(a.live!==b.live) return a.live?-1:1; return new Date(a.kickoff||0)-new Date(b.kickoff||0); });
   const summary=E.summarize(matches);
   const out={generatedAt:new Date().toISOString(),source:'odds-api.io / SBOBET (Cloudflare LIVE)',isDemo:false,reference:'SBOBET',compare:'Bet365 (publik)',markets:['Handicap','Over/Under','Corner FT','Corner B1','Kartu'],summary,note:'Alat informasi pergerakan odds. Tidak melacak taruhan siapa pun. Bukan jaminan untung.',matches};
@@ -180,7 +175,8 @@ export default {
     const now=Date.now(); const meta=await readMeta();
     if(meta.backoffUntil && now<meta.backoffUntil) return;                 // hormati backoff 429
     const cached=await readCache();
-    const cad=cadenceMs(cached&&cached.matches);
+    const cad=R.cadenceMsFor(R.activeLeagues(), cached&&cached.matches, now);
+    if(cad==null) return;                                                  // SKIP: mode liga, tak ada laga dekat (hemat kuota)
     if(meta.lastFetchAt && (now-meta.lastFetchAt)<cad) return;             // belum waktunya (adaptif)
     try{
       const out=await buildOutput(env); await writeCache(out);

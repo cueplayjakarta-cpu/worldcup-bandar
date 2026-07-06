@@ -13,7 +13,9 @@
 // ---- mesin analisis tunggal (di-bundle oleh wrangler/esbuild) ----
 import E from './engine/index.js';
 import R from './config/leagues.js';   // registry liga — filter/kalibrasi/cadence SAMA dgn fetch-odds.js
+import BR from './config/branding.js'; // toggle anonim brand (mode jual) — label saja
 const { analyzeMatch, normalizeOddsApiIo, parseScore, parseManual } = E;
+E.setBrandLabels(BR.LABELS);
 
 const ODDS_BASE = 'https://api.odds-api.io/v3';
 const TTL_MS = 60000;          // segar ulang tiap ~60 detik
@@ -72,7 +74,7 @@ async function buildOutput(env){
   const matches=raw.map(m=>analyzeMatch(m,hist,true,{nowMs:Date.now(),kalibrasi:R.kalibrasiFor(R.leagueOfName(m.group))}));
   matches.sort((a,b)=>{ if(a.live!==b.live) return a.live?-1:1; return new Date(a.kickoff||0)-new Date(b.kickoff||0); });
   const summary=E.summarize(matches);
-  const out={generatedAt:new Date().toISOString(),source:'odds-api.io / SBOBET (Cloudflare LIVE)',isDemo:false,reference:'SBOBET',compare:'Bet365 (publik)',markets:['Handicap','Over/Under','Corner FT','Corner B1','Kartu'],summary,note:'Alat informasi pergerakan odds. Tidak melacak taruhan siapa pun. Bukan jaminan untung.',matches};
+  const out={generatedAt:new Date().toISOString(),source:'odds-api.io / '+BR.reference+' (Cloudflare LIVE)',isDemo:false,reference:BR.reference,compare:BR.compare,markets:['Handicap','Over/Under','Corner FT','Corner B1','Kartu'],summary,note:'Alat informasi pergerakan odds. Tidak melacak taruhan siapa pun. Bukan jaminan untung.',matches};
   try{ await cache.put(HIST_KEY,new Response(JSON.stringify(hist),{headers:{'Cache-Control':'max-age=86400'}})); }catch(e){}
   return out;
 }

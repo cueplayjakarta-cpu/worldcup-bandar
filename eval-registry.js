@@ -122,6 +122,41 @@ check('regex liga hidup HANYA di config/leagues.js',
 check('worker mengimpor registry', /import R from '\.\/config\/leagues\.js'/.test(srcWorker));
 check('fetch-odds me-require registry', /require\('\.\/config\/leagues\.js'\)/.test(srcFetch));
 
+console.log('\n── 8. Rilis: bukti akurasi tertaut & ter-render (4c) ──');
+const srcIndex = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+check('index.html memuat link ke uji-akurasi.html', /href="uji-akurasi\.html"/.test(srcIndex));
+let uji = null;
+try { uji = fs.readFileSync(path.join(__dirname, 'uji-akurasi.html'), 'utf8'); } catch (e) {}
+check('uji-akurasi.html ADA (link tidak putus di rilis)', uji != null);
+check('menampilkan label jujur "47%" + "koin"', uji != null && uji.includes('47%') && /koin/i.test(uji));
+check('menampilkan 52 laga dinilai', uji != null && uji.includes('52'));
+const rowCount = uji ? (uji.match(/<pre>([\s\S]*?)<\/pre>/) || ['', ''])[1].trim().split('\n').length : 0;
+check('rincian per laga ≥52 baris', rowCount >= 52, rowCount);
+check('KEKALAHAN ikut ditampilkan (ada ✗ / publik benar)', uji != null && (uji.includes('✗') || uji.includes('publik benar')));
+check('disclaimer "bukan ajakan bertaruh" ada di halaman bukti', uji != null && /bukan ajakan bertaruh/i.test(uji));
+
+console.log('\n── 9. Toggle anonim brand (4a — config, bukan hardcode) ──');
+const BR = require('./config/branding.js');
+check('default mode PRIBADI: ANONIM=false, label asli', BR.ANONIM === false && BR.LABELS.sharp === 'SBOBET' && BR.LABELS.pub === 'Bet365');
+check('payload reference/compare turun dari LABELS', BR.reference === BR.LABELS.sharp && BR.compare.indexOf(BR.LABELS.pub) === 0);
+// Engine: narasi divergence ikut label (setter), lalu DIKEMBALIKAN ke default.
+const mkDiv = () => ({ nowHome: 1.95, nowAway: 1.95, pub: { home: 2.05, away: 1.87 }, line: { now: -1 } });
+const f1 = E.computeDivergence(Object.assign(mkDiv(), { pub: { home: 2.05, away: 1.87, line: -1 } }), 'Alpha', 'Beta');
+check('narasi default menyebut Bet365', f1 != null && f1.flag.includes('Bet365'), f1 && f1.flag);
+E.setBrandLabels({ sharp: 'Bandar Acuan', pub: 'Bandar Pembanding' });
+const f2 = E.computeDivergence(Object.assign(mkDiv(), { pub: { home: 2.05, away: 1.87, line: -1 } }), 'Alpha', 'Beta');
+check('setBrandLabels: narasi jadi "Bandar Pembanding" (tanpa Bet365)',
+  f2 != null && f2.flag.includes('Bandar Pembanding') && !f2.flag.includes('Bet365'), f2 && f2.flag);
+E.setBrandLabels({ sharp: 'SBOBET', pub: 'Bet365' });   // pulihkan default
+check('fetch-odds memakai branding (setBrandLabels + BR.reference)',
+  /setBrandLabels\(BR\.LABELS\)/.test(srcFetch2()) && /reference:\s*BR\.reference/.test(srcFetch2()));
+check('worker memakai branding (setBrandLabels + BR.reference)',
+  /setBrandLabels\(BR\.LABELS\)/.test(srcWorker2()) && /reference:BR\.reference/.test(srcWorker2()));
+check('UI header brand dinamis dari payload (applyBrand + id brandRef)',
+  /applyBrand\(/.test(srcIndex) && /id="brandRef"/.test(srcIndex));
+function srcFetch2() { return fs.readFileSync(path.join(__dirname, 'fetch-odds.js'), 'utf8'); }
+function srcWorker2() { return fs.readFileSync(path.join(__dirname, 'worker.js'), 'utf8'); }
+
 console.log('\n────────────────────────────');
 console.log(`HASIL REGISTRY: ${pass} lulus, ${fail} gagal`);
 process.exit(fail ? 1 : 0);

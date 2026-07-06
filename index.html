@@ -230,7 +230,7 @@
     <h1>Lensa Bandar</h1>
     <div class="live-ind" id="liveInd"><span class="pip"></span><span id="freshness">memuat…</span></div>
   </div>
-  <div class="sub">Terminal pembaca pergerakan odds <b>SBOBET</b> (vs Bet365) — Piala Dunia 2026.<br>Baca <b>arah bandar</b> &amp; di mana publik digiring. Alat informasi, <b>bukan ajakan bertaruh, bukan jaminan untung.</b><br>
+  <div class="sub">Terminal pembaca pergerakan odds <b id="brandRef">SBOBET</b> (vs <span id="brandCmp">Bet365</span>) — Piala Dunia 2026.<br>Baca <b>arah bandar</b> &amp; di mana publik digiring. Alat informasi, <b>bukan ajakan bertaruh, bukan jaminan untung.</b><br>
   <a href="uji-akurasi.html" style="color:#7fb0ff;font-weight:700;text-decoration:none">📊 Bukti akurasi — backtest WC2026 lengkap (termasuk yang gagal) →</a></div>
 
   <div id="demo" class="demo" style="display:none"></div>
@@ -263,7 +263,7 @@
   </div>
 
   <footer>
-    Acuan SBOBET via odds-api.io · <span id="src"></span> · Tidak melacak taruhan siapa pun.<br>
+    Acuan <span id="brandRef2">SBOBET</span> via odds-api.io · <span id="src"></span> · Tidak melacak taruhan siapa pun.<br>
     Auto-refresh tiap 30 detik mengikuti laga berjalan.
   </footer>
 </div>
@@ -505,7 +505,15 @@
   function applyData(j){
     if(!j || !j.matches || !j.matches.length || j.isDemo) return false;
     if(DATA && genTime(j) < genTime(DATA)) return false;   // tolak data lebih TUA dari yang tampil
-    DATA=j; lastOkAt=Date.now(); render(); tickFresh(); return true;
+    DATA=j; lastOkAt=Date.now(); render(); tickFresh(); applyBrand(j); return true;
+  }
+  // Label brand ikut payload (config/branding.js di worker/fetch) — toggle anonim mode jual.
+  function applyBrand(j){
+    try{
+      if(j.reference){ var a=document.getElementById('brandRef'), c=document.getElementById('brandRef2');
+        if(a) a.textContent=j.reference; if(c) c.textContent=j.reference; }
+      if(j.compare){ var b=document.getElementById('brandCmp'); if(b) b.textContent=String(j.compare).replace(/\s*\(publik\)\s*$/,''); }
+    }catch(e){}
   }
   // Cadangan statis HANYA dipakai first-load (belum ada data sama sekali). Tetap lewat applyData (anti-mundur).
   function loadStatic(){

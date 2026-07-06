@@ -22,6 +22,8 @@ const http = require('http');
 // ---- mesin analisis tunggal ----
 const E = require('./engine');
 const R = require('./config/leagues.js');   // registry liga (filter + kalibrasi + cadence)
+const BR = require('./config/branding.js'); // toggle anonim brand (mode jual) — label saja
+E.setBrandLabels(BR.LABELS);
 const { num, parseScore, normalizeOddsApiIo, analyzeMatch } = E;
 
 const OUT_DIR = path.join(__dirname, 'data');
@@ -240,7 +242,7 @@ async function runOnce() {
   const summary = E.summarize(matches);
   const out = {
     generatedAt: new Date().toISOString(), source, isDemo: source === 'DEMO',
-    reference: 'SBOBET', compare: 'Bet365 (publik)', markets: ['Handicap', 'Over/Under', 'Corner FT', 'Corner B1', 'Kartu'],
+    reference: BR.reference, compare: BR.compare, markets: ['Handicap', 'Over/Under', 'Corner FT', 'Corner B1', 'Kartu'],
     cornerAvailable: hasCorner, summary,
     note: 'Alat informasi pergerakan odds. Tidak melacak taruhan siapa pun. Bukan jaminan untung.',
     matches,

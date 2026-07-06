@@ -69,6 +69,12 @@ const NORMAL_MARGIN = { ah: 2.5, ou: 2.5, corner: 5.5, cornerHT: 5.5, card: 8 };
 // Liga lain meng-override lewat config/leagues.js → ctx.kalibrasi di analyzeMatch.
 const DEFAULT_KAL = { ambangRout: 2.5, ambangKetat: 0.75, readPowerFloor: 6.5 };
 
+// LABEL BRAND bandar di teks narasi (Fase 4: toggle anonim utk mode jual, config/branding.js).
+// Default = nama asli. setBrandLabels() dipanggil SEKALI oleh caller (fetch-odds/worker) saat start.
+// Hanya label tampilan — nama bookmaker utk API (normalizeOddsApiIo 'Sbobet'/'Bet365') TIDAK terpengaruh.
+const BRAND = { sharp: 'SBOBET', pub: 'Bet365' };
+function setBrandLabels(o) { if (o && o.sharp) BRAND.sharp = o.sharp; if (o && o.pub) BRAND.pub = o.pub; }
+
 // Lampu HANYA dari tanda jebakan nyata. Hal teknis (potongan, garis geser) → `tech` (cuma di angka mentah).
 function gradeMarket(m, normalMargin) {
   const flags = [], tech = []; let score = 0;
@@ -100,7 +106,7 @@ function computeDivergence(m, homeName, awayName) {
   if (!side) return null;
   const sideName = side === 'home' ? homeName : awayName;
   const strong = gap >= 0.08;
-  return { side, gap, strong, flag: `Di Bet365, ${sideName} dikasih bayaran lebih besar untuk memancing pemasang ke sana` };
+  return { side, gap, strong, flag: `Di ${BRAND.pub}, ${sideName} dikasih bayaran lebih besar untuk memancing pemasang ke sana` };
 }
 
 function buildMarket(o) {
@@ -305,7 +311,7 @@ function deriveConclusion(match) {
   ['ah', 'ou'].forEach(k => {
     const mk = m[k];
     if (mk.divergence) {
-      cands.push({ label: lab(k, mk.divergence.side, mk), weight: 4, pick: { market: k, side: mk.divergence.side, line: mk.line.now }, why: `${labShort(k, mk.divergence.side, mk)} dikasih bayaran lebih besar di Bet365 untuk memancing pemasang` });
+      cands.push({ label: lab(k, mk.divergence.side, mk), weight: 4, pick: { market: k, side: mk.divergence.side, line: mk.line.now }, why: `${labShort(k, mk.divergence.side, mk)} dikasih bayaran lebih besar di ${BRAND.pub} untuk memancing pemasang` });
     }
   });
   ['ah', 'ou', 'corner', 'cornerHT', 'card'].forEach(k => {
@@ -406,7 +412,7 @@ function scenarioRead(match, kal) {
   const favSide = v < 0 ? 'home' : 'away';
   const sideLbl = (side) => { const team = side === 'home' ? match.home : match.away; const sv = side === 'home' ? v : -v; return `${team} ${indoHandicap(sv)}`; };
   let menampungSide = null, basis = '';
-  if (ah && ah.divergence && ah.divergence.side) { menampungSide = ah.divergence.side; basis = 'Bet365 bayar lebih besar di sini → digiring ke publik'; }
+  if (ah && ah.divergence && ah.divergence.side) { menampungSide = ah.divergence.side; basis = BRAND.pub + ' bayar lebih besar di sini → digiring ke publik'; }
   else if (ah && ah.nowHome != null && ah.nowAway != null) {
     const dh = hkToDecimal(ah.nowHome), da = hkToDecimal(ah.nowAway);
     if (dh != null && da != null && Math.abs(dh - da) >= 0.03) { menampungSide = dh > da ? 'home' : 'away'; basis = 'sisi ini dibayar plus (juice lebih tinggi) → digiring'; }
@@ -444,7 +450,7 @@ function detFakeFavorite(match) {
   const favN = _nm(match, favSide);
   return { key: 'fake_favorite', aktif: true, kekuatan: (hardening && divFav) ? 3 : 2,
     alasan: `${favN} kelihatan jagoan tapi voor cuma ${indoHandicap(L)} (laga sebenarnya ketat)` +
-      (hardening ? `, bayaran ${favN} dikecilkan` : '') + (divFav ? `, Bet365 mengumpan ke ${favN}` : '') +
+      (hardening ? `, bayaran ${favN} dikecilkan` : '') + (divFav ? `, ${BRAND.pub} mengumpan ke ${favN}` : '') +
       ` — pemasang ditarik nekat taruh besar ke favorit padahal voor kecil.` };
 }
 // margin_trap: voor BESAR tapi de-vig cover ~koin → "menang bola ≠ menang voor".
@@ -514,7 +520,7 @@ function detReverseLineMovement(match) {
   const lineToward = lm.delta < 0 ? 'home' : 'away';
   if (lineToward === pubSide) return _off('reverse_line_movement');
   return { key: 'reverse_line_movement', aktif: true, kekuatan: 3,
-    alasan: `reverse_line_movement: publik condong ke ${_nm(match, pubSide)} (${ah.divergence ? 'umpan Bet365' : 'favorit pembukaan'}), TAPI voor malah bergerak ${indoHandicap(ah.line.open)}→${indoHandicap(ah.line.now)} ke ${_nm(match, lineToward)} — uang tajam melawan arah publik.` };
+    alasan: `reverse_line_movement: publik condong ke ${_nm(match, pubSide)} (${ah.divergence ? 'umpan ' + BRAND.pub : 'favorit pembukaan'}), TAPI voor malah bergerak ${indoHandicap(ah.line.open)}→${indoHandicap(ah.line.now)} ke ${_nm(match, lineToward)} — uang tajam melawan arah publik.` };
 }
 const DETECTORS = [detFakeFavorite, detMarginTrap, detTotalTrap, detLineFreeze, detLateSteam, detValueCompression, detReverseLineMovement];
 function runDetectors(match, ctx) { return DETECTORS.map(fn => fn(match, ctx)).filter(d => d.aktif); }
@@ -809,7 +815,7 @@ function analyzeMatch(raw, hist, isLive, ctx) {
     markets[k].direction = computeDirection(markets[k], TYPE[k], raw.home, raw.away);
   }
   for (const k of ['ah', 'ou', 'ahHT', 'ouHT']) {
-    if (markets[k] && markets[k].divergence && markets[k].read.signal.indexOf('Bet365') === -1) {
+    if (markets[k] && markets[k].divergence && markets[k].read.signal.indexOf(BRAND.pub) === -1) {
       markets[k].read.signal += ' ↔ ' + markets[k].divergence.flag + '.';
     }
   }
@@ -987,7 +993,7 @@ module.exports = {
   // matematika & settlement
   hkToDecimal, num, pct, pick, parseScore, twoWayMargin, isQuarter, settleAH, settleOU, noVigProb, noVig3, movement,
   // analisis
-  NORMAL_MARGIN, DEFAULT_KAL, gradeMarket, computeDivergence, buildMarket, computeDirection, movePhrase, matchGuidance,
+  NORMAL_MARGIN, DEFAULT_KAL, BRAND, setBrandLabels, gradeMarket, computeDivergence, buildMarket, computeDirection, movePhrase, matchGuidance,
   indoHandicap, strengthWord, generateRead, matchVerdict, sideLabel, hardenSide, deriveConclusion,
   honestSignals, scenario, scenarioRead, runDetectors, crossMarket, gradeMatch, buildReport, summarize, adaptSnap, adaptEntry, updateHist, snapFromMatch, analyzeMatch,
   // normalisasi sumber

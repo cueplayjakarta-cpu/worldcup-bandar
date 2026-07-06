@@ -1,108 +1,84 @@
-# Lensa Bandar — Piala Dunia 2026
+# Lensa Bandar — Terminal Pembaca Pergerakan Odds
 
-Web app untuk **membaca pergerakan odds SBOBET** (AH/voor, Over/Under, **HT babak-1**, Corner, Kartu) dan menilai arah bandar lewat **grade A/B/C/D** + 7 detektor pola berlabel, bidak jujur, dan lineup modifier.
+Web app untuk **membaca struktur & pergerakan odds bandar acuan (SBOBET)** — AH/voor, Over/Under, HT babak-1, corner, kartu — lalu menerjemahkannya jadi bacaan jelas: **skenario yang dipegang bandar, ke mana publik digiring, grade A/B/C/D** dari 7 detektor pola berlabel + bidak jujur + lineup modifier.
 
-**Prinsip:** AH/O-U di atas 1X2. Alat informasi, acuan **SBOBET**. **Nol pelacakan taruhan**. **Bukan jaminan untung.**
+## Positioning — baca ini dulu
 
-> 📖 **Cara kerja & alasan tiap keputusan: [docs/METODOLOGI.md](docs/METODOLOGI.md)** — detektor, sistem grade, bidak jujur (FAKTA vs inferensi), lineup modifier, ingest manual, arsitektur. Baca ini dulu biar metodologi tidak luntur.
+**Ini terminal INFORMASI + metodologi terbuka + track record transparan. BUKAN alat menang.**
+
+Kami menguji app ini terhadap hasil asli World Cup 2026 (52 laga, semua bacaan, termasuk yang gagal — [bukti lengkap](uji-akurasi.html) / [docs/AKURASI-LENGKAP.md](docs/AKURASI-LENGKAP.md)):
+
+| Metrik | Hasil |
+|---|---|
+| Favorit 1X2 benar menang | 35/52 (67%) |
+| Arah VOOR tepat | 11/19 (58%) · +1.50u pra-vig |
+| Arah TOTAL tepat | 5/6 (83%) · +3.50u pra-vig |
+| **Sinyal "jebakan" terbukti kalah** | **14/30 (47%) · +0.00 unit — setara lempar koin** |
+
+Angka **47% / nol unit** itu kesimpulan paling penting dan kami tulis terbuka: **membaca pergerakan odds TIDAK memberi edge menang yang andal**. Yang app ini berikan: memahami struktur pasar, tidak ikut arus, main lebih sadar. *Alat informasi, bukan ajakan bertaruh, bukan jaminan untung, nol pelacakan taruhan.*
+
+> 📖 Metodologi & alasan tiap keputusan: [docs/METODOLOGI.md](docs/METODOLOGI.md) · Bukti akurasi: [uji-akurasi.html](uji-akurasi.html)
 
 ---
+
+## Status multi-liga
+
+**Mekanisme: SIAP.** Registry config-driven di [config/leagues.js](config/leagues.js) — filter liga tunggal (dipakai Node & Worker), kalibrasi ambang per liga, cadence sadar-jadwal (mode `league` berhenti polling di hari kosong), gate fitur knockout per mode.
+
+**Data: BELUM TERVERIFIKASI.** WC 2026 = satu-satunya liga `VERIFIED`. EPL / La Liga / Serie A / Bundesliga / Ligue 1 / UCL terdaftar `UNVERIFIED` — **nonaktif** sampai terbukti odds Sbobet+Bet365 terisi untuk liga itu di key API-mu:
+```bash
+ODDS_API_KEY=key_kamu node scripts/verify-league-coverage.js   # gate; liga Eropa baru bisa diuji saat kalender jalan (± Agustus)
+```
+Kalibrasi grade liga non-WC memakai placeholder nilai WC (`BELUM DIKALIBRASI`) — **jangan percaya grade non-WC sebelum ada backtest liga itu** ([docs/METODOLOGI.md](docs/METODOLOGI.md) bagian multi-liga).
+
+### Cara menambah liga baru (3 langkah)
+1. **Daftarkan** di `config/leagues.js`: entri `{id, nama, match:{re,country,exclude}, mode, cadence, kalibrasi, dataStatus:'UNVERIFIED'}`.
+2. **Buktikan datanya**: `node scripts/verify-league-coverage.js` → verdict per liga → kalau LOLOS, ubah `dataStatus:'VERIFIED'`.
+3. **Backtest kalibrasinya**: kumpulkan arsip liga itu, jalankan pola `accuracy.js`, setel `kalibrasi` — sebelum itu, grade liga tsb berstatus belum tervalidasi.
+
+## Status komersial
+
+**Model: lisensi SELF-HOST — bukan SaaS langganan.** Alasan (bukan selera): ToS odds-api.io §9 melarang *resale/redistribute/sublicense* data tanpa izin tertulis — menjual akses ke app hosted = melanggar di semua tier. Rincian + kutipan: [docs/AUDIT-KOMERSIAL.md](docs/AUDIT-KOMERSIAL.md) (verdict: **belum layak jual**; jalur bersyarat: [docs/ROADMAP-KOMERSIAL.md](docs/ROADMAP-KOMERSIAL.md)).
+
+Yang sah dijual: **perangkat lunaknya** — pembeli deploy sendiri dengan **API key odds-api.io miliknya sendiri** (lihat "Deploy sendiri" di bawah). Mode jual menganonimkan brand bandar: setel `ANONIM = true` di [config/branding.js](config/branding.js) → "Bandar Acuan / Bandar Pembanding" (default `false` = nama asli, untuk pemakaian pribadi).
+
+---
+
+## Menjalankan (pemakaian pribadi)
+
+- **macOS, paling cepat:** klik dua kali `start.command` — tanpa `key.txt` jalan DEMO; dengan `key.txt` (API key gratis dari https://odds-api.io) data asli.
+- **Terminal:** `ODDS_API_IO_KEY=key node fetch-odds.js` → buka `index.html`. Refresh berkala: `--watch 5`.
+- **Produksi (punya Brad):** Cloudflare Worker (`worker.js`, cron adaptif, cache-first — pengunjung tidak mengonsumsi kuota API) + GitHub Pages + cadangan statis `data/matches.js` yang di-commit worker tiap ~3 jam.
+
+## Deploy sendiri (untuk calon pemegang lisensi)
+
+**Bawa key odds-api.io-mu sendiri** (free tier cukup untuk 1 liga; cap 100 req/jam):
+1. Fork/salin repo → `npx wrangler deploy` (butuh akun Cloudflare gratis) → set secret: `npx wrangler secret put ODDS_API_IO_KEY`.
+2. Opsional: `GH_TOKEN` fine-grained (Contents:write, 1 repo) untuk cadangan statis — panduan aman: [docs/RUNBOOK-GH-TOKEN.md](docs/RUNBOOK-GH-TOKEN.md); `TELEGRAM_TOKEN` untuk bot.
+3. Arahkan `WORKER` di `index.html` ke URL worker-mu, host `index.html` di mana saja (GitHub Pages/CF Pages).
+4. Mode jual/publik: `ANONIM=true` di `config/branding.js`. Baca batas kuota di [docs/METODOLOGI.md](docs/METODOLOGI.md) (matematika 100 req/jam; >2 liga aktif → `hotMin ≥ 4`).
+
+## Uji otomatis
+
+```bash
+node eval.js            # 127 tes engine (detektor, grade, skenario, parser, lineup)
+node eval-registry.js   # 60 tes registry, kalibrasi, cadence, filter tunggal, rilis & branding
+node accuracy.js        # rumus settlement + backtest arsip
+node accuracy-full.js   # backtest LENGKAP vs hasil asli WC2026 (52 laga)
+```
 
 ## Isi folder
 
 ```
-worldcup-bandar/
-├── index.html        ← buka ini di browser (HP/laptop)
-├── fetch-odds.js      ← ambil & analisis odds → tulis data/matches.js
-├── eval.js            ← uji otomatis: buktikan deteksi benar (node eval.js)
-├── data/
-│   ├── matches.js     ← data yang dibaca index.html (dihasilkan otomatis)
-│   ├── matches.json   ← versi JSON (untuk pemeriksaan)
-│   └── history.json   ← rekaman pergerakan garis antar-waktu
-└── README.md
-```
-
-## Apa yang dibaca app
-- **"Bandar pegang: ..."** — garis bandar diterjemahkan jadi statistik jelas (selisih gol, peluang %, perkiraan corner/kartu). Peluang sudah dibersihkan dari potongan bandar (de-vig).
-- **Bacaan/verdict** — satu kalimat per laga (mis. *"Jebakan favorit: publik condong ke Portugal, garis cuma −1/4…"*).
-- **Giringan publik** — bandingkan **SBOBET (sharp)** vs **Bet365 (publik)**; sisi yang publik dikasih bayaran lebih = sisi umpan.
-- **Pergerakan** — garis & water buka→sekarang, plus berapa kali bergerak.
-- **Nol pelacakan taruhan.**
-
----
-
-## Cara tercepat — klik dua kali (macOS)
-
-Klik dua kali **`start.command`** di Finder. Ia mengambil data lalu membuka app di browser otomatis.
-- Tanpa `key.txt` → jalan dengan **DEMO**.
-- Dengan `key.txt` (berisi API key gratis, lihat bawah) → data **SBOBET asli**.
-
-> Pertama kali, macOS bisa menolak (“tidak dikenal”). Klik kanan `start.command` → **Open** → **Open**. Cukup sekali.
-
-## Atau buka manual
-
-Cukup **buka `index.html`** (klik dua kali). Muncul banner **MODE DEMO** — angka contoh untuk menguji tampilan, **bukan odds asli**. Untuk menyegarkan data demo: `node fetch-odds.js --demo` (Node v24 sudah terpasang).
-
-## Apa yang langsung kamu lihat
-- **Ringkasan harian** di atas: berapa laga ada jebakan, jebakan favorit, dan tenang.
-- Tiap laga: **Bacaan** (verdict) + **⚖️ Kesimpulan: keuntungan bandar mengintai di [sisi]** + kalimat **"Bandar pegang"** per pasar.
-
----
-
-## Data SBOBET sungguhan — GRATIS (disarankan)
-
-Pakai **odds-api.io free tier**: gratis selamanya, tanpa kartu kredit, memuat **SBOBET** untuk **Handicap + Over/Under + pergerakan + pembanding Bet365**. (Corner & kartu tidak ada di free tier — lihat bawah.)
-
-**Langkah 1 — ambil API key gratis:**
-1. Buka **https://odds-api.io** → masukkan email → key langsung dikirim (tanpa kartu).
-
-**Langkah 2 — pasang key (paling mudah):**
-Buat file bernama **`key.txt`** di folder ini, isi **hanya** key-nya, simpan. Lalu klik dua kali **`start.command`**. Selesai — data jadi SBOBET asli.
-
-Atau lewat terminal:
-```bash
-cd worldcup-bandar
-ODDS_API_IO_KEY=tempel_key_kamu node fetch-odds.js
-```
-Banner DEMO hilang, data jadi SBOBET asli. Buka ulang `index.html`.
-
-**Segarkan otomatis tiap 5 menit** (odds bergerak menjelang kickoff):
-```bash
-ODDS_API_IO_KEY=xxxx node fetch-odds.js --watch 5
-```
-
-## Corner (GRATIS) & Kartu
-
-**Corner FT + Corner Babak 1 sekarang GRATIS** — diambil dari market "Totals"/"Totals HT" Sbobet di odds-api.io (sudah otomatis). Tidak perlu langganan.
-
-**Kartu** belum ada di feed gratis ini → app menandai **"Belum tersambung"** (tidak pernah dikarang). Kalau mau kartu, pakai **trial 15 hari iSports**:
-1. Daftar **https://www.isportsapi.com/en/auth/register** → **Start Free Trial** → **Football** → salin **API Key**.
-2. Jalankan: `ISPORTS_API_KEY=xxxx node fetch-odds.js`
-
-> Catatan teknis: struktur respons tiap API difinalkan saat key aktif. Lapisan normalisasi
-> ada di `normalizeOddsApiIo()` dan `fetchFromISports()` (sudah diberi komentar). Kalau nama
-> field-nya beda, kirim aku satu contoh respons asli dan kurapikan dalam semenit.
-
-## Uji otomatis (buktikan otaknya benar)
-```bash
-node eval.js     # 25 pengecekan: jebakan favorit, steam move, divergence, matematika
+index.html                 UI (buka di browser)          engine/index.js   mesin analisis tunggal (murni)
+worker.js                  Cloudflare Worker (live)      config/leagues.js registry liga (filter/kalibrasi/cadence)
+fetch-odds.js              generator Node                config/branding.js toggle anonim brand
+uji-akurasi.html           bukti akurasi publik          scripts/verify-league-coverage.js  gate data liga
+eval.js · eval-registry.js suite tes                     accuracy.js · accuracy-full.js     backtest
+docs/                      METODOLOGI · AKURASI-LENGKAP · AUDIT-MULTILIGA · AUDIT-KOMERSIAL · ROADMAP-KOMERSIAL · RUNBOOK-GH-TOKEN
+data/                      matches.js/json (output) · history.json (garis antar-waktu) · archive.json (backtest)
 ```
 
 ---
 
-## Cara membaca
-
-- **Lampu hijau** — margin wajar, pergerakan tenang.
-- **Lampu kuning** — ada gerakan berarti / margin agak tinggi → hati-hati.
-- **Lampu merah** — tanda jebakan (margin tinggi / garis di-shade ke favorit) → waspada.
-- **▼ hijau** = bayaran sisi itu naik · **▲ merah** = bayaran turun (sisi "berat", biasanya ke situ publik dipancing).
-- **Margin** = potongan bandar; makin besar makin "mahal" buat pemain. Corner & Kartu wajar lebih tinggi.
-
-Tujuan alat ini: bantu main **lebih sedikit, lebih sadar, tidak terjebak** — bukan menjamin menang.
-
----
-
-## Selanjutnya (saat siap)
-- Hosting agar teman buka lewat link (tanpa Node) — ditunda sesuai rencana.
-- Auto-refresh berkala.
-- Penyetelan field iSports memakai respons trial asli.
+**Tujuan alat ini: bantu main lebih sedikit, lebih sadar, tidak terjebak — bukan menjamin menang.** Angka kami sendiri (47%) bilang begitu.

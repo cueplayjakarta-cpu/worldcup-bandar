@@ -91,7 +91,9 @@ const LEAGUES = [
     match: { re: /champions league/i, country: null, exclude: /afc|caf|concacaf|ofc|women/i },
     cadence: { hotMin: 3, medMin: 10, idleMin: 20, quietSkipHours: 24 },
     kalibrasi: Object.assign({}, KAL_BELUM_DIKALIBRASI),  // BELUM DIKALIBRASI: butuh backtest liga ini, lihat accuracy.js
-    dataStatus: 'UNVERIFIED',
+    // GATE LOLOS 2026-07-14 (scripts/verify-league-coverage.js, kualifikasi UCL berjalan):
+    // 28 event di feed · Sbobet AH✓ OU✓ 1X2✓ · Bet365 AH✓ OU✓ 1X2✓ → VERIFIED.
+    dataStatus: 'VERIFIED',
   },
 ];
 

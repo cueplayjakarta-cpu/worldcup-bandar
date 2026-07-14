@@ -20,8 +20,10 @@ console.log('\n── 1. Struktur registry ──');
 check('registry memuat 7 liga', R.LEAGUES.length === 7, R.LEAGUES.length);
 check('WC 2026 = entri PERTAMA (default)', R.LEAGUES[0].id === 'wc2026');
 check('WC dataStatus VERIFIED', R.LEAGUES[0].dataStatus === 'VERIFIED');
-check('SEMUA liga non-WC UNVERIFIED (gate 2a-PRA belum lolos)',
-  R.LEAGUES.slice(1).every(l => l.dataStatus === 'UNVERIFIED'));
+check('liga domestik UNVERIFIED (gate: 0 event saat jeda musim, uji ulang Agustus)',
+  ['epl', 'laliga', 'seriea', 'bundesliga', 'ligue1'].every(id => R.getLeague(id).dataStatus === 'UNVERIFIED'));
+check('UCL VERIFIED (gate LOLOS 2026-07-14: Sbobet+Bet365 AH/OU/1X2 terisi, 28 event)',
+  R.getLeague('ucl').dataStatus === 'VERIFIED');
 const REQUIRED = ['id', 'nama', 'apiSportId', 'apiLeagueId', 'season', 'mode', 'cadence', 'kalibrasi', 'dataStatus'];
 check('field wajib lengkap di TIAP liga', R.LEAGUES.every(l => REQUIRED.every(k => k in l)));
 check('kalibrasi tiap liga punya ambangRout+ambangKetat+readPowerFloor',
@@ -30,11 +32,14 @@ check('mode valid (league|knockout|hybrid)', R.LEAGUES.every(l => ['league', 'kn
 
 console.log('\n── 2. dataStatus gating + filter liga ──');
 const active = R.activeLeagues();
-check('activeLeagues() default = HANYA wc2026 (zero regression)', active.length === 1 && active[0].id === 'wc2026');
+check('activeLeagues() default = wc2026 + ucl (yang lolos gate saja)',
+  active.map(l => l.id).sort().join(',') === 'ucl,wc2026', active.map(l => l.id).join(','));
 const filter = R.buildEventFilter(active);
 const evWC = { league: { name: 'FIFA World Cup' }, status: 'pending' };
 const evEPL = { league: { name: 'Premier League', country: 'England' }, status: 'pending' };
+const evUCLQ = { league: { name: 'UEFA Champions League Qualification' }, status: 'pending' };
 check('filter MENERIMA event World Cup', filter(evWC) === true);
+check('filter MENERIMA event kualifikasi UCL (approved + lolos gate)', filter(evUCLQ) === true);
 check('filter MENOLAK event EPL selama UNVERIFIED', filter(evEPL) === false);
 const filterAll = R.buildEventFilter(R.activeLeagues({ includeUnverified: true }));
 check('includeUnverified: filter menerima EPL (preview/tes)', filterAll(evEPL) === true);

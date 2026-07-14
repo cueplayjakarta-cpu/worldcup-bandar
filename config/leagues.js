@@ -83,7 +83,10 @@ const LEAGUES = [
     dataStatus: 'UNVERIFIED',
   },
   {
-    id: 'ucl', nama: 'Liga Champions (UEFA)',
+    // DISETUJUI Brad 2026-07-14: cakupan = UCL + babak KUALIFIKASI (regex longgar menangkap
+    // "…Qualification/Qualifying…"), Eropa saja — konfederasi lain (AFC/CAF/CONCACAF/OFC) tetap dikecualikan.
+    // dataStatus tetap UNVERIFIED sampai gate scripts/verify-league-coverage.js LOLOS (butuh key).
+    id: 'ucl', nama: 'Liga Champions (UEFA) + Kualifikasi',
     apiSportId: 'football', apiLeagueId: null, season: '2026/27', mode: 'hybrid',
     match: { re: /champions league/i, country: null, exclude: /afc|caf|concacaf|ofc|women/i },
     cadence: { hotMin: 3, medMin: 10, idleMin: 20, quietSkipHours: 24 },
